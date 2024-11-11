@@ -4,11 +4,12 @@ public class LoginDto
 {
     [Required(ErrorMessage = "Email jest wymagany.")]
     [EmailAddress(ErrorMessage = "Nieprawidłowy adres email.")]
-    public string Email { get; set; }
+    public string Email { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Hasło jest wymagane.")]
     [DataType(DataType.Password)]
-    public string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 
-    public bool RememberMe { get; set; } = false;
+    [Display(Name = "Remember me?")]
+    public bool RememberMe { get; set; }
 }
