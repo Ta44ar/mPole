@@ -1,62 +1,46 @@
 ﻿@page "/Account/Login"
 
-@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Authentication
-@using Microsoft.AspNetCore.Identity
-@using mPole.Data;
-@using mPole.Data.Models
-
 @inject SignInManager<ApplicationUser> SignInManager
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Log in</PageTitle>
 
-<h1>Log in</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <StatusMessage Message="@errorMessage" />
-            <EditForm Model="loginDto" method="post" OnValidSubmit="LoginUser" FormName="login">
-                <DataAnnotationsValidator />
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <ValidationSummary class="text-danger" role="alert" />
-                <div class="form-floating mb-3">
-                    <InputText @bind-Value="loginDto.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label for="email" class="form-label">Email</label>
-                    <ValidationMessage For="() => loginDto.Email" class="text-danger" />
-                </div>
-                <div class="form-floating mb-3">
-                    <InputText type="password" @bind-Value="loginDto.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label for="password" class="form-label">Password</label>
-                    <ValidationMessage For="() => loginDto.Password" class="text-danger" />
-                </div>
-                <div class="checkbox mb-3">
-                    <label class="form-label">
-                        <InputCheckbox @bind-Value="loginDto.RememberMe" class="darker-border-checkbox form-check-input" />
-                        Remember me
-                    </label>
-                </div>
-                <div>
-                    <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a href="Account/ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </EditForm>
-        </section>
-    </div>
-</div>
+<PageTitle>Logowanie</PageTitle>
+
+<StatusMessage Message="@errorMessage" />
+
+<EditForm Model="loginDto" asp-route-returnUrl="@ReturnUrl"  method="post" OnValidSubmit="LoginUser" FormName="login">
+<DataAnnotationsValidator />
+<MudGrid>
+    <MudItem>
+        <MudCard Style="width: 400px" Elevation="3">
+            <MudCardHeader Class="">
+                <MudText Typo="Typo.h5">Logowanie</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudStaticTextField Label="Adres e-mail" @bind-Value="loginDto.Email" 
+                                    For="@(() => loginDto.Email)"/>
+                <MudStaticTextField Label="Hasło" @bind-Value="loginDto.Password" 
+                                    For="@(() => loginDto.Password)" InputType="InputType.Password"/>
+                <MudStaticCheckBox Label="Zapamiętaj mnie" @bind-Value="loginDto.RememberMe" />
+                <MudCardActions>
+                    <MudStaticButton type="submit" Variant="Variant.Filled" Color="Color.Primary">Zaloguj się</MudStaticButton>
+                </MudCardActions>
+                <MudText>
+                    <a href="Account/ForgotPassword">Forgot your password?</a>
+                </MudText>
+                <MudText>
+                    <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
+                </MudText>
+                <MudText>
+                    <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
+                </MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+</EditForm>
 
 @code {
     private string? errorMessage;

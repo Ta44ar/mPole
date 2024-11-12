@@ -1,15 +1,19 @@
 ﻿@inherits LayoutComponentBase
-@layout mPole.Components.Layout.MainLayout
 @inject NavigationManager NavigationManager
 
-@if (HttpContext is null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    @Body
-}
+<MudThemeProvider />
+<MudGrid Class="d-flex justify-center" Style="height:100vh">
+    <MudItem Class="align-content-center">
+        @if (HttpContext is null)
+        {
+            <MudText Typo="Typo.h6">Loading...</MudText>
+        }
+        else
+        {
+            @Body
+        }
+    </MudItem>
+</MudGrid>
 
 @code {
     [CascadingParameter]

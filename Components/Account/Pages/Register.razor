@@ -17,52 +17,41 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Register</PageTitle>
+<PageTitle>Rejestracja</PageTitle>
 
-<h1>Register</h1>
-
-<div class="row">
-    <div class="col-md-4">
-        <StatusMessage Message="@Message" />
-        <EditForm Model="registrationDto" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-            <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
-            <hr />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="registrationDto.FirstName" class="form-control" autocomplete="firstname" aria-required="true" placeholder="John" />
-                <label for="firstname">First Name</label>
-                <ValidationMessage For="() => registrationDto.FirstName" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="registrationDto.LastName" class="form-control" autocomplete="lastname" aria-required="true" placeholder="Whick" />
-                <label for="lastname">Last Name</label>
-                <ValidationMessage For="() => registrationDto.LastName" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="registrationDto.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label for="email">Email</label>
-                <ValidationMessage For="() => registrationDto.Email" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="registrationDto.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="password">Password</label>
-                <ValidationMessage For="() => registrationDto.Password" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="registrationDto.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="confirm-password">Confirm Password</label>
-                <ValidationMessage For="() => registrationDto.ConfirmPassword" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputDate @bind-Value="registrationDto.DateOfBirth" class="form-control" aria-required="true" />
-                <label for="dateofbirth">Birthdate</label>
-                <ValidationMessage For="() => registrationDto.DateOfBirth" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </EditForm>
-    </div>
-</div>
+<EditForm Model="registrationDto" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem>
+            <MudCard Style="width: 400px" Elevation="3">
+                <MudCardHeader>
+                    <MudText Typo="Typo.h5">Rejestracja</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudStaticTextField Label="Imię" @bind-Value="registrationDto.FirstName"
+                                        For="@(() => registrationDto.FirstName)"/>
+                    <MudStaticTextField Label="Nazwisko" @bind-Value="registrationDto.LastName"
+                                        For="@(() => registrationDto.LastName)"/>
+                    <MudStaticTextField Label="Adres e-mail" @bind-Value="registrationDto.Email"
+                                        For="@(() => registrationDto.Email)" />
+                    <MudStaticTextField Label="Hasło" @bind-Value="registrationDto.Password"
+                                        For="@(() => registrationDto.Password)" InputType="InputType.Password" />
+                    <MudStaticTextField Label="Powtórz hasło" @bind-Value="registrationDto.ConfirmPassword"
+                                        For="@(() => registrationDto.ConfirmPassword)" InputType="InputType.Password" />
+                    <br/>
+                    <div class="form-floating mb-3">
+                        <InputDate @bind-Value="registrationDto.DateOfBirth" class="form-control" aria-required="true" />
+                        <label for="dateofbirth">Birthdate</label>
+                        <ValidationMessage For="() => registrationDto.DateOfBirth" class="text-danger" />
+                    </div>
+                    <MudCardActions>
+                        <MudStaticButton type="submit" Variant="Variant.Filled" Color="Color.Primary">Zarejestruj się</MudStaticButton>
+                    </MudCardActions>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
 
 @code {
     private IEnumerable<IdentityError>? identityErrors;
@@ -91,6 +80,7 @@
         if (!result.Succeeded)
         {
             identityErrors = result.Errors;
+            Logger.LogError("User not created. E-mail is already taken.");
             return;
         }
 

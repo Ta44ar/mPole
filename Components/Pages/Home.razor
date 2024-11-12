@@ -7,17 +7,6 @@
 
 Welcome to your new app.
 
-<button @onclick="NavigateToLogIn">Log In</button>
-<button @onclick="NavigateToRegister">Register</button>
-
 @code {
-    private void NavigateToLogIn()
-    {
-        Navigation.NavigateTo("/Account/Login");
-    }
-
-    private void NavigateToRegister()
-    {
-        Navigation.NavigateTo("/Account/Register");
-    }
+    // No need for navigation methods here anymore
 }

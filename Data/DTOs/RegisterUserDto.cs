@@ -5,12 +5,12 @@ namespace mPole.Data.DTOs
     public class RegisterUserDto
     {
         [Required(ErrorMessage = "Imię jest wymagane.")]
-        [StringLength(20, MinimumLength = 2, ErrorMessage = "Imię nie może być dłuższe niż 20 znaków.")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "Imię musi zawierać 2-20 znaków.")]
         [RegularExpression(@"^[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]*$", ErrorMessage = "Imię musi zaczynać się wielką literą.")]
         public string FirstName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Nazwisko jest wymagane.")]
-        [StringLength(20, MinimumLength = 2, ErrorMessage = "Nazwisko nie może być dłuższe niż 20 znaków.")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "Nazwisko musi zawierać 2-20 znaków.")]
         [RegularExpression(@"^[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]*$", ErrorMessage = "Nazwisko musi zaczynać się wielką literą.")]
         public string LastName { get; set; } = string.Empty;
 
@@ -38,7 +38,7 @@ namespace mPole.Data.DTOs
         public static ValidationResult? ValidateAge(DateTime dateOfBirth, ValidationContext context)
         {
             int age = DateTime.Today.Year - dateOfBirth.Year;
-            if (dateOfBirth.Date > DateTime.Today.AddYears(-age)) age--;
+            if (dateOfBirth > DateTime.Today.AddYears(-age)) age--;
 
             return age >= 18
                 ? ValidationResult.Success

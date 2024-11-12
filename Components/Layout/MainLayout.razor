@@ -1,5 +1,52 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<mPole.Components.Account.Shared.ManageNavMenu/>
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-@Body
+<MudLayout>
+    <MudAppBar Style="@($"background:{Colors.Brown.Lighten1}")">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" /> mPole
+        <MudSpacer />
+        <MudButtonGroup Color="Color.Inherit">
+            @if (!isAuthenticated)
+            {
+                <MudButton OnClick="@NavigateToLogIn">Log In</MudButton>
+                <MudButton OnClick="@NavigateToRegister">Register</MudButton>
+            }
+            else
+            {
+                <MudButton>Log Out</MudButton>
+            }
+        </MudButtonGroup>
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudGrid Class="d-flex justify-center" Style="height:100vh">
+            <MudItem Class="align-content-center">
+                @Body
+            </MudItem>
+        </MudGrid>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = false;
+    bool isAuthenticated;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isAuthenticated = authState.User?.Identity?.IsAuthenticated ?? false;
+    }
+
+    void DrawerToggle() => _drawerOpen = !_drawerOpen;
+
+    private void NavigateToLogIn() => Navigation.NavigateTo("/Account/Login");
+    private void NavigateToRegister() => Navigation.NavigateTo("/Account/Register");
+}
