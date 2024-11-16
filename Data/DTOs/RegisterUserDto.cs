@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using mPole.Data.Validators;
+using System.ComponentModel.DataAnnotations;
 
 namespace mPole.Data.DTOs
 {
@@ -32,17 +33,7 @@ namespace mPole.Data.DTOs
 
         [Required(ErrorMessage = "Data urodzenia jest wymagana.")]
         [DataType(DataType.Date)]
-        [CustomValidation(typeof(RegisterUserDto), nameof(ValidateAge))]
+        [CustomValidation(typeof(CustomValidators), nameof(CustomValidators.ValidateAge))]
         public DateTime DateOfBirth { get; set; }
-
-        public static ValidationResult? ValidateAge(DateTime dateOfBirth, ValidationContext context)
-        {
-            int age = DateTime.Today.Year - dateOfBirth.Year;
-            if (dateOfBirth > DateTime.Today.AddYears(-age)) age--;
-
-            return age >= 18
-                ? ValidationResult.Success
-                : new ValidationResult("Użytkownik musi mieć przynajmniej 18 lat.");
-        }
     }
 }

@@ -1,14 +1,5 @@
 ﻿@page "/Account/Register"
 
-@using System.ComponentModel.DataAnnotations
-@using System.Text
-@using System.Text.Encodings.Web
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.WebUtilities
-@using mPole.Data
-@using mPole.Data.DTOs
-@using mPole.Data.Models
-
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
 @inject SignInManager<ApplicationUser> SignInManager
@@ -29,25 +20,34 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <MudStaticTextField Label="Imię" @bind-Value="registrationDto.FirstName"
-                                        For="@(() => registrationDto.FirstName)"/>
+                                        For="@(() => registrationDto.FirstName)" />
                     <MudStaticTextField Label="Nazwisko" @bind-Value="registrationDto.LastName"
-                                        For="@(() => registrationDto.LastName)"/>
+                                        For="@(() => registrationDto.LastName)" />
                     <MudStaticTextField Label="Adres e-mail" @bind-Value="registrationDto.Email"
                                         For="@(() => registrationDto.Email)" />
                     <MudStaticTextField Label="Hasło" @bind-Value="registrationDto.Password"
                                         For="@(() => registrationDto.Password)" InputType="InputType.Password" />
                     <MudStaticTextField Label="Powtórz hasło" @bind-Value="registrationDto.ConfirmPassword"
                                         For="@(() => registrationDto.ConfirmPassword)" InputType="InputType.Password" />
-                    <br/>
+                    <br />
                     <div class="form-floating mb-3">
                         <InputDate @bind-Value="registrationDto.DateOfBirth" class="form-control" aria-required="true" />
                         <label for="dateofbirth">Birthdate</label>
                         <ValidationMessage For="() => registrationDto.DateOfBirth" class="text-danger" />
                     </div>
-                    <MudCardActions>
-                        <MudStaticButton type="submit" Variant="Variant.Filled" Color="Color.Primary">Zarejestruj się</MudStaticButton>
-                    </MudCardActions>
+                    @if (identityErrors != null && identityErrors.Any())
+                    {
+                        <MudAlert Severity="Severity.Error">
+                            @foreach (var error in identityErrors)
+                            {
+                                <div>@error.Description</div>
+                            }
+                        </MudAlert>
+                    }
                 </MudCardContent>
+                <MudCardActions>
+                    <MudStaticButton type="submit" Variant="Variant.Filled" Color="Color.Primary">Zarejestruj się</MudStaticButton>
+                </MudCardActions>
             </MudCard>
         </MudItem>
     </MudGrid>
@@ -66,7 +66,14 @@
 
     public async Task RegisterUser(EditContext editContext)
     {
-        var user = CreateUser();
+        var user = await UserManager.FindByEmailAsync(registrationDto.Email!);
+        if (user is not null)
+        {
+            identityErrors = new List<IdentityError> { new IdentityError { Description = "Użytkownik z tym adresem e-mail już istnieje." } };
+            return;
+        }
+
+        user = CreateUser();
 
         user.FirstName = registrationDto.FirstName;
         user.LastName = registrationDto.LastName;
