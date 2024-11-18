@@ -19,6 +19,7 @@
             }
             else
             {
+                <MudButton OnClick="@NavigateToAccountManagement">Account</MudButton>
                 <MudButton>Log Out</MudButton>
             }
         </MudButtonGroup>
@@ -49,4 +50,5 @@
 
     private void NavigateToLogIn() => Navigation.NavigateTo("/Account/Login");
     private void NavigateToRegister() => Navigation.NavigateTo("/Account/Register");
+    private void NavigateToAccountManagement() => Navigation.NavigateTo("/Account/Manage");
 }

@@ -1,10 +1,6 @@
 ﻿@page "/Account/Manage"
 
-@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Identity
-@using mPole.Data;
-@using mPole.Data.Models
-
+@layout MainLayout
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityUserAccessor UserAccessor
@@ -15,24 +11,18 @@
 <h3>Profile</h3>
 <StatusMessage />
 
-<div class="row">
-    <div class="col-md-6">
-        <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MudPaper Class="pa-4">
+        <EditForm Model="Input" OnValidSubmit="OnValidSubmitAsync">
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
-                <label for="username" class="form-label">Username</label>
-            </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
-                <label for="phone-number" class="form-label">Phone number</label>
-                <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+            <MudTextField @bind-Value="username" Label="Username" Disabled="true" Variant="Variant.Filled" />
+            <MudTextField @bind-Value="Input.PhoneNumber" Label="Phone number" Variant="Variant.Filled" />
+            <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
+            <MudButton Type="Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mt-4">Save</MudButton>
         </EditForm>
-    </div>
-</div>
+    </MudPaper>
+</MudContainer>
 
 @code {
     private ApplicationUser user = default!;

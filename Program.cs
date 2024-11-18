@@ -6,6 +6,10 @@ using mPole.Components;
 using mPole.Components.Account;
 using mPole.Data;
 using mPole.Data.Models;
+using mPole.Data.Repositories;
+using mPole.Interface;
+using mPole.Interfaces;
+using mPole.Services;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +22,11 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
+
+builder.Services.AddScoped<IMoveRepository, MoveRepository>();
+builder.Services.AddScoped<MoveService>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<ImageService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(options =>

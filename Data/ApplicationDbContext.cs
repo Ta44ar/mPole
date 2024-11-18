@@ -11,9 +11,8 @@ namespace mPole.Data
         {
         }
 
-        public DbSet<PoleDanceMove> PoleDanceMoves { get; set; }
+        public DbSet<Move> Moves { get; set; }
         public DbSet<Image> Images { get; set; }
-        public DbSet<PoleDanceMoveImage> PoleDanceMoveImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,26 +48,14 @@ namespace mPole.Data
                 entity.ToTable("RoleClaim");
             });
 
-            modelBuilder.Entity<PoleDanceMove>(entity =>
+            modelBuilder.Entity<Move>(entity =>
             {
-                entity.ToTable(name: "PoleDanceMove");
+                entity.ToTable(name: "Move");
             });
 
             modelBuilder.Entity<Image>(entity =>
             {
                 entity.ToTable(name: "Image");
-            });
-
-            modelBuilder.Entity<PoleDanceMoveImage>(entity =>
-            {
-                entity.ToTable(name: "PoleDanceMoveImage");
-                entity.HasKey(e => new { e.PoleDanceMoveId, e.ImageId });
-                entity.HasOne(e => e.PoleDanceMove)
-                    .WithMany(e => e.PoleDanceMoveImages)
-                    .HasForeignKey(e => e.PoleDanceMoveId);
-                entity.HasOne(e => e.Image)
-                    .WithMany(e => e.PoleDanceMoveImages)
-                    .HasForeignKey(e => e.ImageId);
             });
         }
     }

@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Identity;
-using mPole.Data.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace mPole.Data.Validators

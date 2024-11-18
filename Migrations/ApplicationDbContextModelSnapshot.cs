@@ -244,16 +244,21 @@ namespace mPole.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<int>("MoveId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MoveId");
+
                     b.ToTable("Image", "dbo");
                 });
 
-            modelBuilder.Entity("mPole.Data.Models.PoleDanceMove", b =>
+            modelBuilder.Entity("mPole.Data.Models.Move", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -265,7 +270,7 @@ namespace mPole.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Level")
+                    b.Property<int>("DifficultyLevel")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -274,22 +279,7 @@ namespace mPole.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PoleDanceMove", "dbo");
-                });
-
-            modelBuilder.Entity("mPole.Data.Models.PoleDanceMoveImage", b =>
-                {
-                    b.Property<int>("PoleDanceMoveId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ImageId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PoleDanceMoveId", "ImageId");
-
-                    b.HasIndex("ImageId");
-
-                    b.ToTable("PoleDanceMoveImage", "dbo");
+                    b.ToTable("Move", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -343,33 +333,20 @@ namespace mPole.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("mPole.Data.Models.PoleDanceMoveImage", b =>
-                {
-                    b.HasOne("mPole.Data.Models.Image", "Image")
-                        .WithMany("PoleDanceMoveImages")
-                        .HasForeignKey("ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("mPole.Data.Models.PoleDanceMove", "PoleDanceMove")
-                        .WithMany("PoleDanceMoveImages")
-                        .HasForeignKey("PoleDanceMoveId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Image");
-
-                    b.Navigation("PoleDanceMove");
-                });
-
             modelBuilder.Entity("mPole.Data.Models.Image", b =>
                 {
-                    b.Navigation("PoleDanceMoveImages");
+                    b.HasOne("mPole.Data.Models.Move", "Move")
+                        .WithMany("Images")
+                        .HasForeignKey("MoveId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Move");
                 });
 
-            modelBuilder.Entity("mPole.Data.Models.PoleDanceMove", b =>
+            modelBuilder.Entity("mPole.Data.Models.Move", b =>
                 {
-                    b.Navigation("PoleDanceMoveImages");
+                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,36 @@
+﻿@page "/Moves/Details/{moveId:int}"
+
+@inject NavigationManager nav
+@inject ImageService imageService
+@inject MoveService moveService
+
+<PageTitle>Move Details</PageTitle>
+
+<MudGrid>
+    <MudItem xs="12" sm="6">
+        <MudCard>
+            <MudCardMedia Image="" Height="400" />
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <MudCard>
+            <MudCardContent>
+                <MudText Typo="Typo.h4">@move.Name</MudText>
+                <MudText Typo="Typo.body1">Difficulty Level: @move.DifficultyLevel</MudText>
+                <MudText Typo="Typo.body2">@move.Description</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public int moveId { get; set; }
+
+    private Move move;
+
+    protected override async Task OnInitializedAsync()
+    {
+        move = await moveService.GetMoveByIdAsync(moveId);
+    }
+}
