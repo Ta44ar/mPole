@@ -1,68 +1,104 @@
 ﻿@page "/Moves/Gallery"
 
+@inject IDialogService DialogService
 @inject NavigationManager Navigation
-@inject ImageService imageService
+@inject MoveService moveService
 
 <PageTitle>Galeria Figur</PageTitle>
 
-<MudGrid>
-    @foreach (var move in PoleDanceMoves)
-    {
-        <MudItem xs="12" sm="6" md="4">
-            <MudCard @onclick="() => NavigateToMoveDetails(move.Id)" Style="cursor: pointer;">
-                <MudCardMedia Image="https://gracepoleacademy.pl/wp-content/uploads/Fotolia_194717626_M_pion.jpg">
-                </MudCardMedia>
-                <MudCardContent>
-                    <MudText Typo="Typo.h6">@move.Name</MudText>
-                    <MudText Typo="Typo.body2">Poziom trudności: @move.DifficultyLevel</MudText>
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
-    }
-</MudGrid>
+@if (isLoading)
+{
+    <Loader></Loader>
+} 
+else
+{
+    <MudButton @onclick="OpenDialogAsync" Variant="Variant.Filled" Color="Color.Primary">
+        Open Simple Dialog
+    </MudButton>
+    <MudGrid>
+        @foreach (var move in poledanceMoves)
+        {
+            <MudItem xs="12" sm="6" md="4">
+                <MudCard @onclick="() => NavigateToMoveDetails(move.Id)" Style="cursor: pointer;">
+                    <MudCardMedia Image="@move.ImageUrl">
+                    </MudCardMedia>
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6">@move.Name</MudText>
+                        <MudText Typo="Typo.body2">Poziom trudności: @move.DifficultyLevel</MudText>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+}
 
 @code {
-    private List<MoveCardDto> PoleDanceMoves = new List<MoveCardDto>
+    private List<MoveCardDto> poledanceMoves = new List<MoveCardDto>();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
     {
-        // Example data
-        // new MoveCardDto
-        // {
-        //     Id = 2,
-        //     Name = "Figura 1",
-        //     DifficultyLevel = 2
-        // },
-        // new MoveCardDto
-        // {
-        //     Id = 3,
-        //     Name = "Figura 2",
-        //     DifficultyLevel = 1
-        // },
-        // new MoveCardDto
-        // {
-        //     Id = 4,
-        //     Name = "Figura 3",
-        //     DifficultyLevel = 1
-        // },
-        // // Example data
-        // new MoveCardDto
-        // {
-        //     Id = 5,
-        //     Name = "Figura 4",
-        //     DifficultyLevel = 3
-        // },
-        // new MoveCardDto
-        // {
-        //     Id = 6,
-        //     Name = "Figura 5",
-        //     DifficultyLevel = 2
-        // },
-        // new MoveCardDto
-        // {
-        //     Id = 7,
-        //     Name = "Figura 6",
-        //     DifficultyLevel = 3
-        // }
-    };
+        poledanceMoves = await moveService.GetMovesAsync();
+
+        if (poledanceMoves.Count == 0)
+        {
+            string imageUrl = "https://dekochatka.pl/wp-content/uploads/2020/10/4937.jpg";
+            poledanceMoves = new List<MoveCardDto>()
+            {
+                new MoveCardDto
+                {
+                    Id = 2,
+                    Name = "Figura 1",
+                    DifficultyLevel = 2,
+                    ImageUrl = imageUrl
+                },
+                new MoveCardDto
+                {
+                    Id = 3,
+                    Name = "Figura 2",
+                    DifficultyLevel = 1,
+                    ImageUrl = imageUrl
+                },
+                new MoveCardDto
+                {
+                    Id = 4,
+                    Name = "Figura 3",
+                    DifficultyLevel = 1,
+                    ImageUrl = imageUrl
+                },
+                new MoveCardDto
+                {
+                    Id = 5,
+                    Name = "Figura 4",
+                    DifficultyLevel = 3,
+                    ImageUrl = imageUrl
+                },
+                new MoveCardDto
+                {
+                    Id = 6,
+                    Name = "Figura 5",
+                    DifficultyLevel = 2,
+                    ImageUrl = imageUrl
+                },
+                new MoveCardDto
+                {
+                    Id = 7,
+                    Name = "Figura 6",
+                    DifficultyLevel = 3,
+                    ImageUrl = imageUrl
+                }
+            };
+
+            isLoading = false;
+        }
+    }
+
+    private Task OpenDialogAsync()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        return DialogService.ShowAsync<AddFigureWindow>("Simple Dialog", options);
+    }
 
     private void NavigateToMoveDetails(int moveId)
     {
