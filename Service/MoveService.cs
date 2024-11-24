@@ -81,13 +81,11 @@ namespace mPole.Services
             moveEntity.Description = move.Description;
             moveEntity.DifficultyLevel = move.DifficultyLevel;
 
-            if (move.ImageUrls != null && move.ImageUrls.Any())
+            //until files upload ready
+            moveEntity.Images = new List<Image>()
             {
-                moveEntity.Images = move.ImageUrls.Select(imageUrl => new Image
-                {
-                    ImageData = Convert.FromBase64String(imageUrl)
-                }).ToList();
-            }
+                defaultImage
+            };
 
             await _moveRepository.Update(moveEntity, cancellationToken);
         }
