@@ -4,9 +4,6 @@ namespace mPole.Data.Models
 {
     public class DefaultImage : Image
     {
-        public new string Name { get; set; }
-        public new byte[] ImageData { get; set; }
-
         public DefaultImage()
         {
             Name = "No image added yet";

@@ -9,7 +9,6 @@ namespace mPole.Data.Repositories
     public class MoveRepository : IMoveRepository
     {
         private readonly ApplicationDbContext _context;
-        private DefaultImage? defaultImage;
 
         public MoveRepository(ApplicationDbContext context)
         {
@@ -22,7 +21,7 @@ namespace mPole.Data.Repositories
         public async Task Add(Move move, CancellationToken cancellationToken)
         {
             await _context.AddAsync(move);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync();
         }
 
         public async Task Delete(int id, CancellationToken cancellationToken)
@@ -89,7 +88,8 @@ namespace mPole.Data.Repositories
                                 {
                                     Id = m.Id,
                                     Name = m.Name,
-                                    DifficultyLevel = m.DifficultyLevel
+                                    DifficultyLevel = m.DifficultyLevel,
+                                    Images = _context.Images.ToList()
                                 })
                                 .ToListAsync();
 

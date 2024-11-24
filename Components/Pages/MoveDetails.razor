@@ -1,36 +1,76 @@
 ﻿@page "/Moves/Details/{moveId:int}"
 
+@inject ISnackbar Snackbar
 @inject NavigationManager nav
 @inject ImageService imageService
 @inject MoveService moveService
 
 <PageTitle>Move Details</PageTitle>
 
-<MudGrid>
-    <MudItem xs="12" sm="6">
-        <MudCard>
-            <MudCardMedia Image="" Height="400" />
-        </MudCard>
-    </MudItem>
-    <MudItem xs="12" sm="6">
-        <MudCard>
-            <MudCardContent>
-                <MudText Typo="Typo.h4">@move.Name</MudText>
-                <MudText Typo="Typo.body1">Difficulty Level: @move.DifficultyLevel</MudText>
-                <MudText Typo="Typo.body2">@move.Description</MudText>
-            </MudCardContent>
-        </MudCard>
-    </MudItem>
-</MudGrid>
+@if (isLoading)
+{
+    <Loader />
+}
+else
+{
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12" sm="6">
+            <MudCard>
+                <MudCardMedia Image="@move?.ImageUrls.First()" Height="700" />
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h4">@move?.Name</MudText>
+                    <MudText Typo="Typo.body1">Poziom trudności: @move?.DifficultyLevel</MudText>
+                    <MudText Typo="Typo.body2">@move?.Description</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="EditMove" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="DeleteMove" />
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+}
 
 @code {
     [Parameter]
     public int moveId { get; set; }
 
-    private Move move;
+    private MoveDetailsDto? move;
+    private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
-        //move = await moveService.GetMoveByIdAsync(moveId);
+        try
+        {
+            move = await moveService.GetMoveAsync(moveId);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Błąd: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void EditMove() => nav.NavigateTo($"/Moves/Edit/{moveId}");
+
+    private async Task DeleteMove()
+    {
+        try
+        {
+            await moveService.DeleteMoveAsync(moveId, CancellationToken.None);
+            Snackbar.Add("Pomyślnie usunięto figurę!", Severity.Success);
+            nav.NavigateTo("/Moves/Gallery");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Błąd podczas usuwania figury: {ex.Message}", Severity.Error);
+        }
     }
 }

@@ -10,5 +10,13 @@ namespace mPole.Services
         {
             _imageRepository = imageRepository;
         }
+
+        public string ImageBase64(byte[] imageData)
+        {
+            if (imageData == null || imageData.Length == 0)
+                return string.Empty;
+
+            return $"data:image/png;base64,{Convert.ToBase64String(imageData)}";
+        }
     }
 }

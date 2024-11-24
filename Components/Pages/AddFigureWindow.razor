@@ -1,4 +1,5 @@
-﻿@inject MoveService moveService
+﻿@inject ISnackbar Snackbar
+@inject MoveService moveService
 
 <MudDialog>
     <TitleContent>
@@ -7,9 +8,9 @@
     <DialogContent>
         <EditForm Model="newMove" OnValidSubmit="HandleValidSubmit">
             <MudTextField @bind-Value="newMove.Name" Label="Nazwa" Required="true" />
-            <MudTextField @bind-Value="newMove.Description" Label="Opis" 
+            <MudTextField @bind-Value="newMove.Description" Label="Opis"
                     Lines="5"/>
-            <MudNumericField @bind-Value="newMove.DifficultyLevel" Label="Poziom trudności" Required="true" 
+            <MudNumericField @bind-Value="newMove.DifficultyLevel" Label="Poziom trudności" Required="true"
                                 Min="1" Max="3"/>
         </EditForm>
     </DialogContent>
@@ -23,6 +24,9 @@
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; }
 
+    [Parameter]
+    public EventCallback OnMoveAdded { get; set; }
+
     private Move newMove = new Move();
 
     private async Task HandleValidSubmit()
@@ -30,11 +34,13 @@
         try
         {
             await moveService.AddNewMove(newMove, CancellationToken.None);
+            Snackbar.Add("Pomyślnie dodano nową figurę!", Severity.Success);
+            await OnMoveAdded.InvokeAsync();
             MudDialog.Close(DialogResult.Ok(true));
         }
-        catch
+        catch (Exception ex)
         {
-            // Handle error (e.g., show a snackbar or log the error)
+            Snackbar.Add($"Błąd: {ex.Message}", Severity.Error);
         }
     }
 

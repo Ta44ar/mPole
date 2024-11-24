@@ -18,7 +18,6 @@ namespace mPole.Data.Repositories
         {
             var image = await _context.Images
                                 .Where(i => i.Move.Id == moveId)
-                                .DefaultIfEmpty(defaultImage)
                                 .FirstOrDefaultAsync();
 
             if (image == null)
