@@ -1,5 +1,6 @@
 ﻿@page "/Moves/Gallery"
 
+@inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject NavigationManager Navigation
 @inject MoveService moveService
@@ -9,16 +10,16 @@
 @if (isLoading)
 {
     <Loader></Loader>
-} 
+}
 else
 {
     <MudButton @onclick="OpenDialogAsync" Variant="Variant.Filled" Color="Color.Primary">
-        Open Simple Dialog
+        Dodaj figurę
     </MudButton>
     <MudGrid>
         @foreach (var move in poledanceMoves)
         {
-            <MudItem xs="12" sm="6" md="4">
+            <MudItem>
                 <MudCard @onclick="() => NavigateToMoveDetails(move.Id)" Style="cursor: pointer;">
                     <MudCardMedia Image="@move.ImageUrl">
                     </MudCardMedia>
@@ -38,7 +39,25 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        poledanceMoves = await moveService.GetMovesAsync();
+        await ReloadMovesAsync();
+    }
+
+    private async Task ReloadMovesAsync()
+    {
+        isLoading = true;
+        try
+        {
+            poledanceMoves = await moveService.GetMovesAsync();
+        }
+        catch (Exception ex)
+        {
+            // Handle the exception (e.g., log it, show a message to the user, etc.)
+            Snackbar.Add($"An error occurred: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
 
         if (poledanceMoves.Count == 0)
         {
@@ -88,16 +107,15 @@ else
                     ImageUrl = imageUrl
                 }
             };
-
-            isLoading = false;
         }
     }
 
-    private Task OpenDialogAsync()
+    private async Task OpenDialogAsync()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        return DialogService.ShowAsync<AddFigureWindow>("Simple Dialog", options);
+        var parameters = new DialogParameters { ["OnMoveAdded"] = EventCallback.Factory.Create(this, ReloadMovesAsync) };
+        var dialog = DialogService.Show<AddFigureWindow>("Simple Dialog", parameters, options);
+        var result = await dialog.Result;
     }
 
     private void NavigateToMoveDetails(int moveId)

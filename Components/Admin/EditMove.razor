@@ -1,0 +1,78 @@
+﻿@page "/Moves/Edit/{moveId:int}"
+
+@inject ISnackbar Snackbar
+@inject NavigationManager nav
+@inject MoveService moveService
+
+<PageTitle>Edycja figury</PageTitle>
+
+@if (isLoading)
+{
+    <Loader />
+}
+else
+{
+    <EditForm Model="move" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <MudGrid>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="move.Name" Label="Nazwa:" Required="true" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="move.DifficultyLevel" Label="Poziom trudności:" Required="true" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="move.Description" Label="Opis" Required="true" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Zapisz</MudButton>
+                <MudButton Color="Color.Secondary" OnClick="Cancel">Anuluj</MudButton>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int moveId { get; set; }
+
+    private MoveDetailsDto move = new MoveDetailsDto();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            move = await moveService.GetMoveAsync(moveId);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Błąd podczas pobierania figury: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await moveService.UpdateMoveAsync(move, CancellationToken.None);
+            Snackbar.Add("Pomyślnie edytowano figurę!", Severity.Success);
+            nav.NavigateTo($"/Moves/Details/{moveId}");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Błąd podczas edycji figury: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void Cancel()
+    {
+        nav.NavigateTo($"/Moves/Details/{moveId}");
+    }
+}
