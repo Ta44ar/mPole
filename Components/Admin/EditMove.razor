@@ -3,6 +3,7 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager nav
 @inject IMoveService moveService
+@inject IImageService imageService
 
 <PageTitle>Edycja figury</PageTitle>
 
@@ -26,6 +27,8 @@ else
             <MudItem xs="12">
                 <MudTextField @bind-Value="move.Description" Label="Opis" Required="true" />
             </MudItem>
+            <MudDivider />
+            <InputFile OnChange="UploadImages" multiple />
             <MudItem xs="12">
                 <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Zapisz</MudButton>
                 <MudButton Color="Color.Secondary" OnClick="Cancel">Anuluj</MudButton>
@@ -39,6 +42,7 @@ else
     public int moveId { get; set; }
 
     private MoveDetailsDto move = new MoveDetailsDto();
+    private List<Image> uploadedImages = new List<Image>();
     private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
@@ -61,6 +65,15 @@ else
     {
         try
         {
+            Move move = new Move
+            {
+                Id = moveId,
+                Name = this.move.Name,
+                DifficultyLevel = this.move.DifficultyLevel,
+                Description = this.move.Description,
+                Images = uploadedImages
+            };
+
             await moveService.UpdateMoveAsync(move, CancellationToken.None);
             Snackbar.Add("Pomyślnie edytowano figurę!", Severity.Success);
             nav.NavigateTo($"/Moves/Details/{moveId}");
@@ -74,5 +87,23 @@ else
     private void Cancel()
     {
         nav.NavigateTo($"/Moves/Details/{moveId}");
+    }
+
+    private async Task UploadImages(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+
+        try
+        {
+            uploadedImages = await imageService.UploadImagesAsync(e.GetMultipleFiles().ToList(), move.Name);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Błąd podczas przesyłania plików: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
 }

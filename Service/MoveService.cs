@@ -21,11 +21,8 @@ namespace mPole.Services
             _imageService = imageService;
         }
 
-        public async Task<Move> AddNewMove(Move move, CancellationToken cancellationToken)
+        public async Task<Move> AddNewMoveAsync(Move move, CancellationToken cancellationToken)
         {
-            //Until files upload not ready
-            move.Images.Add(defaultImage);
-
             await _moveRepository.Add(move, cancellationToken);
             return move;
         }
@@ -37,7 +34,7 @@ namespace mPole.Services
 
             foreach (var move in moves)
             {
-                var image = move.Images.FirstOrDefault();
+                var image = move.Images.FirstOrDefault(i => i.MoveId == move.Id);
                 var moveCard = new MoveCardDto
                 {
                     Id = move.Id,
@@ -68,26 +65,9 @@ namespace mPole.Services
             return moveDto;
         }
 
-        public async Task UpdateMoveAsync(MoveDetailsDto move, CancellationToken cancellationToken)
+        public async Task UpdateMoveAsync(Move move, CancellationToken cancellationToken)
         {
-            var moveEntity = await _moveRepository.GetMoveByIdAsync(move.Id);
-
-            if (moveEntity == null)
-            {
-                throw new Exception($"Move with id {move.Id} not found");
-            }
-
-            moveEntity.Name = move.Name;
-            moveEntity.Description = move.Description;
-            moveEntity.DifficultyLevel = move.DifficultyLevel;
-
-            //until files upload ready
-            moveEntity.Images = new List<Image>()
-            {
-                defaultImage
-            };
-
-            await _moveRepository.Update(moveEntity, cancellationToken);
+            await _moveRepository.Update(move, cancellationToken);
         }
 
         public async Task DeleteMoveAsync(int moveId, CancellationToken cancellationToken)

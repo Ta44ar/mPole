@@ -13,7 +13,7 @@
 }
 else
 {
-    <MudButton @onclick="OpenDialogAsync" Variant="Variant.Filled" Color="Color.Primary">
+    <MudButton @onclick="NavigateToAdd" Variant="Variant.Filled" Color="Color.Primary">
         Dodaj figurę
     </MudButton>
     <MudGrid>
@@ -110,12 +110,9 @@ else
         }
     }
 
-    private async Task OpenDialogAsync()
+    private void NavigateToAdd()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        var parameters = new DialogParameters { ["OnMoveAdded"] = EventCallback.Factory.Create(this, ReloadMovesAsync) };
-        var dialog = DialogService.Show<AddFigureWindow>("Simple Dialog", parameters, options);
-        var result = await dialog.Result;
+        Navigation.NavigateTo("/Moves/Add");
     }
 
     private void NavigateToMoveDetails(int moveId)
