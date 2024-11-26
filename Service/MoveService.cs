@@ -4,17 +4,17 @@ using mPole.Interface;
 
 namespace mPole.Services
 {
-    public class MoveService
+    public class MoveService : IMoveService
     {
         private readonly IMoveRepository _moveRepository;
         private readonly IImageRepository _imageRepository;
-        private readonly ImageService _imageService;
+        private readonly IImageService _imageService;
 
         //Until files upload not ready
         private readonly DefaultImage defaultImage = new DefaultImage();
 
         public MoveService(IMoveRepository moveRepository, IImageRepository imageRepository,
-                            ImageService imageService)
+                            IImageService imageService)
         {
             _moveRepository = moveRepository;
             _imageRepository = imageRepository;

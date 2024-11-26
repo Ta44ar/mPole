@@ -23,9 +23,10 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
 
 builder.Services.AddScoped<IMoveRepository, MoveRepository>();
-builder.Services.AddScoped<MoveService>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
-builder.Services.AddScoped<ImageService>();
+
+builder.Services.AddScoped<IMoveService, MoveService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(options =>

@@ -2,7 +2,7 @@ using mPole.Interface;
 
 namespace mPole.Services
 {
-    public class ImageService
+    public class ImageService : IImageService
     {
         private readonly IImageRepository _imageRepository;
 
