@@ -1,12 +1,7 @@
-﻿using mPole.Data.DTOs;
-using mPole.Data.Models;
-
-namespace mPole.Interface
+﻿namespace mPole.Interface
 {
-    public interface IMoveService
+    public interface IImageService
     {
-        Task<Move> AddNewMove(Move move, CancellationToken cancellationToken);
-        Task<List<MoveCardDto>> GetMovesAsync();
-        Task<MoveDetailsDto> GetMoveAsync(int moveId);
+        string ImageBase64(byte[] imageData);
     }
 }
