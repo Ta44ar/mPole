@@ -4,9 +4,9 @@ namespace mPole.Interface
 {
     public interface IMoveRepository
     {
-        Task Add(Move move, CancellationToken cancellationToken);
-        Task Delete(int id, CancellationToken cancellationToken);
-        Task Update(Move move, CancellationToken cancellationToken);
+        Task AddAsync(Move move, CancellationToken cancellationToken);
+        Task DeleteAsync(int id, CancellationToken cancellationToken);
+        Task UpdateAsync(Move move, CancellationToken cancellationToken);
         Task<ICollection<Move>> GetAllMovesAsync();
         Task<Move> GetMoveByIdAsync(int moveId);
     }

@@ -20,13 +20,13 @@ else
 
         <MudGrid>
             <MudItem xs="12">
-                <MudTextField @bind-Value="move.Name" Label="Nazwa:" Required="true" />
+                <MudTextField @bind-Value="move.Name" Label="Nazwa:" />
             </MudItem>
             <MudItem xs="12">
-                <MudTextField @bind-Value="move.DifficultyLevel" Label="Poziom trudności:" Required="true" />
+                <MudTextField @bind-Value="move.DifficultyLevel" Label="Poziom trudności:" />
             </MudItem>
             <MudItem xs="12">
-                <MudTextField @bind-Value="move.Description" Label="Opis" Required="true" />
+                <MudTextField @bind-Value="move.Description" Label="Opis" />
             </MudItem>
             <MudDivider />
             <InputFile OnChange="UploadImages" multiple />
@@ -36,34 +36,68 @@ else
             </MudItem>
         </MudGrid>
     </EditForm>
+
+    @if (urlImages.Any())
+    {
+        <div>
+            <h3>Miniatury zdjęć:</h3>
+            <div class="image-thumbnails">
+                @foreach (var imageUrl in urlImages)
+                {
+                    <img src="@imageUrl" alt="Miniatura" class="thumbnail" />
+                }
+            </div>
+        </div>
+    }
+
+    <style>
+        .thumbnail {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin: 5px;
+        }
+
+        .image-thumbnails {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    </style>
 }
 
 @code {
     private Move move = new Move();
     private bool isLoading = false;
+    private MoveValidator moveValidator = new MoveValidator();
+    private IList<string> urlImages = new List<string>();
 
     private async Task HandleValidSubmit()
     {
+        var validationResult = await moveValidator.ValidateAsync(move);
+        if (!validationResult.IsValid)
+        {
+            foreach (var error in validationResult.Errors)
+            {
+                Snackbar.Add(error.ErrorMessage, MudBlazor.Severity.Error);
+            }
+            return;
+        }
+
         try
         {
             isLoading = true;
             await moveService.AddNewMoveAsync(move, CancellationToken.None);
-            Snackbar.Add("Pomyślnie dodano figurę!", Severity.Success);
+            Snackbar.Add("Pomyślnie dodano figurę!", MudBlazor.Severity.Success);
             nav.NavigateTo("/Moves/Gallery");
         }
-        catch (Exception ex)
+        catch (MoveException ex)
         {
-            Snackbar.Add($"Błąd podczas dodawania figury: {ex.Message}", Severity.Error);
+            Snackbar.Add($"Błąd podczas dodawania figury: {ex.Message}", MudBlazor.Severity.Error);
         }
         finally
         {
             isLoading = false;
         }
-    }
-
-    private void Cancel()
-    {
-        nav.NavigateTo("/Moves/Gallery");
     }
 
     private async Task UploadImages(InputFileChangeEventArgs e)
@@ -72,15 +106,22 @@ else
 
         try
         {
-            var images = await imageService.UploadImagesAsync(e.GetMultipleFiles().ToList(), move.Name);
+            move.Images = await imageService.UploadImagesAsync(e.GetMultipleFiles().ToList(), move.Name);
+
+            foreach (var image in move.Images)
+            {
+                urlImages.Add(imageService.ImageBase64(image.ImageData));
+            }
         }
-        catch (Exception ex)
+        catch (ImageUploadException ex)
         {
-            Snackbar.Add($"Błąd podczas przesyłania plików: {ex.Message}", Severity.Error);
+            Snackbar.Add($"Błąd podczas przesyłania plików: {ex.Message}", MudBlazor.Severity.Error);
         }
         finally
         {
             isLoading = false;
         }
     }
+
+    private void Cancel() => nav.NavigateTo("/Moves/Gallery");
 }

@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-@inject NavigationManager Navigation
+@inject NavigationManager nav
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <MudThemeProvider />
@@ -27,12 +27,8 @@
     <MudDrawer @bind-Open="@_drawerOpen">
         <NavMenu />
     </MudDrawer>
-    <MudMainContent>
-        <MudGrid Class="d-flex justify-center" Style="height:100vh">
-            <MudItem Class="align-content-center">
-                @Body
-            </MudItem>
-        </MudGrid>
+    <MudMainContent style="padding: 6rem 2rem 2rem 2rem">
+        @Body
     </MudMainContent>
 </MudLayout>
 
@@ -48,7 +44,7 @@
 
     void DrawerToggle() => _drawerOpen = !_drawerOpen;
 
-    private void NavigateToLogIn() => Navigation.NavigateTo("/Account/Login");
-    private void NavigateToRegister() => Navigation.NavigateTo("/Account/Register");
-    private void NavigateToAccountManagement() => Navigation.NavigateTo("/Account/Manage");
+    private void NavigateToLogIn() => nav.NavigateTo("/Account/Login");
+    private void NavigateToRegister() => nav.NavigateTo("/Account/Register");
+    private void NavigateToAccountManagement() => nav.NavigateTo("/Account/Manage");
 }

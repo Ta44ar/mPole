@@ -7,7 +7,6 @@ namespace mPole.Data.Repositories
     public class ImageRepository : IImageRepository
     {
         private readonly ApplicationDbContext _context;
-        private DefaultImage? defaultImage;
 
         public ImageRepository(ApplicationDbContext context)
         {
@@ -33,7 +32,7 @@ namespace mPole.Data.Repositories
 
             if (image == null)
             {
-                image = defaultImage;
+                throw new ArgumentNullException();
             }
 
             return image;

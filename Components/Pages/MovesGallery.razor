@@ -2,7 +2,7 @@
 
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
-@inject NavigationManager Navigation
+@inject NavigationManager nav
 @inject IMoveService moveService
 
 <PageTitle>Galeria Figur</PageTitle>
@@ -13,15 +13,15 @@
 }
 else
 {
-    <MudButton @onclick="NavigateToAdd" Variant="Variant.Filled" Color="Color.Primary">
+    <MudButton @onclick="NavigateToAdd" Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 2rem">
         Dodaj figurę
     </MudButton>
     <MudGrid>
         @foreach (var move in poledanceMoves)
         {
-            <MudItem>
-                <MudCard @onclick="() => NavigateToMoveDetails(move.Id)" Style="cursor: pointer;">
-                    <MudCardMedia Image="@move.ImageUrl">
+            <MudItem xs="3">
+                <MudCard @onclick="() => NavigateToMoveDetails(move.Id)">
+                    <MudCardMedia Image="@move.ImageUrl"  >
                     </MudCardMedia>
                     <MudCardContent>
                         <MudText Typo="Typo.h6">@move.Name</MudText>
@@ -49,7 +49,7 @@ else
         {
             poledanceMoves = await moveService.GetMovesAsync();
         }
-        catch (Exception ex)
+        catch (MoveException ex)
         {
             // Handle the exception (e.g., log it, show a message to the user, etc.)
             Snackbar.Add($"An error occurred: {ex.Message}", Severity.Error);
@@ -110,13 +110,6 @@ else
         }
     }
 
-    private void NavigateToAdd()
-    {
-        Navigation.NavigateTo("/Moves/Add");
-    }
-
-    private void NavigateToMoveDetails(int moveId)
-    {
-        Navigation.NavigateTo($"/Moves/Details/{moveId}");
-    }
+    private void NavigateToAdd() => nav.NavigateTo("/Moves/Add");
+    private void NavigateToMoveDetails(int moveId) => nav.NavigateTo($"/Moves/Details/{moveId}");
 }
