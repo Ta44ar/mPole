@@ -5,10 +5,10 @@ namespace mPole.Interface
 {
     public interface IMoveService
     {
-        Task<Move> AddNewMove(Move move, CancellationToken cancellationToken);
+        Task<Move> AddNewMoveAsync(Move move, CancellationToken cancellationToken);
         Task<List<MoveCardDto>> GetMovesAsync();
         Task<MoveDetailsDto> GetMoveAsync(int moveId);
-        Task UpdateMoveAsync(MoveDetailsDto move, CancellationToken cancellationToken);
+        Task UpdateMoveAsync(Move move, CancellationToken cancellationToken);
         Task DeleteMoveAsync(int moveId, CancellationToken cancellationToken);
     }
 }

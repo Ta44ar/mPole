@@ -1,10 +1,86 @@
 ﻿@page "/Moves/Add"
-@inject NavigationManager Navigation
+
+@inject ISnackbar Snackbar
+@inject NavigationManager nav
+@inject IImageService imageService
+@inject IMoveService moveService
+@inject IWebHostEnvironment Environment
 
 <PageTitle>Dodaj figurę</PageTitle>
 
+@if (isLoading)
+{
+    <Loader />
+}
+else
+{
+    <EditForm Model="move" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
+        <MudGrid>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="move.Name" Label="Nazwa:" Required="true" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="move.DifficultyLevel" Label="Poziom trudności:" Required="true" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="move.Description" Label="Opis" Required="true" />
+            </MudItem>
+            <MudDivider />
+            <InputFile OnChange="UploadImages" multiple />
+            <MudItem xs="12">
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Zapisz</MudButton>
+                <MudButton Color="Color.Secondary" OnClick="Cancel">Anuluj</MudButton>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+}
 
 @code {
-    // No need for navigation methods here anymore
+    private Move move = new Move();
+    private bool isLoading = false;
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            isLoading = true;
+            await moveService.AddNewMoveAsync(move, CancellationToken.None);
+            Snackbar.Add("Pomyślnie dodano figurę!", Severity.Success);
+            nav.NavigateTo("/Moves/Gallery");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Błąd podczas dodawania figury: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        nav.NavigateTo("/Moves/Gallery");
+    }
+
+    private async Task UploadImages(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+
+        try
+        {
+            var images = await imageService.UploadImagesAsync(e.GetMultipleFiles().ToList(), move.Name);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Błąd podczas przesyłania plików: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
 }
