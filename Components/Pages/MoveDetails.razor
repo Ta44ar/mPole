@@ -14,44 +14,35 @@
 }
 else
 {
-    <MudPaper Height="100vh" Width="100vw">
-        <MudGrid>
-            <MudItem xs="12" sm="6">
-                <MudCarousel Class="mud-width-full" Style="height:100vh;" ShowArrows="@arrows" AutoCycle="@autocycle" TData="string">
-                    @if (move?.ImageUrls != null)
+    <MudGrid Style="height:100%; width: 100%;">
+        <MudItem xs="4" sm="4">
+            <MudCarousel Style="height:100%; width: 100%;"  ShowArrows="@arrows" AutoCycle="@autocycle" TData="string">
+                @if (move?.ImageUrls != null)
+                {
+                    @foreach (var imageUrl in move.ImageUrls)
                     {
-                        @foreach (var imageUrl in move.ImageUrls)
-                        {
-                            <MudCarouselItem>
-                                <MudCardMedia Image="@imageUrl" Style="height:100vh;" />
-                            </MudCarouselItem>
-                        }
+                        <MudCarouselItem>
+                            <MudCardMedia Image="@imageUrl"  />
+                        </MudCarouselItem>
                     }
-                </MudCarousel>
-            </MudItem>
-            <MudItem xs="12" sm="6">
-                <MudCard>
-                    <MudCardContent>
-                        <MudText Typo="Typo.h4">@move?.Name</MudText>
-                        <MudText Typo="Typo.body1">Poziom trudności: @move?.DifficultyLevel</MudText>
-                        <MudDivider DividerType="DividerType.Middle" Class="my-6" />
-                        <MudText Typo="Typo.body2">@move?.Description</MudText>
-                    </MudCardContent>
-                    <MudCardActions>
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="EditMove" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="OnButtonClicked" />
-                    </MudCardActions>
-                </MudCard>
-            </MudItem>
-        </MudGrid>
-    </MudPaper>
-
-    <style>
-        .full-size {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+                }
+            </MudCarousel>
+        </MudItem>
+        <MudItem xs="8" sm="8">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h4">@move?.Name</MudText>
+                    <MudText Typo="Typo.body1">Poziom trudności: @move?.DifficultyLevel</MudText>
+                    <MudDivider DividerType="DividerType.Middle" Class="my-6" />
+                    <MudText Typo="Typo.body2">@move?.Description</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="EditMove" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="OnButtonClicked" />
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
 }
 
 @code {
@@ -69,7 +60,7 @@ else
         {
             move = await moveService.GetMoveAsync(moveId);
         }
-        catch (Exception ex)
+        catch (MoveException ex)
         {
             Snackbar.Add($"Błąd: {ex.Message}", Severity.Error);
         }
@@ -89,7 +80,7 @@ else
             Snackbar.Add("Pomyślnie usunięto figurę!", Severity.Success);
             nav.NavigateTo("/Moves/Gallery");
         }
-        catch (Exception ex)
+        catch (MoveException ex)
         {
             Snackbar.Add($"Błąd podczas usuwania figury: {ex.Message}", Severity.Error);
         }
@@ -101,10 +92,12 @@ else
             "Uwaga",
             "Usunięcie figury będzie nieodwracalne.",
             yesText: "Usuń", cancelText: "Anuluj");
+
         if (result == true)
         {
             await DeleteMove();
         }
+
         StateHasChanged();
     }
 }

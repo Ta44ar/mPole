@@ -18,13 +18,13 @@ namespace mPole.Data.Repositories
         public IQueryable<Move> Moves =>
             _context.Moves.Include(t => t.Images);
 
-        public async Task Add(Move move, CancellationToken cancellationToken)
+        public async Task AddAsync(Move move, CancellationToken cancellationToken)
         {
             await _context.AddAsync(move);
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id, CancellationToken cancellationToken)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             var moveToDelete = await _context.Moves.FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
 
@@ -35,7 +35,7 @@ namespace mPole.Data.Repositories
             }
         }
 
-        public async Task Update(Move move, CancellationToken cancellationToken)
+        public async Task UpdateAsync(Move move, CancellationToken cancellationToken)
         {
             if (move == null)
             {
@@ -84,14 +84,20 @@ namespace mPole.Data.Repositories
         public async Task<ICollection<Move>> GetAllMovesAsync()
         {
             var moves = await _context.Moves
-                                .Select(m => new Move
-                                {
-                                    Id = m.Id,
-                                    Name = m.Name,
-                                    DifficultyLevel = m.DifficultyLevel,
-                                    Images = _context.Images.ToList()
-                                })
-                                .ToListAsync();
+                                    .Include(m => m.Images)
+                                    .Select(m => new Move
+                                    {
+                                        Id = m.Id,
+                                        Name = m.Name,
+                                        DifficultyLevel = m.DifficultyLevel,
+                                        Images = m.Images
+                                    })
+                                    .ToListAsync();
+
+            if (moves == null)
+            {
+                throw new ArgumentNullException($"No moves found");
+            }
 
             return moves;
         }
@@ -106,7 +112,7 @@ namespace mPole.Data.Repositories
 
             if (move == null)
             {
-                throw new Exception($"Move with id {moveId} not found");
+                throw new ArgumentNullException($"Move with id {moveId} not found");
             }
 
             return move;
