@@ -1,0 +1,43 @@
+﻿@page "/admin/users"
+@inject IUserService userService
+
+@if (isLoading) 
+{
+    <Loader />
+}
+else 
+{
+    @if (!users.Any()) 
+    {
+        <MudAlert Severity="MudBlazor.Severity.Info">No users found.</MudAlert>
+    }
+    else 
+    {
+        <MudTable Items="@users" Hover="true" SortLabel="Sort By">
+            <HeaderContent>
+                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x => x.UserName)">Email</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x => x.FirstName)">First Name</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x => x.LastName)">Last Name</MudTableSortLabel></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="User Name">@context.UserName</MudTd>
+                <MudTd DataLabel="First Name">@context.FirstName</MudTd>
+                <MudTd DataLabel="Last Name">@context.LastName</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new int[] { 5, 10, 50}" />
+            </PagerContent>
+        </MudTable>
+    }
+}
+
+@code {
+    private List<ApplicationUser> users = new List<ApplicationUser>();
+    bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await userService.GetAllUsersAsync();
+        isLoading = false;
+    }
+}

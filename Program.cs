@@ -7,8 +7,9 @@ using mPole.Components.Account;
 using mPole.Data;
 using mPole.Data.Models;
 using mPole.Data.Repositories;
-using mPole.Interface;
-using mPole.Services;
+using mPole.Interface.Repositories;
+using mPole.Interface.Services;
+using mPole.Service;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,9 +25,13 @@ builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStat
 
 builder.Services.AddScoped<IMoveRepository, MoveRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<ITrainingRepository, TrainingRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IMoveService, MoveService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<ITrainingService, TrainingService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(options =>
@@ -53,6 +58,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+//builder.Services.AddHttpClient("mPoleClient", client =>
+//{
+//    var baseAddress = builder.Configuration["AppSettings:BaseAddress"];
+//    if (string.IsNullOrEmpty(baseAddress))
+//    {
+//        throw new Exception("BaseAddress is not configured.");
+//    }
+//    client.BaseAddress = new Uri(baseAddress);
+//});
 
 builder.Services.AddMudServices();
 

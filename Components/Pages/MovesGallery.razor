@@ -1,8 +1,8 @@
-﻿@page "/Moves/Gallery"
+﻿@page "/moves/gallery"
 
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
-@inject NavigationManager Navigation
+@inject NavigationManager nav
 @inject IMoveService moveService
 
 <PageTitle>Galeria Figur</PageTitle>
@@ -13,15 +13,15 @@
 }
 else
 {
-    <MudButton @onclick="NavigateToAdd" Variant="Variant.Filled" Color="Color.Primary">
+    <MudButton @onclick="NavigateToAdd" Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 2rem">
         Dodaj figurę
     </MudButton>
     <MudGrid>
-        @foreach (var move in poledanceMoves)
+        @foreach (var move in paginatedMoves)
         {
-            <MudItem>
-                <MudCard @onclick="() => NavigateToMoveDetails(move.Id)" Style="cursor: pointer;">
-                    <MudCardMedia Image="@move.ImageUrl">
+            <MudItem xs="3">
+                <MudCard @onclick="() => NavigateToMoveDetails(move.Id)">
+                    <MudCardMedia Image="@move.ImageUrl"  >
                     </MudCardMedia>
                     <MudCardContent>
                         <MudText Typo="Typo.h6">@move.Name</MudText>
@@ -31,11 +31,19 @@ else
             </MudItem>
         }
     </MudGrid>
+    <PagerContent>
+        <MudPagination Count="@pagesCount" SelectedChanged="OnPageChanged" Class="d-flex align-center" Style="margin-top: 2rem" />
+    </PagerContent>
 }
 
 @code {
     private List<MoveCardDto> poledanceMoves = new List<MoveCardDto>();
+    private List<MoveCardDto> paginatedMoves = new List<MoveCardDto>();
     private bool isLoading = true;
+    private int pageSize = 8;
+    private int pageIndex = 1;
+    private int totalItems;
+    private int pagesCount;
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,8 +56,11 @@ else
         try
         {
             poledanceMoves = await moveService.GetMovesAsync();
+            totalItems = poledanceMoves.Count;
+            pagesCount = (int)Math.Ceiling((double)totalItems / pageSize);
+            UpdatePaginatedMoves();
         }
-        catch (Exception ex)
+        catch (MoveException ex)
         {
             // Handle the exception (e.g., log it, show a message to the user, etc.)
             Snackbar.Add($"An error occurred: {ex.Message}", Severity.Error);
@@ -110,13 +121,19 @@ else
         }
     }
 
-    private void NavigateToAdd()
+    private void OnPageChanged(int pageIndex)
     {
-        Navigation.NavigateTo("/Moves/Add");
+        this.pageIndex = pageIndex;
+        UpdatePaginatedMoves();
     }
 
-    private void NavigateToMoveDetails(int moveId)
+    private void UpdatePaginatedMoves()
     {
-        Navigation.NavigateTo($"/Moves/Details/{moveId}");
+        int startIndex = (pageIndex - 1) * pageSize;
+        paginatedMoves = poledanceMoves.Skip(startIndex).Take(pageSize).ToList();
+        StateHasChanged();
     }
+
+    private void NavigateToAdd() => nav.NavigateTo("/moves/add");
+    private void NavigateToMoveDetails(int moveId) => nav.NavigateTo($"/moves/details/{moveId}");
 }
