@@ -1,4 +1,4 @@
-﻿@page "/Moves/Details/{moveId:int}"
+﻿@page "/moves/details/{moveId:int}"
 
 @inject ISnackbar Snackbar
 @inject NavigationManager nav
@@ -70,7 +70,7 @@ else
         }
     }
 
-    private void EditMove() => nav.NavigateTo($"/Moves/Edit/{moveId}");
+    private void EditMove() => nav.NavigateTo($"/moves/edit/{moveId}");
 
     private async Task DeleteMove()
     {
@@ -78,7 +78,7 @@ else
         {
             await moveService.DeleteMoveAsync(moveId, CancellationToken.None);
             Snackbar.Add("Pomyślnie usunięto figurę!", Severity.Success);
-            nav.NavigateTo("/Moves/Gallery");
+            nav.NavigateTo("/moves/gallery");
         }
         catch (MoveException ex)
         {

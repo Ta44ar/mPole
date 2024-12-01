@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using mPole.Data.Models;
 
-namespace mPole.Interface
+namespace mPole.Interface.Services
 {
     public interface IImageService
     {

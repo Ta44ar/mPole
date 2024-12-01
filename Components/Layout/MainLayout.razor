@@ -1,50 +1,60 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager nav
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> userManager
 
 <MudThemeProvider />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudLayout>
-    <MudAppBar Style="@($"background:{Colors.Brown.Lighten1}")">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" /> mPole
-        <MudSpacer />
-        <MudButtonGroup Color="Color.Inherit">
-            @if (!isAuthenticated)
-            {
-                <MudButton OnClick="@NavigateToLogIn">Log In</MudButton>
-                <MudButton OnClick="@NavigateToRegister">Register</MudButton>
-            }
-            else
-            {
-                <MudButton OnClick="@NavigateToAccountManagement">Account</MudButton>
-                <MudButton>Log Out</MudButton>
-            }
-        </MudButtonGroup>
-    </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen">
-        <NavMenu />
-    </MudDrawer>
-    <MudMainContent style="padding: 6rem 2rem 2rem 2rem">
-        @Body
-    </MudMainContent>
-</MudLayout>
+<CascadingValue Value="this">
+    <MudLayout>
+        <MudAppBar Style="@($"background:{Colors.Brown.Lighten2}")">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" /> mPole
+            <MudSpacer />
+            <MudButtonGroup Color="Color.Inherit">
+                @if (!isAuthenticated)
+                {
+                    <MudButton OnClick="@NavigateToLogIn">Zaloguj</MudButton>
+                    <MudButton OnClick="@NavigateToRegister">Zarejestruj</MudButton>
+                }
+                else
+                {
+                    <MudButton>Log Out</MudButton>
+                }
+            </MudButtonGroup>
+        </MudAppBar>
+        <MudDrawer @bind-Open="@_drawerOpen">
+            <NavMenu />
+        </MudDrawer>
+        <MudMainContent style="padding: 6rem 2rem 2rem 2rem">
+            @Body
+        </MudMainContent>
+    </MudLayout>
+</CascadingValue>
 
 @code {
     bool _drawerOpen = false;
     bool isAuthenticated;
+    public string userName;
+    public string userId;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         isAuthenticated = authState.User?.Identity?.IsAuthenticated ?? false;
+
+        if (isAuthenticated)
+        {
+            userName = authState.User?.Identity?.Name ?? "Gość";
+            var user = await userManager.GetUserAsync(authState.User);
+            userId = user?.Id;
+        }
     }
 
     void DrawerToggle() => _drawerOpen = !_drawerOpen;
 
     private void NavigateToLogIn() => nav.NavigateTo("/Account/Login");
     private void NavigateToRegister() => nav.NavigateTo("/Account/Register");
-    private void NavigateToAccountManagement() => nav.NavigateTo("/Account/Manage");
 }

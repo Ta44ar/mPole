@@ -1,7 +1,7 @@
 ﻿using mPole.Data.DTOs;
 using mPole.Data.Models;
 
-namespace mPole.Interface
+namespace mPole.Interface.Services
 {
     public interface IMoveService
     {

@@ -1,0 +1,41 @@
+﻿@page "/Account/Logout"
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject ILogger<Logout> Logger
+@inject NavigationManager Navigation
+@inject IdentityRedirectManager RedirectManager
+
+<PageTitle>Wyloguj</PageTitle>
+
+<MudItem>
+    <MudText>Na pewno chcesz się wylogować?</MudText>
+    <MudStaticButton Color="Color.Primary" @onclick="ConfirmLogout">Tak</MudStaticButton>
+    <MudStaticButton Color="Color.Default" @onclick="CancelLogout">Nie</MudStaticButton>
+</MudItem>
+
+@code {
+    [CascadingParameter]
+    HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    private async Task ConfirmLogout()
+    {
+        try
+        {
+            await SignInManager.SignOutAsync();
+            Navigation.NavigateTo(ReturnUrl ?? "/");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error occurred during logout.");
+            RedirectManager.RedirectToCurrentPageWithStatus("Błąd: Nie udało się wylogować.", HttpContext);
+        }
+    }
+
+    private void CancelLogout()
+    {
+        RedirectManager.RedirectTo(ReturnUrl);
+    }
+}
