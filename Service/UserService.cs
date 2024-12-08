@@ -14,8 +14,13 @@ public class UserService : IUserService
         return await _userRepository.GetUserByNameAsync(userName);
     }
 
-    public async Task<List<ApplicationUser>> GetAllUsersAsync()
+    public async Task<ICollection<ApplicationUser>> GetAllUsersAsync()
     {
         return await _userRepository.GetAllUsersAsync();
+    }
+
+    public async Task<ICollection<string?>> GetExistingRolesAsync()
+    {
+        return await _userRepository.GetExistingRolesAsync();
     }
 }

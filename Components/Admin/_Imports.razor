@@ -12,6 +12,7 @@
 @using mPole.Components.Layout
 @using MudBlazor
 @using MudBlazor.StaticInput
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
 @using mPole.Data
 @using mPole.Data.DTOs
@@ -20,4 +21,7 @@
 @using mPole.Utils.Exceptions
 @using mPole.Interface
 @using mPole.Components.Pages
+@using mPole.Components.Admin.DialogWindows
 @using FluentValidation
+
+@attribute [Authorize(Policy = "AdminOnly")]

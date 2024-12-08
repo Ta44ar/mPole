@@ -1,0 +1,95 @@
+﻿@inject IUserService userService
+@inject ISnackbar Snackbar
+@inject UserManager<ApplicationUser> userManager
+
+@if (isLoading)
+{
+    <MudDialog>
+        <DialogContent>
+            <Loader />
+        </DialogContent>
+    </MudDialog>
+}
+else
+{
+    <MudDialog>
+        <TitleContent>Role użytkownika @Email</TitleContent>
+        <DialogContent>
+            <MudStack Row Justify="Justify.Center" Style="width: 100%" Wrap="Wrap.Wrap">
+                <MudChipSet @bind-SelectedValues="userRoles" SelectionMode="SelectionMode.MultiSelection" CheckMark="checkMark" Variant="Variant.Text" Color="Color.Info">
+                    @foreach (var role in allRoles)
+                    {
+                        <MudChip Value="@role" />
+                    }
+                </MudChipSet>
+            </MudStack>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Color="Color.Primary" OnClick="SaveRoles">Zapisz</MudButton>
+        </DialogActions>
+    </MudDialog>
+}
+
+@code {
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public required string Email { get; set; }
+
+    private ApplicationUser choosedUser = new ApplicationUser();
+    private ICollection<string> currentUserRoles = new List<string>();
+
+    private ICollection<string> rolesList = new List<string>();
+    private string newRole = string.Empty;
+
+    private IReadOnlyCollection<string> userRoles = new HashSet<string>();
+    private IReadOnlyCollection<string> allRoles = new HashSet<string>();
+    private bool checkMark = true;
+
+    bool isLoading = true;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        choosedUser = await userManager.FindByEmailAsync(Email);
+
+        rolesList = await userService.GetExistingRolesAsync();
+        currentUserRoles = await userManager.GetRolesAsync(choosedUser);
+
+        if (rolesList.Any()) 
+        {
+            allRoles = rolesList.ToList().AsReadOnly();
+        }
+
+        if (currentUserRoles.Any())
+        {
+            userRoles = currentUserRoles.ToList().AsReadOnly();
+        }
+
+        isLoading = false;
+    }
+
+    private void AddRole()
+    {
+        if (!string.IsNullOrEmpty(newRole) && !userRoles.Contains(newRole))
+        {
+            currentUserRoles.Add(newRole);
+        }
+    }
+
+    private async void SaveRoles()
+    {
+        var currentRoles = await userManager.GetRolesAsync(choosedUser);
+        var rolesToRemove = currentRoles.Except(userRoles).ToArray();
+        var rolesToAdd = userRoles.Except(currentRoles).ToArray();
+
+        await userManager.RemoveFromRolesAsync(choosedUser, rolesToRemove);
+        await userManager.AddToRolesAsync(choosedUser, rolesToAdd);
+
+        Snackbar.Add($"Zapisano role użytkownika {Email}", MudBlazor.Severity.Success);
+        Close();
+    }
+
+    private void Close() => MudDialog.Close(DialogResult.Ok(true));
+}
