@@ -1,0 +1,62 @@
+﻿@page "/admin/users"
+
+@inject IUserService userService
+@inject ISnackbar Snackbar
+@inject UserManager<ApplicationUser> userManager
+@inject IDialogService DialogService
+
+@if (isLoading) 
+{
+    <Loader />
+}
+else 
+{
+    @if (!users.Any()) 
+    {
+        <MudAlert Severity="MudBlazor.Severity.Info">No users found.</MudAlert>
+    }
+    else 
+    {
+        <MudTable Items="@users" Hover="true" SortLabel="Sort By">
+            <HeaderContent>
+                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x => x.UserName)">Email</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x => x.FirstName)">First Name</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x => x.LastName)">Last Name</MudTableSortLabel></MudTh>
+                <MudTh>Role</MudTh>
+                <MudTh>Akcje</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="E-mail">@context.UserName</MudTd>
+                <MudTd DataLabel="Imię">@context.FirstName</MudTd>
+                <MudTd DataLabel="Nazwisko">@context.LastName</MudTd>
+                <MudTd DataLabel="Role">
+                    <MudButton OnClick="() => OpenRoleManagementDialogAsync(context.UserName)" Variant="Variant.Outlined">
+                        Pokaż
+                    </MudButton>
+                </MudTd>
+                <MudTd></MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new int[] { 5, 10, 50}" />
+            </PagerContent>
+        </MudTable>
+    }
+}
+
+@code {
+    private ICollection<ApplicationUser> users = new List<ApplicationUser>();
+    bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await userService.GetAllUsersAsync();
+        isLoading = false;
+    }
+
+    private async Task OpenRoleManagementDialogAsync(string email)
+    {
+        var parameters = new DialogParameters { ["Email"] = email };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large };
+        await DialogService.ShowAsync<ManageRolesDialog>("Zarządzaj rolami", parameters, options);
+    }
+}

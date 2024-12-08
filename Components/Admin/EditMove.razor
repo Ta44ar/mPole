@@ -1,4 +1,4 @@
-﻿@page "/Moves/Edit/{moveId:int}"
+﻿@page "/moves/edit/{moveId:int}"
 
 @inject ISnackbar Snackbar
 @inject NavigationManager nav
@@ -22,7 +22,8 @@ else
                 <MudTextField @bind-Value="move.Name" Label="Nazwa:" Required="true" />
             </MudItem>
             <MudItem xs="12">
-                <MudTextField @bind-Value="move.DifficultyLevel" Label="Poziom trudności:" Required="true" />
+                <MudText>Poziom trudności:</MudText>
+                <MudRating SelectedValue="@move.DifficultyLevel" SelectedValueChanged="SetDifficulty" @bind-Value="move.DifficultyLevel" />
             </MudItem>
             <MudItem xs="12">
                 <MudTextField @bind-Value="move.Description" Label="Opis" Required="true" />
@@ -42,7 +43,7 @@ else
     public int moveId { get; set; }
 
     private MoveDetailsDto move = new MoveDetailsDto();
-    private List<Image> uploadedImages = new List<Image>();
+    private IList<Image> uploadedImages = new List<Image>();
     private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
@@ -51,9 +52,9 @@ else
         {
             move = await moveService.GetMoveAsync(moveId);
         }
-        catch (Exception ex)
+        catch (MoveException ex)
         {
-            Snackbar.Add($"Błąd podczas pobierania figury: {ex.Message}", Severity.Error);
+            Snackbar.Add($"Błąd podczas pobierania figury: {ex.Message}", MudBlazor.Severity.Error);
         }
         finally
         {
@@ -75,12 +76,12 @@ else
             };
 
             await moveService.UpdateMoveAsync(move, CancellationToken.None);
-            Snackbar.Add("Pomyślnie edytowano figurę!", Severity.Success);
+            Snackbar.Add("Pomyślnie edytowano figurę!", MudBlazor.Severity.Success);
             nav.NavigateTo($"/Moves/Details/{moveId}");
         }
-        catch (Exception ex)
+        catch (MoveException ex)
         {
-            Snackbar.Add($"Błąd podczas edycji figury: {ex.Message}", Severity.Error);
+            Snackbar.Add($"Błąd podczas edycji figury: {ex.Message}", MudBlazor.Severity.Error);
         }
     }
 
@@ -97,13 +98,15 @@ else
         {
             uploadedImages = await imageService.UploadImagesAsync(e.GetMultipleFiles().ToList(), move.Name);
         }
-        catch (Exception ex)
+        catch (ImageUploadException ex)
         {
-            Snackbar.Add($"Błąd podczas przesyłania plików: {ex.Message}", Severity.Error);
+            Snackbar.Add($"Błąd podczas przesyłania plików: {ex.Message}", MudBlazor.Severity.Error);
         }
         finally
         {
             isLoading = false;
         }
     }
+
+    private void SetDifficulty(int value) => move.DifficultyLevel = value;
 }

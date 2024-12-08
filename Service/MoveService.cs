@@ -1,29 +1,24 @@
 using mPole.Data.DTOs;
 using mPole.Data.Models;
-using mPole.Interface;
+using mPole.Interface.Repositories;
+using mPole.Interface.Services;
 
-namespace mPole.Services
+namespace mPole.Service
 {
     public class MoveService : IMoveService
     {
         private readonly IMoveRepository _moveRepository;
-        private readonly IImageRepository _imageRepository;
         private readonly IImageService _imageService;
 
-        //Until files upload not ready
-        private readonly DefaultImage defaultImage = new DefaultImage();
-
-        public MoveService(IMoveRepository moveRepository, IImageRepository imageRepository,
-                            IImageService imageService)
+        public MoveService(IMoveRepository moveRepository, IImageService imageService)
         {
             _moveRepository = moveRepository;
-            _imageRepository = imageRepository;
             _imageService = imageService;
         }
 
         public async Task<Move> AddNewMoveAsync(Move move, CancellationToken cancellationToken)
         {
-            await _moveRepository.Add(move, cancellationToken);
+            await _moveRepository.AddAsync(move, cancellationToken);
             return move;
         }
 
@@ -67,12 +62,12 @@ namespace mPole.Services
 
         public async Task UpdateMoveAsync(Move move, CancellationToken cancellationToken)
         {
-            await _moveRepository.Update(move, cancellationToken);
+            await _moveRepository.UpdateAsync(move, cancellationToken);
         }
 
         public async Task DeleteMoveAsync(int moveId, CancellationToken cancellationToken)
         {
-            await _moveRepository.Delete(moveId, cancellationToken);
+            await _moveRepository.DeleteAsync(moveId, cancellationToken);
         }
     }
 }
