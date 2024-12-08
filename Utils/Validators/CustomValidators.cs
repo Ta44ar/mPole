@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace mPole.Data.Validators
+namespace mPole.Utils.Validators
 {
     public static class CustomValidators
     {

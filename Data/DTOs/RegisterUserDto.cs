@@ -1,4 +1,4 @@
-﻿using mPole.Data.Validators;
+﻿using mPole.Utils.Validators;
 using System.ComponentModel.DataAnnotations;
 
 namespace mPole.Data.DTOs

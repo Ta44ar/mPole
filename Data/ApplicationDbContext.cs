@@ -11,6 +11,7 @@ namespace mPole.Data
         {
         }
 
+        public DbSet<Training> Trainings { get; set; }
         public DbSet<Move> Moves { get; set; }
         public DbSet<Image> Images { get; set; }
 
@@ -56,6 +57,11 @@ namespace mPole.Data
             modelBuilder.Entity<Image>(entity =>
             {
                 entity.ToTable(name: "Image");
+            });
+
+            modelBuilder.Entity<Training>(entity =>
+            {
+                entity.ToTable(name: "Training");
             });
         }
     }
