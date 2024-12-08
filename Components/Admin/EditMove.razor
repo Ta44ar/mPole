@@ -22,7 +22,8 @@ else
                 <MudTextField @bind-Value="move.Name" Label="Nazwa:" Required="true" />
             </MudItem>
             <MudItem xs="12">
-                <MudTextField @bind-Value="move.DifficultyLevel" Label="Poziom trudności:" Required="true" />
+                <MudText>Poziom trudności:</MudText>
+                <MudRating SelectedValue="@move.DifficultyLevel" SelectedValueChanged="SetDifficulty" @bind-Value="move.DifficultyLevel" />
             </MudItem>
             <MudItem xs="12">
                 <MudTextField @bind-Value="move.Description" Label="Opis" Required="true" />
@@ -106,4 +107,6 @@ else
             isLoading = false;
         }
     }
+
+    private void SetDifficulty(int value) => move.DifficultyLevel = value;
 }

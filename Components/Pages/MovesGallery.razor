@@ -15,7 +15,7 @@ else
 {
     if (MainLayout.isAdmin)
     {
-        <MudButton @onclick="NavigateToAdd" Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 2rem">
+        <MudButton @onclick="NavigateToAdd" Variant="Variant.Filled" Style="margin-bottom: 2rem">
             Dodaj figurę
         </MudButton>
     }
@@ -29,7 +29,7 @@ else
                     </MudCardMedia>
                     <MudCardContent>
                         <MudText Typo="Typo.h6">@move.Name</MudText>
-                        <MudText Typo="Typo.body2">Poziom trudności: @move.DifficultyLevel</MudText>
+                        <MudRating SelectedValue="@move.DifficultyLevel" Disabled="true"/>
                     </MudCardContent>
                 </MudCard>
             </MudItem>
