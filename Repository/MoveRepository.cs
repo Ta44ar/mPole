@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using mPole.Data.Models;
 using mPole.Interface.Repositories;
-using System.Threading.Tasks;
 
 namespace mPole.Data.Repositories
 {
@@ -85,6 +83,7 @@ namespace mPole.Data.Repositories
         {
             var moves = await _context.Moves
                                     .Include(m => m.Images)
+                                    .AsNoTracking()
                                     .Select(m => new Move
                                     {
                                         Id = m.Id,
@@ -108,6 +107,7 @@ namespace mPole.Data.Repositories
             var move = await _context.Moves
                                 .Where(m => m.Id == moveId)
                                 .Include(m => m.Images)
+                                .AsNoTracking()
                                 .FirstOrDefaultAsync();
 
             if (move == null)

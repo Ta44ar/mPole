@@ -32,9 +32,7 @@ else
                             <MudItem xs="8">
                                 <MudCardContent>
                                     <MudText Typo="Typo.h5">@training.Name</MudText>
-                                    <MudText Typo="Typo.subtitle1">Trener: @training.Trainer</MudText>
                                     <MudText Typo="Typo.subtitle2">Typ: @training.Type</MudText>
-                                    <MudText Typo="Typo.subtitle2">Data: @training.Date.ToString("dd-MM-yyyy")</MudText>
                                     <MudText Typo="Typo.body1">@training.Description</MudText>
                                 </MudCardContent>
                               </MudItem>
@@ -48,8 +46,8 @@ else
 }
 
 @code {
-    private List<Training> trainings = new();
-    private List<Training> paginatedTrainings = new();
+    private IList<Training> trainings = new List<Training>();
+    private IList<Training> paginatedTrainings = new List<Training>();
     private bool isLoading = true;
     private int pageSize = 2;
     private int pageIndex = 1;

@@ -1,8 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using mPole.Data.Models;
 using mPole.Interface.Repositories;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace mPole.Data.Repositories
 {
@@ -52,12 +49,7 @@ namespace mPole.Data.Repositories
             entity.Name = training.Name;
             entity.Description = training.Description;
             entity.Type = training.Type;
-            entity.Duration = training.Duration;
-            entity.Date = training.Date;
-            entity.Location = training.Location;
-            entity.Trainer = training.Trainer;
             entity.ImageUrl = training.ImageUrl;
-            entity.RegisteredUsers = training.RegisteredUsers;
             entity.Moves = training.Moves;
 
             await _context.SaveChangesAsync(cancellationToken);
@@ -67,6 +59,7 @@ namespace mPole.Data.Repositories
         {
             var trainings = await _context.Trainings
                                     .Include(t => t.Moves)
+                                    .AsNoTracking()
                                     .ToListAsync();
 
             if (trainings == null)
@@ -82,6 +75,7 @@ namespace mPole.Data.Repositories
             var training = await _context.Trainings
                                 .Where(t => t.Id == trainingId)
                                 .Include(t => t.Moves)
+                                .AsNoTracking()
                                 .FirstOrDefaultAsync();
 
             if (training == null)

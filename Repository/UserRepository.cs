@@ -29,6 +29,7 @@ public class UserRepository : IUserRepository
     public async Task<ICollection<ApplicationUser>> GetAllUsersAsync()
     {
         var users = await _userManager.Users
+            .AsNoTracking()
             .Select(u => new ApplicationUser
             {
                 UserName = u.UserName,
@@ -48,6 +49,7 @@ public class UserRepository : IUserRepository
     public async Task<ICollection<string?>> GetExistingRolesAsync()
     {
         var allRoles = await _context.Roles
+            .AsNoTracking()
             .Select(r => r.Name)
             .ToListAsync();
 
