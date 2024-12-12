@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using mPole.Data.Models;
 using mPole.Interface;
 
@@ -8,7 +7,7 @@ namespace mPole.Services
     public class ImageService : IImageService
     {
         private readonly IImageRepository _imageRepository;
-        private readonly List<string> allowedFormats = new List<string> { "image/jpeg", "image/png", "image/gif" };
+        private readonly IList<string> allowedFormats = new List<string> { "image/jpeg", "image/png", "image/gif" };
 
         public ImageService(IImageRepository imageRepository, IWebHostEnvironment environment)
         {
@@ -23,30 +22,25 @@ namespace mPole.Services
             return $"data:image/png;base64,{Convert.ToBase64String(imageData)}";
         }
 
-        public async Task<List<Image>> UploadImagesAsync(List<IBrowserFile> files, string moveName)
+        public async Task<IList<Image>> UploadImagesAsync(List<IBrowserFile> files, string moveName)
         {
-            var uploadedImages = new List<Image>();
+            var uploadedImages = await Task.WhenAll(
+                files
+                    .Where(file => allowedFormats.Contains(file.ContentType, StringComparer.OrdinalIgnoreCase))
+                    .Select(async file =>
+                    {
+                        using var memoryStream = new MemoryStream();
+                        await file.OpenReadStream().CopyToAsync(memoryStream);
 
-            foreach (var file in files)
-            {
-                if (!allowedFormats.Contains(file.ContentType))
-                {
-                    throw new InvalidOperationException($"Niedozwolony format pliku: {file.Name}");
-                }
+                        return new Image
+                        {
+                            Name = moveName,
+                            ImageData = memoryStream.ToArray()
+                        };
+                    })
+            );
 
-                using var memoryStream = new MemoryStream();
-                await file.OpenReadStream().CopyToAsync(memoryStream);
-
-                var image = new Image
-                {
-                    Name = moveName,
-                    ImageData = memoryStream.ToArray()
-                };
-
-                uploadedImages.Add(image);
-            }
-
-            return uploadedImages;
+            return uploadedImages.ToList();
         }
     }
 }
