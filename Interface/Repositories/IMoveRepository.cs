@@ -1,6 +1,6 @@
 ﻿using mPole.Data.Models;
 
-namespace mPole.Interface
+namespace mPole.Interface.Repositories
 {
     public interface IMoveRepository
     {

@@ -1,25 +1,24 @@
 ﻿@page "/Account/Manage"
 
-@layout MainLayout
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
+@inject NavigationManager nav
 
-<PageTitle>Profile</PageTitle>
+<PageTitle>Profil użytkownika</PageTitle>
 
-<h3>Profile</h3>
 <StatusMessage />
 
 <MudContainer MaxWidth="MaxWidth.Medium">
     <MudPaper Class="pa-4">
-        <EditForm Model="Input" OnValidSubmit="OnValidSubmitAsync">
+        <EditForm Model="Input" OnValidSubmit="OnValidSubmitAsync" FormName="profileForm">
             <DataAnnotationsValidator />
+            <MudCardHeader Class="justify-center">Profil użytkownika</MudCardHeader>
             <ValidationSummary class="text-danger" role="alert" />
-            <MudTextField @bind-Value="username" Label="Username" Disabled="true" Variant="Variant.Filled" />
-            <MudTextField @bind-Value="Input.PhoneNumber" Label="Phone number" Variant="Variant.Filled" />
-            <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
-            <MudButton Type="Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mt-4">Save</MudButton>
+            <MudStaticTextField @bind-Value="username" Label="Nazwa użytkownika" Disabled="true" Variant="Variant.Filled" />
+            <MudStaticTextField @bind-Value="Input.PhoneNumber" Label="Numer telefonu" Variant="Variant.Filled" />
+            <MudStaticButton type="Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 align-self-end">Zapisz</MudStaticButton>
         </EditForm>
     </MudPaper>
 </MudContainer>
@@ -51,7 +50,7 @@
             var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
             if (!setPhoneResult.Succeeded)
             {
-                RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
+                RedirectManager.RedirectToCurrentPageWithStatus("Błąd: Nie udało się zapisać numeru telefonu.", HttpContext);
             }
         }
 
@@ -61,8 +60,8 @@
 
     private sealed class InputModel
     {
-        [Phone]
-        [Display(Name = "Phone number")]
+        [Phone(ErrorMessage = "Wprowadzono nieprawidłowy numer telefonu")]
+        [Display(Name = "Numer telefonu")]
         public string? PhoneNumber { get; set; }
     }
 }

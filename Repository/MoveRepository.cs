@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using mPole.Data.Models;
-using mPole.Interface;
+using mPole.Interface.Repositories;
 using System.Threading.Tasks;
 
 namespace mPole.Data.Repositories

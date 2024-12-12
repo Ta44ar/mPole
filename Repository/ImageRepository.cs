@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using mPole.Data.Models;
-using mPole.Interface;
+using mPole.Interface.Repositories;
 
 namespace mPole.Data.Repositories
 {

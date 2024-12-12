@@ -1,4 +1,4 @@
-﻿@page "/Moves/Gallery"
+﻿@page "/moves/gallery"
 
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
@@ -17,7 +17,7 @@ else
         Dodaj figurę
     </MudButton>
     <MudGrid>
-        @foreach (var move in poledanceMoves)
+        @foreach (var move in paginatedMoves)
         {
             <MudItem xs="3">
                 <MudCard @onclick="() => NavigateToMoveDetails(move.Id)">
@@ -31,11 +31,19 @@ else
             </MudItem>
         }
     </MudGrid>
+    <PagerContent>
+        <MudPagination Count="@pagesCount" SelectedChanged="OnPageChanged" Class="d-flex align-center" Style="margin-top: 2rem" />
+    </PagerContent>
 }
 
 @code {
     private List<MoveCardDto> poledanceMoves = new List<MoveCardDto>();
+    private List<MoveCardDto> paginatedMoves = new List<MoveCardDto>();
     private bool isLoading = true;
+    private int pageSize = 8;
+    private int pageIndex = 1;
+    private int totalItems;
+    private int pagesCount;
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,6 +56,9 @@ else
         try
         {
             poledanceMoves = await moveService.GetMovesAsync();
+            totalItems = poledanceMoves.Count;
+            pagesCount = (int)Math.Ceiling((double)totalItems / pageSize);
+            UpdatePaginatedMoves();
         }
         catch (MoveException ex)
         {
@@ -110,6 +121,19 @@ else
         }
     }
 
-    private void NavigateToAdd() => nav.NavigateTo("/Moves/Add");
-    private void NavigateToMoveDetails(int moveId) => nav.NavigateTo($"/Moves/Details/{moveId}");
+    private void OnPageChanged(int pageIndex)
+    {
+        this.pageIndex = pageIndex;
+        UpdatePaginatedMoves();
+    }
+
+    private void UpdatePaginatedMoves()
+    {
+        int startIndex = (pageIndex - 1) * pageSize;
+        paginatedMoves = poledanceMoves.Skip(startIndex).Take(pageSize).ToList();
+        StateHasChanged();
+    }
+
+    private void NavigateToAdd() => nav.NavigateTo("/moves/add");
+    private void NavigateToMoveDetails(int moveId) => nav.NavigateTo($"/moves/details/{moveId}");
 }
