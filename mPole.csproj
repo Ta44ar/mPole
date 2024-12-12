@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Components\Instructor\" />
     <Folder Include="Utils\Exceptions\" />
   </ItemGroup>
 

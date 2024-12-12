@@ -1,6 +1,8 @@
 ﻿<MudNavMenu>
-    <MudNavLink Href="/Account/Manage" Match="NavLinkMatch.All">
-        <MudGrid>
+    @if (MainLayout.isAuthenticated)
+    {
+        <MudNavLink Href="/Account/Manage" Match="NavLinkMatch.All">
+            <MudGrid>
             <MudItem xs="3">
                 <MudAvatar Icon="@Icons.Material.Filled.AccountCircle" />
             </MudItem>
@@ -8,8 +10,10 @@
                 <MudText>@MainLayout.userName</MudText>
             </MudItem>
         </MudGrid>
-    </MudNavLink>
-    <MudDivider/>
+        </MudNavLink>
+        <MudDivider/>
+    }
+
     <MudNavLink Href="/" Match="NavLinkMatch.All">Strona główna</MudNavLink>
     <MudNavLink Href="/moves/gallery" Match="NavLinkMatch.Prefix">Galeria figur</MudNavLink>
     <MudNavGroup Title="Zajęcia">
@@ -17,13 +21,18 @@
         <MudNavLink Href="@($"/classes/{MainLayout.userId}")" Match="NavLinkMatch.Prefix">Moje zajęcia</MudNavLink>
     </MudNavGroup>
     <MudNavLink Href="/help" Match="NavLinkMatch.Prefix">Pomoc techniczna</MudNavLink>
-    <MudNavGroup Title="Panel admina">
-        <MudNavLink Href="/admin/users" Match="NavLinkMatch.Prefix">Użytkownicy</MudNavLink>
-        <MudNavLink Href="/admin/trainings" Match="NavLinkMatch.Prefix">Plany zajęć</MudNavLink>
-    </MudNavGroup>
+
+    @if (MainLayout.isAdmin)
+    {
+        <MudNavGroup Title="Panel admina">
+            <MudNavLink Href="/admin/users" Match="NavLinkMatch.Prefix">Użytkownicy</MudNavLink>
+            <MudNavLink Href="/admin/trainings" Match="NavLinkMatch.Prefix">Plany zajęć</MudNavLink>
+        </MudNavGroup>
+    }
+
 </MudNavMenu>
 
 @code {
     [CascadingParameter]
-    public MainLayout MainLayout { get; set; }
+    public required MainLayout MainLayout { get; set; }
 }

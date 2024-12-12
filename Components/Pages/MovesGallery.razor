@@ -13,9 +13,13 @@
 }
 else
 {
-    <MudButton @onclick="NavigateToAdd" Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 2rem">
-        Dodaj figurę
-    </MudButton>
+    if (MainLayout.isAdmin)
+    {
+        <MudButton @onclick="NavigateToAdd" Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 2rem">
+            Dodaj figurę
+        </MudButton>
+    }
+
     <MudGrid>
         @foreach (var move in paginatedMoves)
         {
@@ -31,12 +35,14 @@ else
             </MudItem>
         }
     </MudGrid>
-    <PagerContent>
-        <MudPagination Count="@pagesCount" SelectedChanged="OnPageChanged" Class="d-flex align-center" Style="margin-top: 2rem" />
-    </PagerContent>
+
+    <MudPagination Count="@pagesCount" SelectedChanged="OnPageChanged" Class="d-flex align-center" Style="margin-top: 2rem" />
 }
 
 @code {
+    [CascadingParameter]
+    public required MainLayout MainLayout { get; set; }
+
     private List<MoveCardDto> poledanceMoves = new List<MoveCardDto>();
     private List<MoveCardDto> paginatedMoves = new List<MoveCardDto>();
     private bool isLoading = true;

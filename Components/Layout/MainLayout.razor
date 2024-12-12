@@ -5,7 +5,7 @@
 
 <MudThemeProvider />
 <MudPopoverProvider />
-<MudDialogProvider />
+<MudDialogProvider/>
 <MudSnackbarProvider />
 
 <CascadingValue Value="this">
@@ -21,7 +21,7 @@
                 }
                 else
                 {
-                    <MudButton>Log Out</MudButton>
+                    <MudButton>Wyloguj</MudButton>
                 }
             </MudButtonGroup>
         </MudAppBar>
@@ -36,9 +36,12 @@
 
 @code {
     bool _drawerOpen = false;
-    bool isAuthenticated;
-    public string userName;
-    public string userId;
+    public bool isAuthenticated = false;
+    public bool isAdmin = false;
+    public ApplicationUser user = new ApplicationUser();
+    public string userName = "Gość";
+    public string userId = string.Empty;
+    public IList<string> userRoles = new List<string>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,9 +50,10 @@
 
         if (isAuthenticated)
         {
-            userName = authState.User?.Identity?.Name ?? "Gość";
-            var user = await userManager.GetUserAsync(authState.User);
-            userId = user?.Id;
+            userName = authState.User?.Identity?.Name ?? "Użytkownik";
+            user = await userManager.GetUserAsync(authState.User);
+            userId = user.Id;
+            isAdmin = await userManager.IsInRoleAsync(user, "Admin");
         }
     }
 
