@@ -8,62 +8,64 @@
 
 <PageTitle>Dodaj figurę</PageTitle>
 
-@if (isLoading)
-{
-    <Loader />
-}
-else
-{
-    <EditForm Model="move" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-
-        <MudGrid>
-            <MudItem xs="12">
-                <MudTextField @bind-Value="move.Name" Label="Nazwa:" />
-            </MudItem>
-            <MudItem xs="12">
-                <MudTextField @bind-Value="move.DifficultyLevel" Label="Poziom trudności:" />
-            </MudItem>
-            <MudItem xs="12">
-                <MudTextField @bind-Value="move.Description" Label="Opis" />
-            </MudItem>
-            <MudDivider />
-            <InputFile OnChange="UploadImages" multiple />
-            <MudItem xs="12">
-                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Zapisz</MudButton>
-                <MudButton Color="Color.Secondary" OnClick="Cancel">Anuluj</MudButton>
-            </MudItem>
-        </MudGrid>
-    </EditForm>
-
-    @if (urlImages.Any())
+    @if (isLoading)
     {
-        <div>
-            <h3>Miniatury zdjęć:</h3>
-            <div class="image-thumbnails">
-                @foreach (var imageUrl in urlImages)
-                {
-                    <img src="@imageUrl" alt="Miniatura" class="thumbnail" />
-                }
-            </div>
-        </div>
+        <Loader />
+    }
+    else
+    {
+        <EditForm Model="move" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <MudGrid>
+                <MudItem xs="10">
+                    <MudTextField @bind-Value="move.Name" Label="Nazwa:" />
+                </MudItem>
+                <MudItem xs="2" Class="justify-end">
+                    <MudText>Poziom trudności:</MudText>
+                    <MudRating SelectedValue="0" SelectedValueChanged="SetDifficulty" @bind-Value="move.DifficultyLevel"/>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="move.Description" Lines="5" Label="Opis figury:" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem>
+                    <InputFile OnChange="UploadImages" multiple />
+                </MudItem>
+                <MudItem>
+                    @if (urlImages.Any())
+                    {
+                        <div>
+                            <MudText>Dołączone multimedia:</MudText>
+                            <div class="image-thumbnails">
+                                @foreach (var imageUrl in urlImages)
+                                {
+                                    <img src="@imageUrl" alt="Miniatura" class="thumbnail" />
+                                }
+                            </div>
+                        </div>
+                    }
+                </MudItem>
+                <MudItem xs="12">
+                    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Zapisz</MudButton>
+                    <MudButton Color="Color.Secondary" OnClick="Cancel">Anuluj</MudButton>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
     }
 
-    <style>
-        .thumbnail {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            margin: 5px;
-        }
+<style>
+    .thumbnail {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        margin: 5px;
+    }
 
-        .image-thumbnails {
-            display: flex;
-            flex-wrap: wrap;
-        }
-    </style>
-}
+    .image-thumbnails {
+        display: flex;
+        flex-wrap: wrap;
+    }
+</style>
 
 @code {
     private Move move = new Move();
@@ -122,6 +124,8 @@ else
             isLoading = false;
         }
     }
+
+    private void SetDifficulty(int value) => move.DifficultyLevel = value;
 
     private void Cancel() => nav.NavigateTo("/Moves/Gallery");
 }

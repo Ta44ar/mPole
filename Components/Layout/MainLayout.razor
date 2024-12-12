@@ -3,9 +3,9 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<ApplicationUser> userManager
 
-<MudThemeProvider />
+<MudThemeProvider IsDarkMode="@isDarkMode" />
 <MudPopoverProvider />
-<MudDialogProvider/>
+<MudDialogProvider />
 <MudSnackbarProvider />
 
 <CascadingValue Value="this">
@@ -13,7 +13,7 @@
         <MudAppBar Style="@($"background:{Colors.Brown.Lighten2}")">
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" /> mPole
             <MudSpacer />
-            <MudButtonGroup Color="Color.Inherit">
+            <MudButtonGroup Variant="Variant.Text" Color="Color.Inherit">
                 @if (!isAuthenticated)
                 {
                     <MudButton OnClick="@NavigateToLogIn">Zaloguj</MudButton>
@@ -25,7 +25,7 @@
                 }
             </MudButtonGroup>
         </MudAppBar>
-        <MudDrawer @bind-Open="@_drawerOpen">
+        <MudDrawer @bind-Open="@drawerOpen">
             <NavMenu />
         </MudDrawer>
         <MudMainContent style="padding: 6rem 2rem 2rem 2rem">
@@ -35,11 +35,14 @@
 </CascadingValue>
 
 @code {
-    bool _drawerOpen = false;
+    bool drawerOpen = false;
+    public bool isDarkMode = false;
     public bool isAuthenticated = false;
     public bool isAdmin = false;
+    public bool hasProfilePicture = false;
     public ApplicationUser user = new ApplicationUser();
     public string userName = "Gość";
+    public string initials = string.Empty;
     public string userId = string.Empty;
     public IList<string> userRoles = new List<string>();
 
@@ -54,10 +57,12 @@
             user = await userManager.GetUserAsync(authState.User);
             userId = user.Id;
             isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+            initials = $"{user.FirstName?[0]}{user.LastName?[0]}";
         }
     }
 
-    void DrawerToggle() => _drawerOpen = !_drawerOpen;
+    public void DrawerToggle() => drawerOpen = !drawerOpen;
+    public void DarkModeToggle() => isDarkMode = !isDarkMode;
 
     private void NavigateToLogIn() => nav.NavigateTo("/Account/Login");
     private void NavigateToRegister() => nav.NavigateTo("/Account/Register");
