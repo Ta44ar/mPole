@@ -43,8 +43,8 @@ else
     [CascadingParameter]
     public required MainLayout MainLayout { get; set; }
 
-    private List<MoveCardDto> poledanceMoves = new List<MoveCardDto>();
-    private List<MoveCardDto> paginatedMoves = new List<MoveCardDto>();
+    private IList<MoveCardDto> poledanceMoves = new List<MoveCardDto>();
+    private IList<MoveCardDto> paginatedMoves = new List<MoveCardDto>();
     private bool isLoading = true;
     private int pageSize = 8;
     private int pageIndex = 1;
