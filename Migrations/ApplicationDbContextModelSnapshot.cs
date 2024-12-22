@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using mPole.Data;
+using mPole.Data.DbContext;
 
 #nullable disable
 
@@ -171,32 +171,19 @@ namespace mPole.Migrations
                     b.ToTable("MoveTraining", "dbo");
                 });
 
-            modelBuilder.Entity("Training", b =>
+            modelBuilder.Entity("UserClass", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("ClassId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(1000)");
+                    b.HasKey("ClassId", "UserId");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasIndex("UserId");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Training", "dbo");
+                    b.ToTable("UserClass", "dbo");
                 });
 
             modelBuilder.Entity("mPole.Data.Models.ApplicationUser", b =>
@@ -298,10 +285,6 @@ namespace mPole.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("RegisteredUsers")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Trainer")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
@@ -366,6 +349,34 @@ namespace mPole.Migrations
                     b.ToTable("Move", "dbo");
                 });
 
+            modelBuilder.Entity("mPole.Data.Models.Training", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Training", "dbo");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -425,16 +436,31 @@ namespace mPole.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Training", null)
+                    b.HasOne("mPole.Data.Models.Training", null)
                         .WithMany()
                         .HasForeignKey("TrainingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("UserClass", b =>
+                {
+                    b.HasOne("mPole.Data.Models.Class", null)
+                        .WithMany()
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("mPole.Data.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("mPole.Data.Models.Class", b =>
                 {
-                    b.HasOne("Training", "Training")
+                    b.HasOne("mPole.Data.Models.Training", "Training")
                         .WithMany("Classes")
                         .HasForeignKey("TrainingId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -454,14 +480,14 @@ namespace mPole.Migrations
                     b.Navigation("Move");
                 });
 
-            modelBuilder.Entity("Training", b =>
-                {
-                    b.Navigation("Classes");
-                });
-
             modelBuilder.Entity("mPole.Data.Models.Move", b =>
                 {
                     b.Navigation("Images");
+                });
+
+            modelBuilder.Entity("mPole.Data.Models.Training", b =>
+                {
+                    b.Navigation("Classes");
                 });
 #pragma warning restore 612, 618
         }

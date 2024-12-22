@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using mPole.Data;
+using mPole.Data.DbContext;
 using mPole.Data.Models;
 
 public class UserRepository : IUserRepository

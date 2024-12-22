@@ -11,7 +11,7 @@ namespace mPole.Data.Models
         public required string Location { get; set; }
         public required string Trainer { get; set; }
         public int TrainingId { get; set; }
-        public Training Training { get; set; } = null!;
-        public IList<string> RegisteredUsers { get; set; } = new List<string>(); //w postaci lsity username'ów starczy? nie chce całych userów, żeby uniknąć joinowej tabeli
+        public virtual Training Training { get; set; } = null!;
+        public virtual IList<ApplicationUser> RegisteredUsers { get; set; } = new List<ApplicationUser>();
     }
 }

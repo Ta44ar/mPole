@@ -1,22 +1,22 @@
 ﻿<MudNavMenu>
-    @if (context.isAuthenticated)
+    @if (mainLayout.isAuthenticated)
     {
         <MudNavLink Href="/Account/Manage" Match="NavLinkMatch.All">
             <MudGrid Style="padding: 0.5rem 0.25rem 0.25rem 0.05rem">
                 <MudItem xs="3">
                     <MudAvatar Color="Color.Primary" Variant="Variant.Outlined">
-                        @if (context.hasProfilePicture)
+                        @if (mainLayout.hasProfilePicture)
                         {
                             //display TO DO
                         }
                         else
                         {
-                            <MudText>@context.initials</MudText>
+                            <MudText>@mainLayout.initials</MudText>
                         }
                     </MudAvatar>
                 </MudItem>
                 <MudItem xs="9">
-                    <MudText>@context.userName</MudText>
+                    <MudText>@mainLayout.userName</MudText>
                 </MudItem>
             </MudGrid>
         </MudNavLink>
@@ -30,7 +30,7 @@
             </MudText>
         </MudItem>
         <MudItem xs="3">
-            <MudSwitch @bind-Value="context.isDarkMode" @onchange="@(e => context.DarkModeToggle())" Color="Color.Primary"></MudSwitch>
+            <MudSwitch @bind-Value="mainLayout.isDarkMode" @onchange="@(e => mainLayout.DarkModeToggle())" Color="Color.Primary"></MudSwitch>
         </MudItem>
     </MudGrid>
     <MudDivider />
@@ -38,11 +38,11 @@
     <MudNavLink Href="/moves/gallery" Match="NavLinkMatch.Prefix">Galeria figur</MudNavLink>
     <MudNavGroup Title="Zajęcia">
         <MudNavLink Href="/classes" Match="NavLinkMatch.Prefix">Przeglądaj</MudNavLink>
-        <MudNavLink Href="@($"/classes/{context.userId}")" Match="NavLinkMatch.Prefix">Moje zajęcia</MudNavLink>
+        <MudNavLink Href="@($"/classes/{mainLayout.userId}")" Match="NavLinkMatch.Prefix">Moje zajęcia</MudNavLink>
     </MudNavGroup>
     <MudNavLink Href="/help" Match="NavLinkMatch.Prefix">Pomoc techniczna</MudNavLink>
 
-    @if (context.isAdmin)
+    @if (mainLayout.isAdmin)
     {
         <MudNavGroup Title="Panel admina">
             <MudNavLink Href="/admin/users" Match="NavLinkMatch.Prefix">Użytkownicy</MudNavLink>
@@ -53,5 +53,5 @@
 
 @code {
     [CascadingParameter]
-    public required MainLayout context { get; set; }
+    public required MainLayout mainLayout { get; set; }
 }

@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using mPole.Data.DbContext;
+using mPole.Data.Models;
 using mPole.Interface.Repositories;
 
 namespace mPole.Data.Repositories
