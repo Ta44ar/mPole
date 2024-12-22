@@ -1,10 +1,10 @@
 ﻿@page "/"
 @inject NavigationManager Navigation
-@inject IStringLocalizer<App> localizer
+@inject IStringLocalizer<SharedResource> res
 
-<PageTitle>@localizer["Homepage"]</PageTitle>
+<PageTitle>@res["Homepage"]</PageTitle>
 
-<h1>@localizer["Hello, world!"]</h1>
+<h1>@res["HelloWorld"]</h1>
 
 Welcome to your new app.
 

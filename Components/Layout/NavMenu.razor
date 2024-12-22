@@ -1,4 +1,4 @@
-﻿@inject IStringLocalizer<App> localizer
+﻿@inject IStringLocalizer<SharedResource> res
 
 <MudNavMenu>
     @if (mainLayout.isAuthenticated)
@@ -28,7 +28,7 @@
     <MudGrid Class="align-center justify-center object-bottom" Style="padding: 0.25rem 2rem 0.25rem 1.7rem">
         <MudItem xs="9">
             <MudText>
-                @localizer["Dark mode"]
+                @res["DarkMode"]:
             </MudText>
         </MudItem>
         <MudItem xs="3">
@@ -36,19 +36,19 @@
         </MudItem>
     </MudGrid>
     <MudDivider />
-    <MudNavLink Href="/" Match="NavLinkMatch.All">Strona główna</MudNavLink>
-    <MudNavLink Href="/moves/gallery" Match="NavLinkMatch.Prefix">Galeria figur</MudNavLink>
-    <MudNavGroup Title="Zajęcia">
-        <MudNavLink Href="/classes" Match="NavLinkMatch.Prefix">Przeglądaj</MudNavLink>
-        <MudNavLink Href="@($"/classes/{mainLayout.userId}")" Match="NavLinkMatch.Prefix">Moje zajęcia</MudNavLink>
+    <MudNavLink Href="/" Match="NavLinkMatch.All">@res["Homepage"]</MudNavLink>
+    <MudNavLink Href="/moves/gallery" Match="NavLinkMatch.Prefix">@res["MovesGallery"]</MudNavLink>
+    <MudNavGroup Title="@res["Classes"]">
+        <MudNavLink Href="/classes" Match="NavLinkMatch.Prefix">@res["Browse"]</MudNavLink>
+        <MudNavLink Href="@($"/classes/{mainLayout.userId}")" Match="NavLinkMatch.Prefix">@res["MyClasses"]</MudNavLink>
     </MudNavGroup>
-    <MudNavLink Href="/help" Match="NavLinkMatch.Prefix">Pomoc techniczna</MudNavLink>
+    <MudNavLink Href="/help" Match="NavLinkMatch.Prefix">@res["Help"]</MudNavLink>
 
     @if (mainLayout.isAdmin)
     {
-        <MudNavGroup Title="Panel admina">
-            <MudNavLink Href="/admin/users" Match="NavLinkMatch.Prefix">Użytkownicy</MudNavLink>
-            <MudNavLink Href="/admin/trainings" Match="NavLinkMatch.Prefix">Plany zajęć</MudNavLink>
+        <MudNavGroup Title="@res["AdminPanel"]">
+            <MudNavLink Href="/admin/users" Match="NavLinkMatch.Prefix">@res["Users"]</MudNavLink>
+            <MudNavLink Href="/admin/trainings" Match="NavLinkMatch.Prefix">@res["TrainingPlans"]</MudNavLink>
         </MudNavGroup>
     }
 </MudNavMenu>

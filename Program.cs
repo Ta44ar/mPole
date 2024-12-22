@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using mPole.Components;
 using mPole.Components.Account;
 using mPole.Data.DbContext;
@@ -19,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddServerSideBlazor();
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -83,26 +83,13 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-
-var locale = new LocalizationHelper(builder.Configuration);
-
-//builder.Services.Configure<RequestLocalizationOptions>(options =>
-//{
-//    var cultures = builder.Configuration.GetSection("Cultures")
-//        .GetChildren().ToDictionary(x => x.Key, x => x.Value);
-
-//    var supportedCultures = cultures.Keys.ToArray();
-
-//    options.SetDefaultCulture(supportedCultures[0])
-//        .AddSupportedCultures(supportedCultures)
-//        .AddSupportedUICultures(supportedCultures);
-//});
+builder.Services.AddLocalization(options => options.ResourcesPath = "");
 
 builder.Services.AddMudServices();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+var locale = new LocalizationHelper(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -123,6 +110,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAntiforgery();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseRequestLocalization(locale.GetLocalizationOptions());
 

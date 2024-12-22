@@ -5,8 +5,9 @@
 @inject IImageService imageService
 @inject IMoveService moveService
 @inject IDialogService DialogService
+@inject IStringLocalizer<SharedResource> res
 
-<PageTitle>Move Details</PageTitle>
+<PageTitle>@pageTitle</PageTitle>
 
 @if (isLoading)
 {
@@ -32,7 +33,7 @@ else
             <MudCard>
                 <MudCardContent>
                     <MudText Typo="Typo.h4">@move?.Name</MudText>
-                    <MudText Typo="Typo.body1">Poziom trudności: @move?.DifficultyLevel</MudText>
+                    <MudText Typo="Typo.body1">@res["DifficultyLevel"]: @move?.DifficultyLevel</MudText>
                     <MudDivider DividerType="DividerType.Middle" Class="my-6" />
                     <MudText Typo="Typo.body2">@move?.Description</MudText>
                 </MudCardContent>
@@ -53,12 +54,14 @@ else
     private bool arrows = true;
     private bool autocycle = true;
     private bool isLoading = true;
+    private string pageTitle = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             move = await moveService.GetMoveAsync(moveId);
+            pageTitle = move?.Name ?? res["MoveDetails"];
         }
         catch (MoveException ex)
         {
@@ -77,21 +80,21 @@ else
         try
         {
             await moveService.DeleteMoveAsync(moveId, CancellationToken.None);
-            Snackbar.Add("Pomyślnie usunięto figurę!", Severity.Success);
+            Snackbar.Add(res["MoveRemovedSuccessfully"], Severity.Success);
             nav.NavigateTo("/moves/gallery");
         }
         catch (MoveException ex)
         {
-            Snackbar.Add($"Błąd podczas usuwania figury: {ex.Message}", Severity.Error);
+            Snackbar.Add(res["ErrorDuringMoveDeletion"] + $": {ex.Message}", Severity.Error);
         }
     }
 
     private async void OnButtonClicked()
     {
         bool? result = await DialogService.ShowMessageBox(
-            "Uwaga",
-            "Usunięcie figury będzie nieodwracalne.",
-            yesText: "Usuń", cancelText: "Anuluj");
+            res["Warning"],
+            res["MoveDeletionWarning"],
+            yesText: res["Delete"], cancelText: res["Cancel"]);
 
         if (result == true)
         {

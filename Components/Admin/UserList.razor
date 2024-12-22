@@ -4,6 +4,7 @@
 @inject ISnackbar Snackbar
 @inject UserManager<ApplicationUser> userManager
 @inject IDialogService DialogService
+@inject IStringLocalizer<SharedResource> res
 
 @if (isLoading) 
 {
@@ -13,28 +14,26 @@ else
 {
     @if (!users.Any()) 
     {
-        <MudAlert Severity="MudBlazor.Severity.Info">No users found.</MudAlert>
+        <MudAlert Severity="MudBlazor.Severity.Info">@res["UsersNotFound"]</MudAlert>
     }
     else 
     {
         <MudTable Items="@users" Hover="true" SortLabel="Sort By">
             <HeaderContent>
-                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x => x.UserName)">Email</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x => x.FirstName)">First Name</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x => x.LastName)">Last Name</MudTableSortLabel></MudTh>
-                <MudTh>Role</MudTh>
-                <MudTh>Akcje</MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x => x.UserName)">@res["Email"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x => x.FirstName)">@res["FirstName"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x => x.LastName)">@res["LastName"]</MudTableSortLabel></MudTh>
+                <MudTh>@res["Roles"]</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="E-mail">@context.UserName</MudTd>
-                <MudTd DataLabel="Imię">@context.FirstName</MudTd>
-                <MudTd DataLabel="Nazwisko">@context.LastName</MudTd>
-                <MudTd DataLabel="Role">
+                <MudTd DataLabel="@res["Email"]">@context.UserName</MudTd>
+                <MudTd DataLabel="@res["FirstName"]">@context.FirstName</MudTd>
+                <MudTd DataLabel="@res["LastName"]">@context.LastName</MudTd>
+                <MudTd DataLabel="@res["Roles"]">
                     <MudButton OnClick="() => OpenRoleManagementDialogAsync(context.UserName)" Variant="Variant.Outlined">
-                        Pokaż
+                        @res["Show"]
                     </MudButton>
                 </MudTd>
-                <MudTd></MudTd>
             </RowTemplate>
             <PagerContent>
                 <MudTablePager PageSizeOptions="new int[] { 5, 10, 50}" />
