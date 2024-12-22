@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using mPole.Components;
 using mPole.Components.Account;
 using mPole.Data.DbContext;
@@ -10,6 +11,7 @@ using mPole.Data.Repositories;
 using mPole.Interface.Repositories;
 using mPole.Interface.Services;
 using mPole.Service;
+using mPole.Utils.Helpers;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +38,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("Instructor", policy => policy.RequireRole("Instructor", "Admin"));
 });
 
 builder.Services.AddAuthentication(options =>
@@ -61,6 +64,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     });
 });
 
+builder.Services.AddControllers();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 //builder.Services.AddHttpClient("mPoleClient", client =>
@@ -73,13 +77,29 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 //    client.BaseAddress = new Uri(baseAddress);
 //});
 
-builder.Services.AddMudServices();
-
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+var locale = new LocalizationHelper(builder.Configuration);
+
+//builder.Services.Configure<RequestLocalizationOptions>(options =>
+//{
+//    var cultures = builder.Configuration.GetSection("Cultures")
+//        .GetChildren().ToDictionary(x => x.Key, x => x.Value);
+
+//    var supportedCultures = cultures.Keys.ToArray();
+
+//    options.SetDefaultCulture(supportedCultures[0])
+//        .AddSupportedCultures(supportedCultures)
+//        .AddSupportedUICultures(supportedCultures);
+//});
+
+builder.Services.AddMudServices();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
@@ -98,13 +118,18 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 
+app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseRouting();
 app.UseAntiforgery();
+
+app.UseRequestLocalization(locale.GetLocalizationOptions());
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+app.MapControllers();
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();

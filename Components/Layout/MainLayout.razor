@@ -13,6 +13,7 @@
         <MudAppBar Style="@($"background:{Colors.Brown.Lighten2}")">
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" /> mPole
             <MudSpacer />
+            <ChooseLanguage/>
             <MudButtonGroup Variant="Variant.Text" Color="Color.Inherit">
                 @if (!isAuthenticated)
                 {

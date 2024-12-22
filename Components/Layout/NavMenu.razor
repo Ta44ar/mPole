@@ -1,4 +1,6 @@
-﻿<MudNavMenu>
+﻿@inject IStringLocalizer<App> localizer
+
+<MudNavMenu>
     @if (mainLayout.isAuthenticated)
     {
         <MudNavLink Href="/Account/Manage" Match="NavLinkMatch.All">
@@ -26,7 +28,7 @@
     <MudGrid Class="align-center justify-center object-bottom" Style="padding: 0.25rem 2rem 0.25rem 1.7rem">
         <MudItem xs="9">
             <MudText>
-                Tryb ciemny:
+                @localizer["Dark mode"]
             </MudText>
         </MudItem>
         <MudItem xs="3">
