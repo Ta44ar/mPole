@@ -4,14 +4,15 @@
 @inject IEmailSender<ApplicationUser> EmailSender
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IStringLocalizer<SharedResource> res
 
-<PageTitle>Register confirmation</PageTitle>
+<PageTitle>@res["RegisterConfirmation"]</PageTitle>
 
 <MudGrid>
     <MudItem>
         <MudCard Style="width: 400px" Elevation="3">
             <MudCardHeader>
-                <MudText Typo="Typo.h5">Register confirmation</MudText>
+                <MudText Typo="Typo.h5">@res["RegisterConfirmation"]</MudText>
             </MudCardHeader>
             <MudCardContent>
                 @if (!string.IsNullOrEmpty(statusMessage))
@@ -27,7 +28,7 @@
                 }
                 else
                 {
-                    <MudText Typo="Typo.body1">Please check your email to confirm your account.</MudText>
+                    <MudText Typo="Typo.body1">@res["CheckEmailToConfirmRegisterMessage"]</MudText>
                 }
             </MudCardContent>
         </MudCard>
@@ -59,7 +60,7 @@
         if (user is null)
         {
             HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            statusMessage = "Error finding user for unspecified email";
+            statusMessage = res["ErrorConfirmingEmail"];
             alertSeverity = Severity.Error;
         }
         else if (EmailSender is IdentityNoOpEmailSender)

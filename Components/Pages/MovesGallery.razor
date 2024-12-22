@@ -4,8 +4,9 @@
 @inject IDialogService DialogService
 @inject NavigationManager nav
 @inject IMoveService moveService
+@inject IStringLocalizer<SharedResource> res
 
-<PageTitle>Galeria Figur</PageTitle>
+<PageTitle>@res["MovesGallery"]</PageTitle>
 
 @if (isLoading)
 {
@@ -16,7 +17,7 @@ else
     if (MainLayout.isAdmin)
     {
         <MudButton @onclick="NavigateToAdd" Variant="Variant.Filled" Style="margin-bottom: 2rem">
-            Dodaj figurę
+            @res["MoveAdd"]
         </MudButton>
     }
 
@@ -69,7 +70,7 @@ else
         catch (MoveException ex)
         {
             // Handle the exception (e.g., log it, show a message to the user, etc.)
-            Snackbar.Add($"An error occurred: {ex.Message}", Severity.Error);
+            Snackbar.Add(res["ErrorOcurredMessage"] + $": {ex.Message}", Severity.Error);
         }
         finally
         {

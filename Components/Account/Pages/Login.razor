@@ -4,9 +4,10 @@
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IStringLocalizer<SharedResource> res
 
 
-<PageTitle>Logowanie</PageTitle>
+<PageTitle>@res["Login"]</PageTitle>
 
 <StatusMessage Message="@errorMessage" />
 
@@ -16,25 +17,25 @@
     <MudItem>
         <MudCard Style="width: 400px" Elevation="3">
             <MudCardHeader Class="">
-                <MudText Typo="Typo.h5">Logowanie</MudText>
+                    <MudText Typo="Typo.h5">@res["Login"]</MudText>
             </MudCardHeader>
             <MudCardContent>
-                <MudStaticTextField Label="Adres e-mail" @bind-Value="loginDto.Email" 
-                                    For="@(() => loginDto.Email)"/>
-                <MudStaticTextField Label="Hasło" @bind-Value="loginDto.Password" 
-                                    For="@(() => loginDto.Password)" InputType="InputType.Password"/>
-                <MudStaticCheckBox Label="Zapamiętaj mnie" @bind-Value="loginDto.RememberMe" />
+                    <MudStaticTextField Label="@res["EmailAddress"]" @bind-Value="loginDto.Email"
+                                        For="@(() => loginDto.Email)"/>
+                    <MudStaticTextField Label="@res["Password"]" @bind-Value="loginDto.Password"
+                                        For="@(() => loginDto.Password)" InputType="InputType.Password"/>
+                    <MudStaticCheckBox Label="@res["RememberMe"]" @bind-Value="loginDto.RememberMe" />
                 <MudCardActions>
-                    <MudStaticButton type="submit" Variant="Variant.Filled" Color="Color.Primary">Zaloguj się</MudStaticButton>
+                        <MudStaticButton type="submit" Variant="Variant.Filled" Color="Color.Primary">@res["SignIn"]</MudStaticButton>
                 </MudCardActions>
                 <MudText>
-                    <a href="Account/ForgotPassword">Forgot your password?</a>
+                        <a href="Account/ForgotPassword">@res["ForgotPasswordQuestion"]</a>
                 </MudText>
                 <MudText>
-                    <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
+                        <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">@res["RegisterAsNewUser"]</a>
                 </MudText>
                 <MudText>
-                    <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
+                        <a href="Account/ResendEmailConfirmation">@res["ResendEmailConfirmation"]</a>
                 </MudText>
             </MudCardContent>
         </MudCard>

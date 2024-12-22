@@ -2,6 +2,7 @@
 @inject NavigationManager nav
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<ApplicationUser> userManager
+@inject IStringLocalizer<SharedResource> localizer
 
 <MudThemeProvider IsDarkMode="@isDarkMode" />
 <MudPopoverProvider />
@@ -13,15 +14,16 @@
         <MudAppBar Style="@($"background:{Colors.Brown.Lighten2}")">
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" /> mPole
             <MudSpacer />
+            <ChooseLanguage/>
             <MudButtonGroup Variant="Variant.Text" Color="Color.Inherit">
                 @if (!isAuthenticated)
                 {
-                    <MudButton OnClick="@NavigateToLogIn">Zaloguj</MudButton>
-                    <MudButton OnClick="@NavigateToRegister">Zarejestruj</MudButton>
+                    <MudButton OnClick="@NavigateToLogIn">@localizer["Login"]</MudButton>
+                    <MudButton OnClick="@NavigateToRegister">@localizer["Registration"]</MudButton>
                 }
                 else
                 {
-                    <MudButton>Wyloguj</MudButton>
+                    <MudButton>@localizer["SignOut"]</MudButton>
                 }
             </MudButtonGroup>
         </MudAppBar>

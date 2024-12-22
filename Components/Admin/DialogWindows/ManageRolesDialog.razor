@@ -1,6 +1,7 @@
 ﻿@inject IUserService userService
 @inject ISnackbar Snackbar
 @inject UserManager<ApplicationUser> userManager
+@inject IStringLocalizer<SharedResource> res
 
 @if (isLoading)
 {
@@ -13,7 +14,7 @@
 else
 {
     <MudDialog>
-        <TitleContent>Role użytkownika @Email</TitleContent>
+        <TitleContent>@res["UserRoles"] (@Email)</TitleContent>
         <DialogContent>
             <MudStack Row Justify="Justify.Center" Style="width: 100%" Wrap="Wrap.Wrap">
                 <MudChipSet @bind-SelectedValues="userRoles" SelectionMode="SelectionMode.MultiSelection" CheckMark="checkMark" Variant="Variant.Text" Color="Color.Info">
@@ -25,7 +26,7 @@ else
             </MudStack>
         </DialogContent>
         <DialogActions>
-            <MudButton Color="Color.Primary" OnClick="SaveRoles">Zapisz</MudButton>
+            <MudButton Color="Color.Primary" OnClick="SaveRoles">@res["Save"]</MudButton>
         </DialogActions>
     </MudDialog>
 }
@@ -87,7 +88,7 @@ else
         await userManager.RemoveFromRolesAsync(choosedUser, rolesToRemove);
         await userManager.AddToRolesAsync(choosedUser, rolesToAdd);
 
-        Snackbar.Add($"Zapisano role użytkownika {Email}", MudBlazor.Severity.Success);
+        Snackbar.Add(res["UserRolesSavedSuccesfully"] + $"{Email}", MudBlazor.Severity.Success);
         Close();
     }
 
