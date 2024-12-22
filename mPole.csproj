@@ -8,13 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Components\Instructor\**" />
-    <Content Remove="Components\Instructor\**" />
-    <EmbeddedResource Remove="Components\Instructor\**" />
-    <None Remove="Components\Instructor\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Extensions.MudBlazor.StaticInput" Version="2.1.5" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.10" />
