@@ -1,0 +1,31 @@
+﻿<MudCalendar Items="Events" MonthCellMinHeight="100" DateRangeChanged="OnDateRangeChangedInternal" ItemClicked="OnItemClickedInternal">
+    <CellTemplate>
+        <div style="width: 100%; height: 100%; border: 2px solid @GetColor(((Event)context).Color)">
+            <div style="background-color: @GetColor(((Event)context).Color)"><MudText Style="color: #ffffff;" Typo="Typo.body1" Align="Align.Center">@(((Event)context).Title)</MudText></div>
+            <div class="pa-2"><MudText Typo="Typo.body2">@context.Text</MudText></div>
+        </div>
+    </CellTemplate>
+</MudCalendar>
+
+@code {
+    [Parameter]
+    public ICollection<Event> Events { get; set; } = new List<Event>();
+
+    [Parameter]
+    public EventCallback<DateRange> OnDateRangeChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<CalendarItem> OnItemClicked { get; set; }
+
+    private async Task OnDateRangeChangedInternal(DateRange dateRange)
+    {
+        await OnDateRangeChanged.InvokeAsync(dateRange);
+    }
+
+    private async Task OnItemClickedInternal(CalendarItem item)
+    {
+        await OnItemClicked.InvokeAsync(item);
+    }
+
+    private string GetColor(Color color) => $"var(--mud-palette-{color.ToDescriptionString()})";
+}

@@ -9,6 +9,7 @@ using mPole.Data.Models;
 using mPole.Data.Repositories;
 using mPole.Interface.Repositories;
 using mPole.Interface.Services;
+using mPole.Repository;
 using mPole.Service;
 using mPole.Utils.Helpers;
 using MudBlazor.Services;
@@ -29,11 +30,13 @@ builder.Services.AddScoped<IMoveRepository, MoveRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<ITrainingRepository, TrainingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IClassRepository, ClassRepository>();
 
 builder.Services.AddScoped<IMoveService, MoveService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ITrainingService, TrainingService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IClassService, ClassService>();
 
 builder.Services.AddAuthorization(options =>
 {

@@ -321,4 +321,22 @@
   <data name="ErrorConfirmingEmail" xml:space="preserve">
     <value>Błąd wyszukiwania użytkownika z powodu nieokreślonego adresu e-mail.</value>
   </data>
+  <data name="InstructorPanel" xml:space="preserve">
+    <value>Panel instruktora</value>
+  </data>
+  <data name="Trainer" xml:space="preserve">
+    <value>Trener</value>
+  </data>
+  <data name="ClassDetails" xml:space="preserve">
+    <value>Szczegóły zajęć</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Lokalizacja</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Czas trwania</value>
+  </data>
+  <data name="UsersRegistered" xml:space="preserve">
+    <value>Zapisani użytkownicy</value>
+  </data>
 </root>

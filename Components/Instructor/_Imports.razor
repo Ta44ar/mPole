@@ -1,6 +1,4 @@
 ﻿@using System.Net.Http
-@using System.Text
-@using System.Text.Json
 @using System.Net.Http.Json
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
@@ -14,18 +12,18 @@
 @using mPole.Components.Layout
 @using MudBlazor
 @using MudBlazor.StaticInput
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
-@using Microsoft.Extensions.Localization
 @using mPole.Data
 @using mPole.Data.DTOs
 @using mPole.Data.Models
 @using mPole.Utils.Validators
 @using mPole.Utils.Exceptions
-@using mPole.Interface.Repositories
-@using mPole.Interface.Services
-@using mPole.Components.Pages
+@using mPole.Interface
 @using mPole.Components.Page_Elements
+@using mPole.Components.Pages
+@using mPole.Components.Admin.DialogWindows
 @using mPole.Resources
-@using Heron.MudCalendar
-@using mPole.Data.Models.Calendar_Items
-@using mPole.Components.Pages.DialogWindows
+@using FluentValidation
+
+@attribute [Authorize(Policy = "Instructor")]

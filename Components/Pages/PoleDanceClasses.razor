@@ -1,0 +1,54 @@
+﻿@page "/classes"
+
+@inject IStringLocalizer<SharedResource> res
+@inject IClassService classService
+@inject IDialogService dialogService
+
+<PageTitle>@res["Classes"]</PageTitle>
+
+<Calendar Events="_events" OnDateRangeChanged="OnDateRangeChangedAsync" OnItemClicked="OnItemClickedAsync" />
+
+@code {
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+
+    public ICollection<Event> _events = new List<Event>();
+
+    private async Task OnDateRangeChangedAsync(DateRange dateRange)
+    {
+        await LoadCalendarEvents(dateRange);
+    }
+
+    private async Task OnItemClickedAsync(CalendarItem item)
+    {
+        var eventItem = _events.FirstOrDefault(e => e.Start == item.Start);
+
+        await ShowEventDialog(eventItem);
+    }
+
+    private async Task LoadCalendarEvents(DateRange dateRange)
+    {
+        var startDate = dateRange.Start ?? DateTime.Today;
+        var endDate = dateRange.End ?? DateTime.Today.AddMonths(1);
+
+        var poleDanceClasses = await classService.GetClassesByDateRangeAsync(startDate, endDate, CancellationToken.None);
+        _events = poleDanceClasses.Select(c => new Event
+            {
+                EventId = c.Id,
+                Start = c.Date,
+                End = c.Date.AddHours(double.Parse(c.Duration)),
+                Title = c.Training.Name,
+                Location = c.Location,
+                Text = res["Trainer"] + $": {c.Trainer}",
+                Color = c.RegisteredUsers.Any(u => u.Id == mainLayout.userId) ? Event.UserRegisteredEventColor : Event.DefaultEventColor
+            }).ToList();
+    }
+
+    private async Task ShowEventDialog(Event item)
+    {
+        var poleDanceClass = await classService.GetClassByIdAsync(item.EventId, CancellationToken.None);
+        var parameters = new DialogParameters { ["Class"] = poleDanceClass };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Large, FullWidth = true };
+        dialogService.Show<PoleDanceClassDialog>(res["ClassDetails"], parameters, options);
+    }
+}
