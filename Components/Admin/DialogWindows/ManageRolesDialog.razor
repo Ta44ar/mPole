@@ -3,44 +3,32 @@
 @inject UserManager<ApplicationUser> userManager
 @inject IStringLocalizer<SharedResource> res
 
-@if (isLoading)
-{
-    <MudDialog>
-        <DialogContent>
-            <Loader />
-        </DialogContent>
-    </MudDialog>
-}
-else
-{
-    <MudDialog>
-        <TitleContent>@res["UserRoles"] (@Email)</TitleContent>
-        <DialogContent>
-            <MudStack Row Justify="Justify.Center" Style="width: 100%" Wrap="Wrap.Wrap">
-                <MudChipSet @bind-SelectedValues="userRoles" SelectionMode="SelectionMode.MultiSelection" CheckMark="checkMark" Variant="Variant.Text" Color="Color.Info">
-                    @foreach (var role in allRoles)
-                    {
-                        <MudChip Value="@role" />
-                    }
-                </MudChipSet>
-            </MudStack>
-        </DialogContent>
-        <DialogActions>
-            <MudButton Color="Color.Primary" OnClick="SaveRoles">@res["Save"]</MudButton>
-        </DialogActions>
-    </MudDialog>
-}
+<MudDialog>
+    <TitleContent>@res["UserRoles"] (@Email)</TitleContent>
+    <DialogContent>
+        <MudStack Row Justify="Justify.Center" Style="width: 100%" Wrap="Wrap.Wrap">
+            <MudChipSet @bind-SelectedValues="userRoles" SelectionMode="SelectionMode.MultiSelection" CheckMark="checkMark" Variant="Variant.Text" Color="Color.Primary">
+                @foreach (var role in allRoles)
+                {
+                    <MudChip Value="@role" />
+                }
+            </MudChipSet>
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="SaveRoles">@res["Save"]</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code {
     [CascadingParameter]
-    private MudDialogInstance MudDialog { get; set; }
+    private MudDialogInstance? MudDialog { get; set; }
 
     [Parameter]
     public required string Email { get; set; }
 
     private ApplicationUser choosedUser = new ApplicationUser();
     private ICollection<string> currentUserRoles = new List<string>();
-
     private ICollection<string> rolesList = new List<string>();
     private string newRole = string.Empty;
 

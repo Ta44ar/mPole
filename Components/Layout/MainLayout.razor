@@ -11,18 +11,20 @@
 
 <CascadingValue Value="this">
     <MudLayout>
-        <MudAppBar Style="@($"background:{Colors.Brown.Lighten2}")">
+        <MudAppBar Style="@($"background:{Colors.DeepPurple.Darken3}")">
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" /> mPole
             <MudSpacer />
             <ChooseLanguage/>
             <MudButtonGroup Variant="Variant.Text" Color="Color.Inherit">
                 @if (!isAuthenticated)
                 {
+                    <ChooseLanguageButton />
                     <MudButton OnClick="@NavigateToLogIn">@localizer["Login"]</MudButton>
                     <MudButton OnClick="@NavigateToRegister">@localizer["Registration"]</MudButton>
                 }
                 else
                 {
+                    <ChooseLanguageButton />
                     <MudButton>@localizer["SignOut"]</MudButton>
                 }
             </MudButtonGroup>
@@ -37,7 +39,7 @@
 </CascadingValue>
 
 @code {
-    bool drawerOpen = false;
+    public bool drawerOpen = false;
     public bool isDarkMode = false;
     public bool isAuthenticated = false;
     public bool isAdmin = false;
@@ -61,7 +63,16 @@
             userName = authState.User?.Identity?.Name ?? "Użytkownik";
             userId = user.Id;
             isAdmin = await userManager.IsInRoleAsync(user, "Admin");
-            isInstructor = await userManager.IsInRoleAsync(user, "Instructor");
+
+            if (!isAdmin) 
+            {
+                isInstructor = await userManager.IsInRoleAsync(user, "Instructor");
+            }
+            else 
+            {
+                isInstructor = true;
+            }
+
             initials = $"{user.FirstName?[0]}{user.LastName?[0]}";
         }
 

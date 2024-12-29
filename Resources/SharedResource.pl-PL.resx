@@ -246,7 +246,7 @@
   <data name="IncludedMedia" xml:space="preserve">
     <value>Dołączone multimedia</value>
   </data>
-  <data name="MoveAddSuccessMessage" xml:space="preserve">
+  <data name="SuccessMoveAddition" xml:space="preserve">
     <value>Pomyślnie dodano nową figurę!</value>
   </data>
   <data name="ErrorDuringMoveAddition" xml:space="preserve">
@@ -267,7 +267,7 @@
   <data name="ErrorDuringMoveLoading" xml:space="preserve">
     <value>Błąd podczas ładowania figury</value>
   </data>
-  <data name="MoveEditionSuccessMessage" xml:space="preserve">
+  <data name="SuccessMoveEdition" xml:space="preserve">
     <value>Pomyślnie edytowano figurę!</value>
   </data>
   <data name="ErrorDuringMoveEdition" xml:space="preserve">
@@ -338,5 +338,29 @@
   </data>
   <data name="UsersRegistered" xml:space="preserve">
     <value>Zapisani użytkownicy</value>
+  </data>
+  <data name="ImagesUpload" xml:space="preserve">
+    <value>Dodaj zdjęcia</value>
+  </data>
+  <data name="NameIsRequired" xml:space="preserve">
+    <value>Nazwa jest wymagana aby dodać obrazy!</value>
+  </data>
+  <data name="WarningNoFilesSelected" xml:space="preserve">
+    <value>Nie wybrano żadnych obrazów.</value>
+  </data>
+  <data name="SuccessImagesUpload" xml:space="preserve">
+    <value>Pomyślnie dodano obrazy.</value>
+  </data>
+  <data name="DragAndDropImagesHereToAdd" xml:space="preserve">
+    <value>Przenieś i upuść tutaj obrazy, które chcesz dodać</value>
+  </data>
+  <data name="FilePicker" xml:space="preserve">
+    <value>Wybierz obrazy</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Dodaj</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Wyczyść</value>
   </data>
 </root>

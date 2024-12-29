@@ -24,11 +24,7 @@ namespace mPole.Components.Account
             if (!Uri.IsWellFormedUriString(uri, UriKind.Relative))
             {
                 uri = navigationManager.ToBaseRelativePath(uri);
-
-                if (string.IsNullOrEmpty(uri))
-                {
-                    uri = "/";
-                }
+                uri = "/" + uri;
             }
 
             // During static rendering, NavigateTo throws a NavigationException which is handled by the framework as a redirect.

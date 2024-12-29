@@ -1,0 +1,159 @@
+﻿@inject IMoveService moveService
+@inject IStringLocalizer<SharedResource> res
+@inject ISnackbar snackbar
+@inject IDialogService dialogService
+@inject IImageService imageService
+@inject NavigationManager nav
+
+@if (isLoading)
+{
+    <Loader />
+}
+else
+{
+    <EditForm Model="move" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <MudGrid>
+            <MudItem xs="10">
+                <MudTextField @bind-Value="move.Name" Label="@res["Name"]" />
+            </MudItem>
+            <MudItem xs="2" Class="justify-end">
+                <MudText>@res["DifficultyLevel"]</MudText>
+                <MudRating SelectedValue="0" SelectedValueChanged="SetDifficulty" @bind-Value="move.DifficultyLevel" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="move.Description" Lines="5" Label="Opis figury:" Variant="Variant.Outlined" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudGrid>
+                    @if (urlImages.Any())
+                    {
+                        <MudItem xs="12">
+                            <MudText>@res["IncludedMedia"]:</MudText>
+                        </MudItem>
+                        @foreach (var imageUrl in urlImages)
+                        {
+                            <MudItem xs=@(urlImages.Count > 3 ? 4 : (urlImages.Count == 2 ? 6 : 12))>
+                                <img style="
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 4px;
+                                            " src="@imageUrl" alt="Image" />
+                            </MudItem>
+                        }
+                    }
+                </MudGrid>
+            </MudItem>
+            <MudItem xs="12">
+                <MudGrid>
+                    <MudItem xs="10">
+                        <MudButton Variant="Variant.Filled" OnClick="OpenUploadModal">@res["ImagesUpload"]</MudButton>
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">@res["Save"]</MudButton>
+                        <MudButton Color="Color.Secondary" OnClick="Cancel" Variant="Variant.Filled">@res["Cancel"]</MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public Move? move { get; set; }
+
+    [Parameter]
+    public ICollection<string> editedMoveImages { get; set; } = new List<string>();
+
+    [Parameter]
+    public bool isEditMode { get; set; }
+
+    private bool isLoading = false;
+
+    private MoveValidator moveValidator = new MoveValidator();
+
+    private ICollection<string> urlImages = new List<string>();
+
+    protected override void OnParametersSet()
+    {
+        urlImages = editedMoveImages;
+
+        if (move == null)
+        {
+            move = new Move();
+        }
+    }
+
+    private async Task OpenUploadModal()
+    {
+        var parameters = new DialogParameters { ["Move"] = move, ["OnImagesUploaded"] = EventCallback.Factory.Create<IList<string>>(this, OnImagesUploaded) };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Large, FullWidth = true, CloseButton = true };
+        dialogService.Show<UploadImagesDialog>(res["ImagesUpload"], parameters, options);
+    }
+
+    private async Task OnImagesUploaded(IList<string> newUrlImages)
+    {
+        if (urlImages.Any())
+        {
+            foreach (var image in newUrlImages)
+            {
+                urlImages.Add(image);
+            }
+        }
+        else
+        {
+            urlImages = newUrlImages;
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        isLoading = true;
+
+        var validationResult = await moveValidator.ValidateAsync(move);
+        if (!validationResult.IsValid)
+        {
+            foreach (var error in validationResult.Errors)
+            {
+                snackbar.Add(error.ErrorMessage, MudBlazor.Severity.Error);
+            }
+            return;
+        }
+
+        try
+        {
+            isLoading = true;
+
+            if (isEditMode)
+            {
+                await moveService.UpdateMoveAsync(move, CancellationToken.None);
+                snackbar.Add(res["SuccessMoveEdition"], MudBlazor.Severity.Success);
+            }
+            else
+            {
+                await moveService.AddNewMoveAsync(move, CancellationToken.None);
+                snackbar.Add(res["SuccessMoveAddition"], MudBlazor.Severity.Success);
+            }
+
+            nav.NavigateTo("/moves/gallery");
+        }
+        catch (MoveException ex)
+        {
+            snackbar.Add(res["ErrorDuringMoveAddition"] + $": {ex.Message}", MudBlazor.Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void SetDifficulty(int value) => move.DifficultyLevel = value;
+
+    private void Cancel() => nav.NavigateTo("/moves/gallery");
+}

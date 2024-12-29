@@ -1,0 +1,143 @@
+﻿@inject IUserService userService
+@inject ISnackbar Snackbar
+@inject UserManager<ApplicationUser> userManager
+@inject IStringLocalizer<SharedResource> res
+@inject IImageService imageService
+
+<MudDialog>
+    <TitleContent>@res["ImagesUpload"]</TitleContent>
+    <DialogContent>
+        <MudStack Style="width: 100%">
+            <MudFileUpload T="IReadOnlyList<IBrowserFile>"
+            @ref="@_fileUpload"
+            OnFilesChanged="OnInputFileChanged"
+            AppendMultipleFiles
+            Hidden="@false"
+            InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+            InputStyle="opacity:0"
+            tabindex="-1"
+            @ondrop="@ClearDragClass"
+            @ondragenter="@SetDragClass"
+            @ondragleave="@ClearDragClass"
+            @ondragend="@ClearDragClass">
+                <ActivatorContent>
+                    <MudPaper Height="300px"
+                    Outlined="true"
+                    Class="@_dragClass">
+                        <MudText Typo="Typo.h6">
+                            @res["DragAndDropImagesHereToAdd"]
+                        </MudText>
+                        @foreach (var file in _fileNames)
+                        {
+                            <MudChip T="string"
+                            Color="Color.Dark"
+                            Text="@file"
+                            tabindex="-1" />
+                        }
+                    </MudPaper>
+                </ActivatorContent>
+            </MudFileUpload>
+            <MudToolBar Gutters="@false"
+            Class="relative d-flex justify-end gap-4">
+                <MudButton Color="Color.Primary"
+                OnClick="@OpenFilePickerAsync"
+                Variant="Variant.Filled">
+                    @res["FilePicker"]
+                </MudButton>
+                <MudButton Color="Color.Primary"
+                Disabled="@(!_fileNames.Any())"
+                OnClick="@UploadFiles"
+                Variant="Variant.Filled">
+                    @res["Add"]
+                </MudButton>
+                <MudButton Color="Color.Error"
+                Disabled="@(!_fileNames.Any())"
+                OnClick="@ClearAsync"
+                Variant="Variant.Filled">
+                    @res["Clear"]
+                </MudButton>
+            </MudToolBar>
+        </MudStack>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    #nullable enable
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public Move move { get; set; }
+
+    [Parameter]
+    public EventCallback<IList<string>> OnImagesUploaded { get; set; }
+
+    private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
+    private string _dragClass = DefaultDragClass;
+    private readonly List<string> _fileNames = new();
+    private MudFileUpload<IReadOnlyList<IBrowserFile>>? _fileUpload;
+    private IList<IBrowserFile> _selectedFiles = new List<IBrowserFile>();
+
+
+
+    private async Task ClearAsync()
+    {
+        await (_fileUpload?.ClearAsync() ?? Task.CompletedTask);
+        _fileNames.Clear();
+        _selectedFiles.Clear();
+        ClearDragClass();
+    }
+
+    private Task OpenFilePickerAsync()
+        => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
+
+    private void OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        ClearDragClass();
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
+        {
+            _fileNames.Add(file.Name);
+            _selectedFiles.Add(file);
+        }
+    }
+
+    private async Task UploadFiles()
+    {
+        if (!_selectedFiles.Any())
+        {
+            Snackbar.Add(res["NoFilesSelected"], MudBlazor.Severity.Warning);
+            return;
+        }
+
+        try
+        {
+            IList<string> newUrlImages = new List<string>();
+            
+            newUrlImages = await imageService.ConvertToBase64FromBrowserFiles(_selectedFiles);
+
+            var newImages = await imageService.UploadImagesAsync(_selectedFiles, move);
+
+            foreach (var image in newImages)
+            {
+                move.Images.Add(image);
+            }
+
+            await OnImagesUploaded.InvokeAsync(newUrlImages);
+            Snackbar.Add(res["SuccessImagesUpload"], MudBlazor.Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (ImageUploadException ex)
+        {
+            Snackbar.Add(res["ErrorDuringFileTransfer"] + $": {ex.Message}", MudBlazor.Severity.Error);
+        }
+    }
+
+    private void SetDragClass()
+        => _dragClass = $"{DefaultDragClass} mud-border-primary";
+
+    private void ClearDragClass()
+        => _dragClass = DefaultDragClass;
+
+    private void Close() => MudDialog?.Close(DialogResult.Ok(true));
+}
