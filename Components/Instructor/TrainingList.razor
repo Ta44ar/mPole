@@ -2,12 +2,15 @@
 
 @inject ITrainingService trainingService
 @inject IStringLocalizer<SharedResource> res
+@inject IDialogService dialogService
+@inject NavigationManager nav
+@inject ISnackbar Snackbar
 
 <PageTitle>@res["TrainingPlans"]</PageTitle>
 
 @if (isLoading)
 {
-    <Loader/>
+    <Loader />
 }
 else
 {
@@ -32,11 +35,39 @@ else
                             </MudItem>
                             <MudItem xs="8">
                                 <MudCardContent>
-                                    <MudText Typo="Typo.h5">@training.Name</MudText>
-                                    <MudText Typo="Typo.subtitle2">Typ: @training.Type</MudText>
-                                    <MudText Typo="Typo.body1">@training.Description</MudText>
+                                    <MudGrid>
+                                        <MudItem xs="12">
+                                            <MudGrid>
+                                                <MudItem xs="10">
+                                                    <MudText Typo="Typo.h5">@training.Name</MudText>
+                                                    <MudText Typo="Typo.subtitle2">@res["Type"]: @res[$"TrainingType_{training.Type}"]</MudText>
+                                                    <MudText Typo="Typo.subtitle2">@res["Level"]: @res[$"Level_{training.Level}"]</MudText>
+                                                </MudItem>
+                                                <MudItem xs="2" Class="d-flex justify-end">
+                                                    <MudCardActions>
+                                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="() => EditTraining(training.Id)" />
+                                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => OnButtonClicked(training)" />
+                                                    </MudCardActions>
+                                                </MudItem>
+                                            </MudGrid>
+                                        </MudItem>
+                                        <MudDivider />
+                                        <MudItem xs="12">
+                                            <MudText Typo="Typo.body1">@training.Description</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12">
+                                            <MudGrid>
+                                                <MudItem xs="10"></MudItem>
+                                                <MudItem xs="2" Class="d-flex justify-end">
+                                                    <MudButton Variant="Variant.Filled" OnClick="() => OrganiseClassBasedOnTrainingPlan(training.Id)">
+                                                        @res["ClassOrganise"]
+                                                    </MudButton>
+                                                </MudItem>
+                                            </MudGrid>
+                                        </MudItem>
+                                    </MudGrid>
                                 </MudCardContent>
-                              </MudItem>
+                            </MudItem>
                         </MudGrid>
                     </MudCard>
                 </MudItem>
@@ -85,7 +116,47 @@ else
 
     private void NavigateToAdd()
     {
-        //to do
+        nav.NavigateTo("/instructor/training-plans/add");
+    }
+
+    private void EditTraining(int trainingId)
+    {
+        nav.NavigateTo($"/instructor/training-plans/edit/{trainingId}");
+    }
+
+    private async void OnButtonClicked(Training training)
+    {
+        bool? result = await dialogService.ShowMessageBox(
+            res["Warning"],
+            res["WarningTrainingDeletion"],
+            yesText: res["Delete"], cancelText: res["Cancel"]);
+
+        if (result == true)
+        {
+            await DeleteTraining(training);
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task DeleteTraining(Training training)
+    {
+        try
+        {
+            await trainingService.DeleteTrainingAsync(training.Id, CancellationToken.None);
+            trainings = trainings.Where(t => t.Id != training.Id).ToList();
+            UpdatePaginatedTrainings();
+            Snackbar.Add(res["SuccessTrainingDeletionMessage"] + $" {training.Name}", MudBlazor.Severity.Success);
+            nav.NavigateTo("/instructor/training-plans");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(res["ErrorDuringTrainingDeletion"] + $": {ex.Message}", MudBlazor.Severity.Success);
+        }
+    }
+
+    public async Task OrganiseClassBasedOnTrainingPlan(int trainingId)
+    {
+        //class adding TO DO
     }
 }
-

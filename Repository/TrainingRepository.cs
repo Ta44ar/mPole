@@ -51,6 +51,7 @@ namespace mPole.Data.Repositories
             entity.Name = training.Name;
             entity.Description = training.Description;
             entity.Type = training.Type;
+            entity.Level = training.Level;
             entity.ImageUrl = training.ImageUrl;
             entity.Moves = training.Moves;
 
@@ -61,6 +62,7 @@ namespace mPole.Data.Repositories
         {
             var trainings = await _context.Trainings
                                     .Include(t => t.Moves)
+                                    .Include(t => t.Classes)
                                     .AsNoTracking()
                                     .ToListAsync();
 

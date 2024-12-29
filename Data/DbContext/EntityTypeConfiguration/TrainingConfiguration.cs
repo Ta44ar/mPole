@@ -22,6 +22,10 @@ namespace mPole.Data.DbContext.EntityTypeConfiguration
                 .IsRequired()
                 .HasColumnType("nvarchar(50)");
 
+            builder.Property(t => t.Level)
+                .IsRequired()
+                .HasColumnType("nvarchar(50)");
+
             builder.Property(t => t.ImageUrl)
                 .IsRequired(false);
 

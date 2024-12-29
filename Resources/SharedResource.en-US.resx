@@ -219,7 +219,7 @@
   <data name="DifficultyLevel" xml:space="preserve">
     <value>Difficulty level</value>
   </data>
-  <data name="MoveRemovedSuccessfullyMessage" xml:space="preserve">
+  <data name="SuccessMoveDeletionMessage" xml:space="preserve">
     <value>Successfully removed the move!</value>
   </data>
   <data name="ErrorDuringMoveDeletion" xml:space="preserve">
@@ -228,7 +228,7 @@
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
-  <data name="MoveDeletionWarning" xml:space="preserve">
+  <data name="WarningMoveDeletion" xml:space="preserve">
     <value>Removal of the figure will be irreversible.</value>
   </data>
   <data name="Delete" xml:space="preserve">
@@ -362,5 +362,56 @@
   </data>
   <data name="Clear" xml:space="preserve">
     <value>Clear</value>
+  </data>
+  <data name="ErrorDuringTrainingLoading" xml:space="preserve">
+    <value>Error occured during training loading</value>
+  </data>
+  <data name="Level_Basic" xml:space="preserve">
+    <value>Basic</value>
+  </data>
+  <data name="Level_Intermediate" xml:space="preserve">
+    <value>Intermediate</value>
+  </data>
+  <data name="Level_Advanced" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="TrainingType_PoleDance" xml:space="preserve">
+    <value>Pole dance</value>
+  </data>
+  <data name="TrainingType_Exotic" xml:space="preserve">
+    <value>Exotic</value>
+  </data>
+  <data name="TrainingType_Stretching" xml:space="preserve">
+    <value>Stretching</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="AddOptionalImage" xml:space="preserve">
+    <value>Add optional miniature</value>
+  </data>
+  <data name="SuccessTrainingEdition" xml:space="preserve">
+    <value>Successfully edited training plan</value>
+  </data>
+  <data name="ErrorDuringTrainingOperation" xml:space="preserve">
+    <value>Error occured during training plan save</value>
+  </data>
+  <data name="SuccessTrainingAddition" xml:space="preserve">
+    <value>Successfully added new training plan</value>
+  </data>
+  <data name="SuccessTrainingDeletionMessage" xml:space="preserve">
+    <value>Successfully deleted training plan</value>
+  </data>
+  <data name="ErrorDuringTrainingDeletion" xml:space="preserve">
+    <value>Error when deleting training plan</value>
+  </data>
+  <data name="WarningTrainingDeletion" xml:space="preserve">
+    <value>Removal of the training plan will be irreversible and will delete each of class based on it.</value>
+  </data>
+  <data name="ClassOrganise" xml:space="preserve">
+    <value>Organise class</value>
   </data>
 </root>

@@ -1,0 +1,11 @@
+﻿@page "/instructor/training-plans/add"
+
+@inject IStringLocalizer<SharedResource> res
+
+<PageTitle>@res["TrainingAdd"]</PageTitle>
+
+<TrainingForm training="training" isEditMode="false" />
+
+@code {
+    private Training training = new Training();
+}
