@@ -4,8 +4,9 @@
 @inject NavigationManager nav
 @inject IMoveService moveService
 @inject IImageService imageService
+@inject IStringLocalizer<SharedResource> res
 
-<PageTitle>Edycja figury</PageTitle>
+<PageTitle>@res["MoveEdit"]</PageTitle>
 
 @if (isLoading)
 {
@@ -19,20 +20,20 @@ else
 
         <MudGrid>
             <MudItem xs="12">
-                <MudTextField @bind-Value="move.Name" Label="Nazwa:" Required="true" />
+                <MudTextField @bind-Value="move.Name" Label="@res["Name"]" Required="true" />
             </MudItem>
             <MudItem xs="12">
-                <MudText>Poziom trudności:</MudText>
+                <MudText>@res["DifficultyLevel"]:</MudText>
                 <MudRating SelectedValue="@move.DifficultyLevel" SelectedValueChanged="SetDifficulty" @bind-Value="move.DifficultyLevel" />
             </MudItem>
             <MudItem xs="12">
-                <MudTextField @bind-Value="move.Description" Label="Opis" Required="true" />
+                <MudTextField @bind-Value="move.Description" Label="@res["Description"]" Required="true" />
             </MudItem>
             <MudDivider />
             <InputFile OnChange="UploadImages" multiple />
             <MudItem xs="12">
-                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Zapisz</MudButton>
-                <MudButton Color="Color.Secondary" OnClick="Cancel">Anuluj</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@res["Save"]</MudButton>
+                <MudButton Color="Color.Secondary" OnClick="Cancel">@res["Cancel"]</MudButton>
             </MudItem>
         </MudGrid>
     </EditForm>
@@ -54,7 +55,7 @@ else
         }
         catch (MoveException ex)
         {
-            Snackbar.Add($"Błąd podczas pobierania figury: {ex.Message}", MudBlazor.Severity.Error);
+            Snackbar.Add(res["ErrorDuringMoveLoading"] + $": {ex.Message}", MudBlazor.Severity.Error);
         }
         finally
         {
@@ -76,12 +77,12 @@ else
             };
 
             await moveService.UpdateMoveAsync(move, CancellationToken.None);
-            Snackbar.Add("Pomyślnie edytowano figurę!", MudBlazor.Severity.Success);
+            Snackbar.Add(res["MoveEditionSuccessMessage"], MudBlazor.Severity.Success);
             nav.NavigateTo($"/Moves/Details/{moveId}");
         }
         catch (MoveException ex)
         {
-            Snackbar.Add($"Błąd podczas edycji figury: {ex.Message}", MudBlazor.Severity.Error);
+            Snackbar.Add(res["ErrorDuringMoveEdition"] + $": {ex.Message}", MudBlazor.Severity.Error);
         }
     }
 
@@ -100,7 +101,7 @@ else
         }
         catch (ImageUploadException ex)
         {
-            Snackbar.Add($"Błąd podczas przesyłania plików: {ex.Message}", MudBlazor.Severity.Error);
+            Snackbar.Add(res["ErrorDuringFileTransfer"] + $": {ex.Message}", MudBlazor.Severity.Error);
         }
         finally
         {

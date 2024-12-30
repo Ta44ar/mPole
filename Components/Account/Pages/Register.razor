@@ -7,8 +7,9 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IStringLocalizer<SharedResource> res
 
-<PageTitle>Rejestracja</PageTitle>
+<PageTitle>@res["Registration"]</PageTitle>
 
 <EditForm Model="registrationDto" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
     <DataAnnotationsValidator />
@@ -16,23 +17,23 @@
         <MudItem>
             <MudCard Style="width: 400px" Elevation="3">
                 <MudCardHeader>
-                    <MudText Typo="Typo.h5">Rejestracja</MudText>
+                    <MudText Typo="Typo.h5">@res["Registration"]</MudText>
                 </MudCardHeader>
                 <MudCardContent>
-                    <MudStaticTextField Label="Imię" @bind-Value="registrationDto.FirstName"
+                    <MudStaticTextField Label="@res["FirstName"]" @bind-Value="registrationDto.FirstName"
                                         For="@(() => registrationDto.FirstName)" />
-                    <MudStaticTextField Label="Nazwisko" @bind-Value="registrationDto.LastName"
+                    <MudStaticTextField Label="@res["LastName"]" @bind-Value="registrationDto.LastName"
                                         For="@(() => registrationDto.LastName)" />
-                    <MudStaticTextField Label="Adres e-mail" @bind-Value="registrationDto.Email"
+                    <MudStaticTextField Label="@res["EmailAddress"]" @bind-Value="registrationDto.Email"
                                         For="@(() => registrationDto.Email)" />
-                    <MudStaticTextField Label="Hasło" @bind-Value="registrationDto.Password"
+                    <MudStaticTextField Label="@res["Password"]" @bind-Value="registrationDto.Password"
                                         For="@(() => registrationDto.Password)" InputType="InputType.Password" />
-                    <MudStaticTextField Label="Powtórz hasło" @bind-Value="registrationDto.ConfirmPassword"
+                    <MudStaticTextField Label="@res["PasswordRepeat"]" @bind-Value="registrationDto.ConfirmPassword"
                                         For="@(() => registrationDto.ConfirmPassword)" InputType="InputType.Password" />
                     <br />
                     <div class="form-floating mb-3">
                         <InputDate @bind-Value="registrationDto.DateOfBirth" class="form-control" aria-required="true" />
-                        <label for="dateofbirth">Birthdate</label>
+                        <label for="dateofbirth">@res["Birthdate"]</label>
                         <ValidationMessage For="() => registrationDto.DateOfBirth" class="text-danger" />
                     </div>
                     @if (identityErrors != null && identityErrors.Any())
@@ -46,7 +47,7 @@
                     }
                 </MudCardContent>
                 <MudCardActions>
-                    <MudStaticButton type="submit" Variant="Variant.Filled" Color="Color.Primary">Zarejestruj się</MudStaticButton>
+                    <MudStaticButton type="submit" Variant="Variant.Filled" Color="Color.Primary">@res["Register"]</MudStaticButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -69,7 +70,7 @@
         var user = await UserManager.FindByEmailAsync(registrationDto.Email!);
         if (user is not null)
         {
-            identityErrors = new List<IdentityError> { new IdentityError { Description = "Użytkownik z tym adresem e-mail już istnieje." } };
+            identityErrors = new List<IdentityError> { new IdentityError { Description = res["ErrorUserExists"] } };
             return;
         }
 

@@ -1,0 +1,41 @@
+﻿@inject NavigationManager navigationManager
+@inject IConfiguration configuration
+@inject ISnackbar snackbar
+
+<MudButton Color="Color.Primary" OnClick="ToggleCulture">@buttonText</MudButton>
+
+@code {
+    private string selectedCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+    private Dictionary<string, string?> cultures = new();
+    private string buttonText = "EN";
+
+    protected override void OnInitialized()
+    {
+        cultures = configuration.GetSection("Cultures")
+            .GetChildren().ToDictionary(x => x.Key, x => x.Value);
+        UpdateButtonText();
+    }
+
+    private void ToggleCulture()
+    {
+        selectedCulture = selectedCulture == "pl-PL" ? "en-US" : "pl-PL";
+        UpdateButtonText();
+        RequestCultureChange();
+    }
+
+    private void UpdateButtonText()
+    {
+        buttonText = selectedCulture == "pl-PL" ? "EN" : "PL";
+    }
+
+    private void RequestCultureChange()
+    {
+        var uri = new Uri(navigationManager.Uri)
+            .GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+
+        var query = $"?culture={Uri.EscapeDataString(selectedCulture)}&" +
+            $"redirectUri={Uri.EscapeDataString(uri)}";
+
+        navigationManager.NavigateTo($"/Culture/SetCulture{query}", forceLoad: true);
+    }
+}

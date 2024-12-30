@@ -10,6 +10,7 @@ using mPole.Data.Repositories;
 using mPole.Interface.Repositories;
 using mPole.Interface.Services;
 using mPole.Service;
+using mPole.Utils.Helpers;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddServerSideBlazor();
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -36,6 +38,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("Instructor", policy => policy.RequireRole("Instructor", "Admin"));
 });
 
 builder.Services.AddAuthentication(options =>
@@ -61,6 +64,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     });
 });
 
+builder.Services.AddControllers();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 //builder.Services.AddHttpClient("mPoleClient", client =>
@@ -73,16 +77,19 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 //    client.BaseAddress = new Uri(baseAddress);
 //});
 
-builder.Services.AddMudServices();
-
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
+builder.Services.AddLocalization(options => options.ResourcesPath = "");
+
+builder.Services.AddMudServices();
+
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+var locale = new LocalizationHelper(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -98,13 +105,21 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 
+app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseRouting();
 app.UseAntiforgery();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseRequestLocalization(locale.GetLocalizationOptions());
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+app.MapControllers();
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();

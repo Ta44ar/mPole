@@ -5,67 +5,54 @@
 @inject IImageService imageService
 @inject IMoveService moveService
 @inject IWebHostEnvironment Environment
+@inject IStringLocalizer<SharedResource> res
 
-<PageTitle>Dodaj figurę</PageTitle>
+<PageTitle>@res["MoveAdd"]</PageTitle>
 
-    @if (isLoading)
-    {
-        <Loader />
-    }
-    else
-    {
-        <EditForm Model="move" OnValidSubmit="HandleValidSubmit">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-            <MudGrid>
-                <MudItem xs="10">
-                    <MudTextField @bind-Value="move.Name" Label="Nazwa:" />
-                </MudItem>
-                <MudItem xs="2" Class="justify-end">
-                    <MudText>Poziom trudności:</MudText>
-                    <MudRating SelectedValue="0" SelectedValueChanged="SetDifficulty" @bind-Value="move.DifficultyLevel"/>
-                </MudItem>
-                <MudItem xs="12">
-                    <MudTextField @bind-Value="move.Description" Lines="5" Label="Opis figury:" Variant="Variant.Outlined" />
-                </MudItem>
-                <MudItem>
-                    <InputFile OnChange="UploadImages" multiple />
-                </MudItem>
-                <MudItem>
-                    @if (urlImages.Any())
-                    {
-                        <div>
-                            <MudText>Dołączone multimedia:</MudText>
-                            <div class="image-thumbnails">
-                                @foreach (var imageUrl in urlImages)
-                                {
-                                    <img src="@imageUrl" alt="Miniatura" class="thumbnail" />
-                                }
-                            </div>
-                        </div>
-                    }
-                </MudItem>
-                <MudItem xs="12">
-                    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Zapisz</MudButton>
-                    <MudButton Color="Color.Secondary" OnClick="Cancel">Anuluj</MudButton>
-                </MudItem>
-            </MudGrid>
-        </EditForm>
-    }
-
-<style>
-    .thumbnail {
-        width: 200px;
-        height: 200px;
-        object-fit: cover;
-        margin: 5px;
-    }
-
-    .image-thumbnails {
-        display: flex;
-        flex-wrap: wrap;
-    }
-</style>
+@if (isLoading)
+{
+<Loader />
+}
+else
+{
+<EditForm Model="move" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <MudGrid>
+        <MudItem xs="10">
+            <MudTextField @bind-Value="move.Name" Label="@res["Name"]" />
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+        <MudText>@res["DifficultyLevel"]</MudText>
+            <MudRating SelectedValue="0" SelectedValueChanged="SetDifficulty" @bind-Value="move.DifficultyLevel"/>
+        </MudItem>
+        <MudItem xs="12">
+            <MudTextField @bind-Value="move.Description" Lines="5" Label="Opis figury:" Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem>
+            <InputFile OnChange="UploadImages" multiple />
+        </MudItem>
+        <MudItem>
+            @if (urlImages.Any())
+            {
+                <div>
+                    <MudText>@res["IncludedMedia"]:</MudText>
+                    <div class="image-thumbnails">
+                        @foreach (var imageUrl in urlImages)
+                        {
+                            <img src="@imageUrl" alt="Miniatura" class="thumbnail" />
+                        }
+                    </div>
+                </div>
+            }
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@res["Save"]</MudButton>
+            <MudButton Color="Color.Secondary" OnClick="Cancel">@res["Cancel"]</MudButton>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+}
 
 @code {
     private Move move = new Move();
@@ -89,12 +76,12 @@
         {
             isLoading = true;
             await moveService.AddNewMoveAsync(move, CancellationToken.None);
-            Snackbar.Add("Pomyślnie dodano figurę!", MudBlazor.Severity.Success);
+            Snackbar.Add(res["MoveAddSuccessMessage"], MudBlazor.Severity.Success);
             nav.NavigateTo("/Moves/Gallery");
         }
         catch (MoveException ex)
         {
-            Snackbar.Add($"Błąd podczas dodawania figury: {ex.Message}", MudBlazor.Severity.Error);
+            Snackbar.Add(res["ErrorDuringMoveAddition"] + $": {ex.Message}", MudBlazor.Severity.Error);
         }
         finally
         {
@@ -117,7 +104,7 @@
         }
         catch (ImageUploadException ex)
         {
-            Snackbar.Add($"Błąd podczas przesyłania plików: {ex.Message}", MudBlazor.Severity.Error);
+            Snackbar.Add(res["ErrorDuringFileTransfer"] + $": {ex.Message}", MudBlazor.Severity.Error);
         }
         finally
         {
