@@ -414,4 +414,7 @@
   <data name="ClassOrganise" xml:space="preserve">
     <value>Organizuj zajęcia</value>
   </data>
+  <data name="HelpFAQ" xml:space="preserve">
+    <value>Pomoc - FAQ</value>
+  </data>
 </root>

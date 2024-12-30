@@ -159,7 +159,7 @@ namespace mPole.Migrations
                     b.ToTable("UserToken", "dbo");
                 });
 
-            modelBuilder.Entity("mPole.Data.Models.ApplicationUser", b =>
+            modelBuilder.Entity("ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -235,7 +235,7 @@ namespace mPole.Migrations
                     b.ToTable("User", "dbo");
                 });
 
-            modelBuilder.Entity("mPole.Data.Models.Image", b =>
+            modelBuilder.Entity("Image", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -260,7 +260,7 @@ namespace mPole.Migrations
                     b.ToTable("Image", "dbo");
                 });
 
-            modelBuilder.Entity("mPole.Data.Models.Move", b =>
+            modelBuilder.Entity("Move", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -295,7 +295,7 @@ namespace mPole.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("mPole.Data.Models.ApplicationUser", null)
+                    b.HasOne("ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -304,7 +304,7 @@ namespace mPole.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("mPole.Data.Models.ApplicationUser", null)
+                    b.HasOne("ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -319,7 +319,7 @@ namespace mPole.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("mPole.Data.Models.ApplicationUser", null)
+                    b.HasOne("ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -328,16 +328,16 @@ namespace mPole.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("mPole.Data.Models.ApplicationUser", null)
+                    b.HasOne("ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("mPole.Data.Models.Image", b =>
+            modelBuilder.Entity("Image", b =>
                 {
-                    b.HasOne("mPole.Data.Models.Move", "Move")
+                    b.HasOne("Move", "Move")
                         .WithMany("Images")
                         .HasForeignKey("MoveId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -346,7 +346,7 @@ namespace mPole.Migrations
                     b.Navigation("Move");
                 });
 
-            modelBuilder.Entity("mPole.Data.Models.Move", b =>
+            modelBuilder.Entity("Move", b =>
                 {
                     b.Navigation("Images");
                 });

@@ -1,0 +1,57 @@
+﻿@page "/help"
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager Navigation
+@inject IStringLocalizer<SharedResource> res
+
+<PageTitle>@res["HelpFAQ"]</PageTitle>
+
+<h1>@res["HelpFAQ"]</h1>
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MudPaper Class="pa-4">
+        <MudExpansionPanels>
+            <MudExpansionPanel Text="@res["Question1"]">
+                <MudText Typo="Typo.body1">@res["Answer1"]</MudText>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="@res["Question2"]">
+                <MudText Typo="Typo.body1">@res["Answer2"]</MudText>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="@res["Question3"]">
+                <MudText Typo="Typo.body1">@res["Answer3"]</MudText>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    </MudPaper>
+</MudContainer>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-4">
+    <MudPaper Class="pa-4">
+        <h2>@res["HaveAQuestion"]</h2>
+        <EditForm Model="questionModel" OnValidSubmit="SubmitQuestion">
+            <DataAnnotationsValidator />
+            <MudTextField @bind-Value="questionModel.Email" Label="@res["YourEmail"]" Required="true" />
+            <MudTextField @bind-Value="questionModel.Question" Label="@res["YourQuestion"]" Lines="5" Required="true" />
+            <MudButton type="submit" Variant="Variant.Filled" Color="Color.Primary" Class="mt-2">@res["Submit"]</MudButton>
+        </EditForm>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private QuestionModel questionModel = new();
+
+    private async Task SubmitQuestion()
+    {
+        // Handle the question submission logic here
+        // For example, send the question to an API or email
+        await Task.CompletedTask;
+    }
+
+    private class QuestionModel
+    {
+        [Required(ErrorMessage = "Email jest wymagany.")]
+        [EmailAddress(ErrorMessage = "Nieprawidłowy adres email.")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Pytanie jest wymagane.")]
+        public string Question { get; set; } = string.Empty;
+    }
+}
