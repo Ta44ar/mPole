@@ -7,7 +7,7 @@ namespace mPole.Interface.Services
     {
         Task<Move> AddNewMoveAsync(Move move, CancellationToken cancellationToken);
         Task<List<MoveCardDto>> GetMovesAsync();
-        Task<MoveDetailsDto> GetMoveAsync(int moveId);
+        Task<Move> GetMoveAsync(int moveId);
         Task UpdateMoveAsync(Move move, CancellationToken cancellationToken);
         Task DeleteMoveAsync(int moveId, CancellationToken cancellationToken);
     }

@@ -108,6 +108,7 @@ namespace mPole.Data.Repositories
             var move = await _context.Moves
                                 .Where(m => m.Id == moveId)
                                 .Include(m => m.Images)
+                                .Include(m => m.Trainings)
                                 .AsNoTracking()
                                 .FirstOrDefaultAsync();
 

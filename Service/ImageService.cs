@@ -15,7 +15,7 @@ namespace mPole.Service
             _imageRepository = imageRepository;
         }
 
-        public string ImageBase64(byte[] imageData)
+        public string ConvertToBase64FromByte(byte[] imageData)
         {
             if (imageData == null || imageData.Length == 0)
                 return string.Empty;
@@ -23,7 +23,27 @@ namespace mPole.Service
             return $"data:image/png;base64,{Convert.ToBase64String(imageData)}";
         }
 
-        public async Task<IList<Image>> UploadImagesAsync(List<IBrowserFile> files, string moveName)
+        public async Task<IList<string>> ConvertToBase64FromBrowserFiles(IList<IBrowserFile> files)
+        {
+            IList<string> base64Images = new List<string>();
+
+            foreach (var file in files)
+            {
+                using (var stream = file.OpenReadStream(maxAllowedSize: 1024 * 1024)) // 1 MB
+                using (var memoryStream = new MemoryStream())
+                {
+                    await stream.CopyToAsync(memoryStream);
+                    var buffer = memoryStream.ToArray();
+                    var base64String = Convert.ToBase64String(buffer);
+                    base64Images.Add($"data:{file.ContentType};base64,{base64String}");
+                }
+            }
+
+            return base64Images;
+        }
+
+
+        public async Task<IList<Image>> UploadImagesAsync(IList<IBrowserFile> files, Move move)
         {
             var uploadedImages = await Task.WhenAll(
                 files
@@ -35,7 +55,9 @@ namespace mPole.Service
 
                         return new Image
                         {
-                            Name = moveName,
+                            Move = move,
+                            MoveId = move.Id,
+                            Name = move.Name,
                             ImageData = memoryStream.ToArray()
                         };
                     })

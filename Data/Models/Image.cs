@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using mPole.Interface.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace mPole.Data.Models
 {
@@ -10,5 +11,10 @@ namespace mPole.Data.Models
         public byte[]? ImageData { get; set; }
         public int MoveId { get; set; }
         public virtual Move? Move { get; set; }
+
+        public string GetBase64ImageData(IImageService imageService)
+        {
+            return imageService.ConvertToBase64FromByte(ImageData ?? Array.Empty<byte>());
+        }
     }
 }

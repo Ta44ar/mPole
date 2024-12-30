@@ -35,7 +35,7 @@ namespace mPole.Service
                     Id = move.Id,
                     Name = move.Name,
                     DifficultyLevel = move.DifficultyLevel,
-                    ImageUrl = image != null ? _imageService.ImageBase64(image.ImageData) : string.Empty
+                    ImageUrl = image != null ? _imageService.ConvertToBase64FromByte(image.ImageData) : string.Empty
                 };
 
                 moveCards.Add(moveCard);
@@ -44,20 +44,9 @@ namespace mPole.Service
             return moveCards;
         }
 
-        public async Task<MoveDetailsDto> GetMoveAsync(int moveId)
+        public async Task<Move> GetMoveAsync(int moveId)
         {
-            var move = await _moveRepository.GetMoveByIdAsync(moveId);
-
-            var moveDto = new MoveDetailsDto
-            {
-                Id = move.Id,
-                Name = move.Name,
-                Description = move.Description,
-                DifficultyLevel = move.DifficultyLevel,
-                ImageUrls = move.Images.Select(image => _imageService.ImageBase64(image.ImageData)).ToList()
-            };
-
-            return moveDto;
+            return await _moveRepository.GetMoveByIdAsync(moveId);
         }
 
         public async Task UpdateMoveAsync(Move move, CancellationToken cancellationToken)

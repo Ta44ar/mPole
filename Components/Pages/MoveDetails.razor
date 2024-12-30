@@ -16,31 +16,38 @@
 else
 {
     <MudGrid Style="height:100%; width: 100%;">
-        <MudItem xs="4" sm="4">
-            <MudCarousel Style="height:100%; width: 100%;"  ShowArrows="@arrows" AutoCycle="@autocycle" TData="string">
-                @if (move?.ImageUrls != null)
+        <MudItem xs="12" sm="4">
+            <MudCarousel  Style="height:600px; width: 100%; border-radius: 4px;" EnableSwipeGesture="true" ShowArrows="true" AutoCycle="true" TData="string">
+                @if (moveImageUrls != null)
                 {
-                    @foreach (var imageUrl in move.ImageUrls)
+                    @foreach (var imageUrl in moveImageUrls)
                     {
                         <MudCarouselItem>
-                            <MudCardMedia Image="@imageUrl"  />
+                            <MudCardMedia Height="600" Image="@imageUrl"  />
                         </MudCarouselItem>
                     }
                 }
             </MudCarousel>
         </MudItem>
-        <MudItem xs="8" sm="8">
+        <MudItem xs="12" sm="8">
             <MudCard>
                 <MudCardContent>
-                    <MudText Typo="Typo.h4">@move?.Name</MudText>
-                    <MudText Typo="Typo.body1">@res["DifficultyLevel"]: @move?.DifficultyLevel</MudText>
+                    <MudGrid>
+                        <MudItem xs="12" sm="8">
+                            <MudText Typo="Typo.h4">@move?.Name</MudText>
+                            <MudText Typo="Typo.body1">@res["DifficultyLevel"]: @move?.DifficultyLevel</MudText>
+
+                        </MudItem>
+                        <MudItem xs="12" sm="4" Class="d-flex justify-end">
+                            <MudCardActions>
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="EditMove" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="OnButtonClicked" />
+                            </MudCardActions>
+                        </MudItem>
+                    </MudGrid>
                     <MudDivider DividerType="DividerType.Middle" Class="my-6" />
                     <MudText Typo="Typo.body2">@move?.Description</MudText>
                 </MudCardContent>
-                <MudCardActions>
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="EditMove" />
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="OnButtonClicked" />
-                </MudCardActions>
             </MudCard>
         </MudItem>
     </MudGrid>
@@ -50,9 +57,8 @@ else
     [Parameter]
     public int moveId { get; set; }
 
-    private MoveDetailsDto? move;
-    private bool arrows = true;
-    private bool autocycle = true;
+    private Move? move;
+    private ICollection<string> moveImageUrls = new List<string>();
     private bool isLoading = true;
     private string pageTitle = string.Empty;
 
@@ -62,6 +68,12 @@ else
         {
             move = await moveService.GetMoveAsync(moveId);
             pageTitle = move?.Name ?? res["MoveDetails"];
+
+            foreach (var image in move.Images)
+            {
+                string base64Image = image.GetBase64ImageData(imageService);
+                moveImageUrls.Add(base64Image);
+            }
         }
         catch (MoveException ex)
         {

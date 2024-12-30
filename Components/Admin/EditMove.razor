@@ -8,43 +8,15 @@
 
 <PageTitle>@res["MoveEdit"]</PageTitle>
 
-@if (isLoading)
-{
-    <Loader />
-}
-else
-{
-    <EditForm Model="move" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-
-        <MudGrid>
-            <MudItem xs="12">
-                <MudTextField @bind-Value="move.Name" Label="@res["Name"]" Required="true" />
-            </MudItem>
-            <MudItem xs="12">
-                <MudText>@res["DifficultyLevel"]:</MudText>
-                <MudRating SelectedValue="@move.DifficultyLevel" SelectedValueChanged="SetDifficulty" @bind-Value="move.DifficultyLevel" />
-            </MudItem>
-            <MudItem xs="12">
-                <MudTextField @bind-Value="move.Description" Label="@res["Description"]" Required="true" />
-            </MudItem>
-            <MudDivider />
-            <InputFile OnChange="UploadImages" multiple />
-            <MudItem xs="12">
-                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@res["Save"]</MudButton>
-                <MudButton Color="Color.Secondary" OnClick="Cancel">@res["Cancel"]</MudButton>
-            </MudItem>
-        </MudGrid>
-    </EditForm>
-}
+<MoveForm move="move" editedMoveImages="editedMoveImages" isEditMode="true" />
 
 @code {
     [Parameter]
     public int moveId { get; set; }
 
-    private MoveDetailsDto move = new MoveDetailsDto();
-    private IList<Image> uploadedImages = new List<Image>();
+    private Move move = new Move();
+    public ICollection<string> editedMoveImages = new List<string>();
+
     private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
@@ -52,6 +24,12 @@ else
         try
         {
             move = await moveService.GetMoveAsync(moveId);
+        
+            foreach (var image in move.Images)
+            {
+                string base64Image = image.GetBase64ImageData(imageService);
+                editedMoveImages.Add(base64Image);
+            }
         }
         catch (MoveException ex)
         {
@@ -62,52 +40,4 @@ else
             isLoading = false;
         }
     }
-
-    private async Task HandleValidSubmit()
-    {
-        try
-        {
-            Move move = new Move
-            {
-                Id = moveId,
-                Name = this.move.Name,
-                DifficultyLevel = this.move.DifficultyLevel,
-                Description = this.move.Description,
-                Images = uploadedImages
-            };
-
-            await moveService.UpdateMoveAsync(move, CancellationToken.None);
-            Snackbar.Add(res["MoveEditionSuccessMessage"], MudBlazor.Severity.Success);
-            nav.NavigateTo($"/Moves/Details/{moveId}");
-        }
-        catch (MoveException ex)
-        {
-            Snackbar.Add(res["ErrorDuringMoveEdition"] + $": {ex.Message}", MudBlazor.Severity.Error);
-        }
-    }
-
-    private void Cancel()
-    {
-        nav.NavigateTo($"/Moves/Details/{moveId}");
-    }
-
-    private async Task UploadImages(InputFileChangeEventArgs e)
-    {
-        isLoading = true;
-
-        try
-        {
-            uploadedImages = await imageService.UploadImagesAsync(e.GetMultipleFiles().ToList(), move.Name);
-        }
-        catch (ImageUploadException ex)
-        {
-            Snackbar.Add(res["ErrorDuringFileTransfer"] + $": {ex.Message}", MudBlazor.Severity.Error);
-        }
-        finally
-        {
-            isLoading = false;
-        }
-    }
-
-    private void SetDifficulty(int value) => move.DifficultyLevel = value;
 }
