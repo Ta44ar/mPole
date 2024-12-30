@@ -1,7 +1,7 @@
 ﻿using Heron.MudCalendar;
 using MudBlazor;
 
-namespace mPole.Data.Models.Calendar_Items
+namespace Calendar_Items
 {
     public class Event : CalendarItem
     {
