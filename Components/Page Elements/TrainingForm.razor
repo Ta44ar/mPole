@@ -1,0 +1,114 @@
+﻿@inject ITrainingService trainingService
+@inject IStringLocalizer<SharedResource> res
+@inject ISnackbar snackbar
+@inject IDialogService dialogService
+@inject NavigationManager nav
+
+<EditForm Model="training" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <MudGrid>
+        <MudItem xs="12">
+            <MudGrid>
+                <MudItem xs="10">
+                    <MudTextField @bind-Value="training.Name" Label="@res["Name"]" Required="true" />
+                </MudItem>
+                <MudItem xs="2">
+                    <MudCardMedia Height="150" Image="@training.ImageUrl" Style="width: 150px;" />
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+        <MudItem xs="12">
+            <MudTextField @bind-Value="training.Description" Label="@res["Description"]" Lines="5" Variant="Variant.Outlined" Required="true" />
+        </MudItem>
+        <MudItem xs="12">
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudSelect T="string" ValueChanged="OnTrainingTypeChanged" Label="@res["Type"]" Required="true">
+                        @foreach (var type in Enum.GetValues(typeof(TrainingType)))
+                        {
+                            <MudSelectItem Value="@(type.ToString())">@res[$"TrainingType_{type}"]</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudSelect @bind-Value="training.Level" Label="@res["Level"]" Required="true">
+                        @foreach (var level in Enum.GetValues(typeof(Level)))
+                        {
+                            <MudSelectItem Value="@(level.ToString())">@res[$"Level_{level}"]</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+        <MudItem xs="12">
+            <MudGrid>
+                <MudItem xs="10">
+                </MudItem>
+                <MudItem xs="2">
+                    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">@res["Save"]</MudButton>
+                    <MudButton Color="Color.Secondary" OnClick="Cancel" Variant="Variant.Filled">@res["Cancel"]</MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    [Parameter]
+    public Training? training { get; set; }
+
+    [Parameter]
+    public bool isEditMode { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (!isEditMode && training != null)
+        {
+            training.Type = nameof(TrainingType.PoleDance);
+            training.ImageUrl = GetDefaultImageUrl(training.Type);
+        }
+    }
+
+    private async Task HandleValidSubmit(EditContext editContext)
+    {
+        try
+        {
+            if (isEditMode)
+            {
+                await trainingService.UpdateTrainingAsync(training, CancellationToken.None);
+                snackbar.Add(res["SuccessTrainingEdition"], MudBlazor.Severity.Success);
+            }
+            else
+            {
+                await trainingService.AddNewTrainingAsync(training, CancellationToken.None);
+                snackbar.Add(res["SuccessTrainingAddition"], MudBlazor.Severity.Success);
+            }
+
+            nav.NavigateTo("/instructor/training-plans");
+        }
+        catch (Exception ex)
+        {
+            snackbar.Add(res["ErrorDuringTrainingOperation"] + $": {ex.Message}", MudBlazor.Severity.Error);
+        }
+    }
+
+    private void OnTrainingTypeChanged(string newType)
+    {
+        training.Type = newType;
+        training.ImageUrl = GetDefaultImageUrl(newType);
+    }
+
+    private string GetDefaultImageUrl(string trainingType)
+    {
+        return trainingType switch
+        {
+            nameof(TrainingType.PoleDance) => "/images/poledance_default_icon.jpg",
+            nameof(TrainingType.Exotic) => "/images/exotic_default_icon.jpg",
+            nameof(TrainingType.Stretching) => "/images/stretching_default_icon.jpg",
+            _ => "/images/poledance_default_icon.jpg",
+        };
+    }
+
+    private void Cancel() => nav.NavigateTo("/instructor/training-plans");
+}

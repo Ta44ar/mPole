@@ -1,0 +1,40 @@
+﻿@page "/instructor/training-plans/edit/{trainingId:int}"
+
+@inject ITrainingService trainingService
+@inject IStringLocalizer<SharedResource> res
+@inject ISnackbar snackbar
+
+<PageTitle>@res["TrainingEdit"]</PageTitle>
+
+@if (isLoading)
+{
+    <Loader />
+}
+else
+{
+    <TrainingForm training="training" isEditMode="true" />
+}
+
+@code {
+    [Parameter]
+    public int trainingId { get; set; }
+
+    private Training training = new Training();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            training = await trainingService.GetTrainingAsync(trainingId);
+        }
+        catch (Exception ex)
+        {
+            snackbar.Add(res["ErrorDuringTrainingLoading"] + $": {ex.Message}", MudBlazor.Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

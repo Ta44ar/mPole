@@ -6,6 +6,8 @@
 @inject IMoveService moveService
 @inject IDialogService DialogService
 @inject IStringLocalizer<SharedResource> res
+@inject IAuthorizationService AuthorizationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>@pageTitle</PageTitle>
 
@@ -39,10 +41,13 @@ else
 
                         </MudItem>
                         <MudItem xs="12" sm="4" Class="d-flex justify-end">
-                            <MudCardActions>
-                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="EditMove" />
-                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="OnButtonClicked" />
-                            </MudCardActions>
+                            @if (isAdmin)
+                            {
+                                <MudCardActions>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="EditMove" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="OnButtonClicked" />
+                                </MudCardActions>
+                            }
                         </MudItem>
                     </MudGrid>
                     <MudDivider DividerType="DividerType.Middle" Class="my-6" />
@@ -60,6 +65,7 @@ else
     private Move? move;
     private ICollection<string> moveImageUrls = new List<string>();
     private bool isLoading = true;
+    private bool isAdmin = false;
     private string pageTitle = string.Empty;
 
     protected override async Task OnInitializedAsync()
@@ -74,6 +80,11 @@ else
                 string base64Image = image.GetBase64ImageData(imageService);
                 moveImageUrls.Add(base64Image);
             }
+
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            var authResult = await AuthorizationService.AuthorizeAsync(user, "AdminOnly");
+            isAdmin = authResult.Succeeded;
         }
         catch (MoveException ex)
         {
@@ -92,7 +103,7 @@ else
         try
         {
             await moveService.DeleteMoveAsync(moveId, CancellationToken.None);
-            Snackbar.Add(res["MoveRemovedSuccessfully"], Severity.Success);
+            Snackbar.Add(res["SuccessMoveDeletionMessage"] + $" {move.Name}", Severity.Success);
             nav.NavigateTo("/moves/gallery");
         }
         catch (MoveException ex)
@@ -105,7 +116,7 @@ else
     {
         bool? result = await DialogService.ShowMessageBox(
             res["Warning"],
-            res["MoveDeletionWarning"],
+            res["WarningMoveDeletion"],
             yesText: res["Delete"], cancelText: res["Cancel"]);
 
         if (result == true)

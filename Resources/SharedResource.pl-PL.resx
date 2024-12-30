@@ -219,7 +219,7 @@
   <data name="DifficultyLevel" xml:space="preserve">
     <value>Poziom trudności</value>
   </data>
-  <data name="MoveRemovedSuccessfullyMessage" xml:space="preserve">
+  <data name="SuccessMoveDeletionMessage" xml:space="preserve">
     <value>Pomyślnie usunięto figurę!</value>
   </data>
   <data name="ErrorDuringMoveDeletion" xml:space="preserve">
@@ -228,7 +228,7 @@
   <data name="Warning" xml:space="preserve">
     <value>Ostrzeżenie</value>
   </data>
-  <data name="MoveDeletionWarning" xml:space="preserve">
+  <data name="WarningMoveDeletion" xml:space="preserve">
     <value>Usunięcie figury będzie nieodwracalne.</value>
   </data>
   <data name="Delete" xml:space="preserve">
@@ -362,5 +362,56 @@
   </data>
   <data name="Clear" xml:space="preserve">
     <value>Wyczyść</value>
+  </data>
+  <data name="ErrorDuringTrainingLoading" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania treningu</value>
+  </data>
+  <data name="Level_Basic" xml:space="preserve">
+    <value>Podstawowy</value>
+  </data>
+  <data name="Level_Intermediate" xml:space="preserve">
+    <value>Średni</value>
+  </data>
+  <data name="Level_Advanced" xml:space="preserve">
+    <value>Zaawansowany</value>
+  </data>
+  <data name="TrainingType_PoleDance" xml:space="preserve">
+    <value>Pole dance</value>
+  </data>
+  <data name="TrainingType_Exotic" xml:space="preserve">
+    <value>Exotic</value>
+  </data>
+  <data name="TrainingType_Stretching" xml:space="preserve">
+    <value>Stretching</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Poziom</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="AddOptionalImage" xml:space="preserve">
+    <value>Dodaj opcjonalną miniaturę</value>
+  </data>
+  <data name="SuccessTrainingEdition" xml:space="preserve">
+    <value>Pomyślnie edytowano plan treningowy</value>
+  </data>
+  <data name="ErrorDuringTrainingOperation" xml:space="preserve">
+    <value>Wystąpił błąd podczas zapisu planu treningowego</value>
+  </data>
+  <data name="SuccessTrainingAddition" xml:space="preserve">
+    <value>Pomyślnie dodano nowy plan treningowy</value>
+  </data>
+  <data name="SuccessTrainingDeletionMessage" xml:space="preserve">
+    <value>Pomyślnie usunięto plan treningowy</value>
+  </data>
+  <data name="ErrorDuringTrainingDeletion" xml:space="preserve">
+    <value>Błąd podczas usuwania planu treningowego</value>
+  </data>
+  <data name="WarningTrainingDeletion" xml:space="preserve">
+    <value>Usunięcie planu treningowego będzie nieodwracalne i usunie wszystkie powiązane z nim zajęcia!</value>
+  </data>
+  <data name="ClassOrganise" xml:space="preserve">
+    <value>Organizuj zajęcia</value>
   </data>
 </root>

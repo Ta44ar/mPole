@@ -76,56 +76,6 @@ else
         {
             isLoading = false;
         }
-
-        if (poledanceMoves.Count == 0)
-        {
-            string imageUrl = "https://dekochatka.pl/wp-content/uploads/2020/10/4937.jpg";
-            poledanceMoves = new List<MoveCardDto>()
-            {
-                new MoveCardDto
-                {
-                    Id = 2,
-                    Name = "Figura 1",
-                    DifficultyLevel = 2,
-                    ImageUrl = imageUrl
-                },
-                new MoveCardDto
-                {
-                    Id = 3,
-                    Name = "Figura 2",
-                    DifficultyLevel = 1,
-                    ImageUrl = imageUrl
-                },
-                new MoveCardDto
-                {
-                    Id = 4,
-                    Name = "Figura 3",
-                    DifficultyLevel = 1,
-                    ImageUrl = imageUrl
-                },
-                new MoveCardDto
-                {
-                    Id = 5,
-                    Name = "Figura 4",
-                    DifficultyLevel = 3,
-                    ImageUrl = imageUrl
-                },
-                new MoveCardDto
-                {
-                    Id = 6,
-                    Name = "Figura 5",
-                    DifficultyLevel = 2,
-                    ImageUrl = imageUrl
-                },
-                new MoveCardDto
-                {
-                    Id = 7,
-                    Name = "Figura 6",
-                    DifficultyLevel = 3,
-                    ImageUrl = imageUrl
-                }
-            };
-        }
     }
 
     private void OnPageChanged(int pageIndex)
