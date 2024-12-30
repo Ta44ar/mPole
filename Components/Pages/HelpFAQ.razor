@@ -1,13 +1,14 @@
 ﻿@page "/help"
-@using System.ComponentModel.DataAnnotations
+
 @inject NavigationManager Navigation
 @inject IStringLocalizer<SharedResource> res
+@inject ISnackbar snackbar
 
 <PageTitle>@res["HelpFAQ"]</PageTitle>
 
-<h1>@res["HelpFAQ"]</h1>
+<MudText Typo="Typo.h4" Class="d-flex justify-center mb-4">@res["HelpFAQ"]</MudText>
 
-<MudContainer MaxWidth="MaxWidth.Medium">
+<MudContainer MaxWidth="MaxWidth.Large" Class="mb-6">
     <MudPaper Class="pa-4">
         <MudExpansionPanels>
             <MudExpansionPanel Text="@res["Question1"]">
@@ -23,35 +24,45 @@
     </MudPaper>
 </MudContainer>
 
-<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-4">
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
     <MudPaper Class="pa-4">
         <h2>@res["HaveAQuestion"]</h2>
         <EditForm Model="questionModel" OnValidSubmit="SubmitQuestion">
             <DataAnnotationsValidator />
-            <MudTextField @bind-Value="questionModel.Email" Label="@res["YourEmail"]" Required="true" />
-            <MudTextField @bind-Value="questionModel.Question" Label="@res["YourQuestion"]" Lines="5" Required="true" />
-            <MudButton type="submit" Variant="Variant.Filled" Color="Color.Primary" Class="mt-2">@res["Submit"]</MudButton>
+            <MudTextField @bind-Value="questionModel.Email" Label="@res["Email"]" Required="true" />
+            <MudTextField @bind-Value="questionModel.Question" Label="@res["Question"]" Lines="5" Required="true" />
+            <MudButton OnClick="SubmitQuestion" Variant="Variant.Filled" Color="Color.Primary" Class="mt-2">@res["Send"]</MudButton>
         </EditForm>
     </MudPaper>
 </MudContainer>
 
 @code {
     private QuestionModel questionModel = new();
+    private QuestionValidator? questionValidator;
 
     private async Task SubmitQuestion()
     {
-        // Handle the question submission logic here
-        // For example, send the question to an API or email
+        questionValidator = new QuestionValidator(res);
+
+        var validationResult = await questionValidator.ValidateAsync(questionModel);
+        if (!validationResult.IsValid)
+        {
+            foreach (var error in validationResult.Errors)
+            {
+                snackbar.Add(error.ErrorMessage, MudBlazor.Severity.Error);
+            }
+            return;
+        }
+
+        // temporary solution !!! 
+        else
+        {
+            snackbar.Add(res["SuccessEmailSend"], MudBlazor.Severity.Success);
+            questionModel = new QuestionModel();
+        }
+        
+
+        // Handle the question submission logic here TO DO
         await Task.CompletedTask;
-    }
-
-    private class QuestionModel
-    {
-        [Required(ErrorMessage = "Email jest wymagany.")]
-        [EmailAddress(ErrorMessage = "Nieprawidłowy adres email.")]
-        public string Email { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Pytanie jest wymagane.")]
-        public string Question { get; set; } = string.Empty;
     }
 }
