@@ -414,4 +414,7 @@
   <data name="ClassOrganise" xml:space="preserve">
     <value>Organise class</value>
   </data>
+  <data name="HelpFAQ" xml:space="preserve">
+    <value>Help - FAQ</value>
+  </data>
 </root>
