@@ -1,4 +1,4 @@
-﻿@page "/admin/trainings"
+﻿@page "/instructor/training-plans"
 
 @inject ITrainingService trainingService
 @inject IStringLocalizer<SharedResource> res
@@ -47,8 +47,8 @@ else
 }
 
 @code {
-    private IList<Training> trainings = new List<Training>();
-    private IList<Training> paginatedTrainings = new List<Training>();
+    private ICollection<Training> trainings = new List<Training>();
+    private ICollection<Training> paginatedTrainings = new List<Training>();
     private bool isLoading = true;
     private int pageSize = 2;
     private int pageIndex = 1;
@@ -82,8 +82,10 @@ else
         paginatedTrainings = trainings.Skip(startIndex).Take(pageSize).ToList();
         StateHasChanged();
     }
+
     private void NavigateToAdd()
     {
+        //to do
     }
 }
 

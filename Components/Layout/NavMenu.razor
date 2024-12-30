@@ -43,12 +43,18 @@
         <MudNavLink Href="@($"/classes/{mainLayout.userId}")" Match="NavLinkMatch.Prefix">@res["MyClasses"]</MudNavLink>
     </MudNavGroup>
     <MudNavLink Href="/help" Match="NavLinkMatch.Prefix">@res["Help"]</MudNavLink>
+    
+    @if (mainLayout.isInstructor) 
+    {
+        <MudNavGroup Title="@res["InstructorPanel"]">
+            <MudNavLink Href="/instructor/training-plans" Match="NavLinkMatch.Prefix">@res["TrainingPlans"]</MudNavLink>
+        </MudNavGroup>
+    }
 
     @if (mainLayout.isAdmin)
     {
         <MudNavGroup Title="@res["AdminPanel"]">
             <MudNavLink Href="/admin/users" Match="NavLinkMatch.Prefix">@res["Users"]</MudNavLink>
-            <MudNavLink Href="/admin/trainings" Match="NavLinkMatch.Prefix">@res["TrainingPlans"]</MudNavLink>
         </MudNavGroup>
     }
 </MudNavMenu>

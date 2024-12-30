@@ -321,4 +321,22 @@
   <data name="ErrorConfirmingEmail" xml:space="preserve">
     <value>Error finding user for unspecified email.</value>
   </data>
+  <data name="InstructorPanel" xml:space="preserve">
+    <value>Instructor panel</value>
+  </data>
+  <data name="Trainer" xml:space="preserve">
+    <value>Trainer</value>
+  </data>
+  <data name="ClassDetails" xml:space="preserve">
+    <value>Class details</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="UsersRegistered" xml:space="preserve">
+    <value>Registered users</value>
+  </data>
 </root>
