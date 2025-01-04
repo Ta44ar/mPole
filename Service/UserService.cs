@@ -5,13 +5,13 @@ using System.Security.Claims;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UserService(IUserRepository userRepository, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor)
+    public UserService(IUserRepository userRepository, IServiceScopeFactory serviceScopeFactory, IHttpContextAccessor httpContextAccessor)
     {
         _userRepository = userRepository;
-        _userManager = userManager;
+        _serviceScopeFactory = serviceScopeFactory;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -32,14 +32,18 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<ApplicationUser>> SearchTrainersAsync(string searchText, CancellationToken cancellationToken)
     {
-        var trainers = await _userManager.GetUsersInRoleAsync("Instructor");
+        using (var scope = _serviceScopeFactory.CreateScope())
+        {
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var trainers = await userManager.GetUsersInRoleAsync("Instructor");
 
-        if (trainers == null)
-            return new List<ApplicationUser>();
+            if (trainers == null)
+                return new List<ApplicationUser>();
 
-        return trainers.Where(t => t.UserName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                                   t.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                                   t.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+            return trainers.Where(t => t.UserName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                                       t.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                                       t.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+        }
     }
 
     public async Task<ApplicationUser> GetCurrentUserAsync()
@@ -51,13 +55,17 @@ public class UserService : IUserService
             return null;
         }
 
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
+        using (var scope = _serviceScopeFactory.CreateScope())
         {
-            throw new InvalidOperationException("User not found.");
-        }
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found.");
+            }
 
-        return user;
+            return user;
+        }
     }
 
     public async Task<ICollection<Class>> GetClassesByUserAsync(string userId)

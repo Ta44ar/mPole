@@ -6,44 +6,50 @@ using mPole.Data.Models;
 public class UserRepository : IUserRepository
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly UserManager<ApplicationUser> _userManager;
 
-    public UserRepository(IServiceScopeFactory serviceScopeFactory, UserManager<ApplicationUser> userManager)
+    public UserRepository(IServiceScopeFactory serviceScopeFactory)
     {
         _serviceScopeFactory = serviceScopeFactory;
-        _userManager = userManager;
     }
 
     public async Task<ApplicationUser?> GetUserByNameAsync(string userName)
     {
-        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == userName);
-
-        if (user == null)
+        using (var scope = _serviceScopeFactory.CreateScope())
         {
-            throw new ArgumentNullException("No user with given username found.");
-        }
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var user = await userManager.Users.FirstOrDefaultAsync(u => u.UserName == userName);
 
-        return user;
+            if (user == null)
+            {
+                throw new ArgumentNullException("No user with given username found.");
+            }
+
+            return user;
+        }
     }
 
     public async Task<ICollection<ApplicationUser>> GetAllUsersAsync()
     {
-        var users = await _userManager.Users
-            .AsNoTracking()
-            .Select(u => new ApplicationUser
-            {
-                UserName = u.UserName,
-                FirstName = u.FirstName,
-                LastName = u.LastName
-            })
-            .ToListAsync();
-
-        if (!users.Any())
+        using (var scope = _serviceScopeFactory.CreateScope())
         {
-            return new List<ApplicationUser>();
-        }
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var users = await userManager.Users
+                .AsNoTracking()
+                .Select(u => new ApplicationUser
+                {
+                    UserName = u.UserName,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName
+                })
+                .ToListAsync();
 
-        return users;
+            if (!users.Any())
+            {
+                return new List<ApplicationUser>();
+            }
+
+            return users;
+        }
     }
 
     public async Task<ICollection<string?>> GetExistingRolesAsync()
