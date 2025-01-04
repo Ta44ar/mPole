@@ -1,0 +1,17 @@
+﻿@inject IStringLocalizer<SharedResource> res
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudText Typo="Typo.h5">@res["PleaseLogIn"]</MudText>
+    </MudItem>
+    <MudItem xs="12">
+        <MudLink Href="@LoginUrl">@res["Login"]</MudLink>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public string? ReturnUrl { get; set; }
+
+    private string LoginUrl => $"/Account/Login?ReturnUrl={Uri.EscapeDataString(ReturnUrl ?? "/")}";
+}

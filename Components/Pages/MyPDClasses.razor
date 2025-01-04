@@ -1,0 +1,125 @@
+﻿@page "/classes/{userId}"
+
+@inject IUserService userService
+@inject IClassService classService
+@inject IStringLocalizer<SharedResource> res
+@inject ISnackbar Snackbar
+@inject UserManager<ApplicationUser> userManager
+@inject NavigationManager nav
+
+@if (isLoading)
+{
+    <Loader />
+}
+else
+{
+    <AuthorizeView>
+        <Authorized>
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h5">@res["AttendantClasses"]</MudText>
+                    <MudTable Items="@userClasses" Hover="true" SortLabel="Sort By">
+                        <HeaderContent>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Training.Name)">@res["Name"]</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Date ?? DateTime.MinValue)">@res["Date"]</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Location)">@res["Location"]</MudTableSortLabel></MudTh>
+                        </HeaderContent>
+                        <RowTemplate Context="userClass">
+                            <MudTd DataLabel="@res["Name"]">@userClass.Training.Name</MudTd>
+                            <MudTd DataLabel="@res["Date"]">@userClass.Date?.ToString("d")</MudTd>
+                            <MudTd DataLabel="@res["Location"]">@userClass.Location</MudTd>
+                        </RowTemplate>
+                        <NoRecordsContent>
+                            <MudText Typo="Typo.body1">@res["UserNoClassesFound"]</MudText>
+                            <MudLink Href="/classes">@res["ClassSignIn"]</MudLink>
+                        </NoRecordsContent>
+                        <PagerContent>
+                            <MudTablePager PageSizeOptions="new int[] { 5, 10, 50}" />
+                        </PagerContent>
+                    </MudTable>
+                </MudItem>
+
+                @if (isInstructor)
+                {
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h5">@res["InstructorClasses"]</MudText>
+                        <MudTable Items="@instructorClasses" Hover="true" SortLabel="Sort By">
+                            <HeaderContent>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Training.Name)">@res["Name"]</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Date ?? DateTime.MinValue)">@res["Date"]</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Location)">@res["Location"]</MudTableSortLabel></MudTh>
+                                <MudTh>@res["Actions"]</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="instructorClass">
+                                <MudTd DataLabel="@res["Name"]">@instructorClass.Training.Name</MudTd>
+                                <MudTd DataLabel="@res["Date"]">@instructorClass.Date?.ToString("d")</MudTd>
+                                <MudTd DataLabel="@res["Location"]">@instructorClass.Location</MudTd>
+                                <MudTd DataLabel="@res["Actions"]">
+                                    <MudButton Color="Color.Primary" OnClick="() => EditClass(instructorClass.Id)">@res["Edit"]</MudButton>
+                                    <MudButton Color="Color.Error" OnClick="() => DeleteClass(instructorClass.Id)">@res["Delete"]</MudButton>
+                                </MudTd>
+                            </RowTemplate>
+                            <NoRecordsContent>
+                                <MudItem>
+                                    <MudText Typo="Typo.body1">@res["InstructorNoClassesFound"]</MudText>
+                                    <MudLink Href="/instructor/training-plans">@res["OrganiseClass"]</MudLink>
+                                </MudItem>
+                            </NoRecordsContent>
+                            <PagerContent>
+                                <MudTablePager PageSizeOptions="new int[] { 5, 10, 50}" />
+                            </PagerContent>
+                        </MudTable>
+                    </MudItem>
+                }
+            </MudGrid>
+        </Authorized>
+        <NotAuthorized>
+            <MudGrid>
+                <MudItem xs="12">
+                    <PleaseLogInView ReturnUrl="@nav.Uri"/>
+                </MudItem>
+            </MudGrid>
+        </NotAuthorized>
+    </AuthorizeView>
+}
+
+@code {
+    [Parameter]
+    public string? userId { get; set; }
+
+    private bool isLoading = true;
+    private bool isInstructor = false;
+    private ICollection<Class> userClasses = new List<Class>();
+    private ICollection<Class> instructorClasses = new List<Class>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await userService.GetCurrentUserAsync();
+
+        if (user != null)
+        {
+            isInstructor = await userManager.IsInRoleAsync(user, "Instructor");
+
+            userClasses = await userService.GetClassesByUserAsync(user.Id);
+
+            if (isInstructor)
+            {
+                instructorClasses = await userService.GetClassesByInstructorAsync(user.UserName);
+            }
+
+            isLoading = false;
+        }
+
+        isLoading = false;
+    }
+
+    private void EditClass(int classId)
+    {
+        // Navigate to edit class page
+    }
+
+    private void DeleteClass(int classId)
+    {
+        // Delete class logic
+    }
+}

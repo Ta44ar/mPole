@@ -3,14 +3,24 @@
 @inject IStringLocalizer<SharedResource> res
 @inject IClassService classService
 @inject IDialogService dialogService
+@inject NavigationManager nav
 
 <PageTitle>@res["Classes"]</PageTitle>
 
-<Calendar Events="_events" OnDateRangeChanged="OnDateRangeChangedAsync" OnItemClicked="OnItemClickedAsync" />
+<AuthorizeView>
+    <Authorized>
+        <Calendar Events="_events" OnDateRangeChanged="OnDateRangeChangedAsync" OnItemClicked="OnItemClickedAsync" />
+    </Authorized>
+    <NotAuthorized>
+        <PleaseLogInView ReturnUrl="@nav.Uri" />
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     [CascadingParameter]
     public MainLayout? mainLayout { get; set; }
+
+    private bool isLoading = true;
 
     public ICollection<Event> _events = new List<Event>();
 
@@ -35,8 +45,8 @@
         _events = poleDanceClasses.Select(c => new Event
             {
                 EventId = c.Id,
-                Start = c.Date,
-                End = c.Date.AddHours(double.Parse(c.Duration)),
+                Start = c.Date ?? DateTime.MinValue,
+                End = (c.Date ?? DateTime.MinValue).AddHours(c.Duration),
                 Title = c.Training.Name,
                 Location = c.Location,
                 Text = res["Trainer"] + $": {c.Trainer}",
@@ -49,6 +59,6 @@
         var poleDanceClass = await classService.GetClassByIdAsync(item.EventId, CancellationToken.None);
         var parameters = new DialogParameters { ["Class"] = poleDanceClass };
         var options = new DialogOptions { MaxWidth = MaxWidth.Large, FullWidth = true };
-        dialogService.Show<PoleDanceClassDialog>(res["ClassDetails"], parameters, options);
+        dialogService.Show<PDClassViewDialog>(res["ClassDetails"], parameters, options);
     }
 }

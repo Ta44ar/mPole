@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace mPole.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,14 +15,30 @@ namespace mPole.Migrations
                 name: "dbo");
 
             migrationBuilder.CreateTable(
+                name: "Group",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    Level = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    RegularClassTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CapacityLimit = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Group", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Move",
                 schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", nullable: false),
                     DifficultyLevel = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -46,14 +62,33 @@ namespace mPole.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Training",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    Level = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Training", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "User",
                 schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -81,7 +116,7 @@ namespace mPole.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     ImageData = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     MoveId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -121,6 +156,58 @@ namespace mPole.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Class",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Duration = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    Trainer = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    TrainingId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Class", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Class_Training_TrainingId",
+                        column: x => x.TrainingId,
+                        principalSchema: "dbo",
+                        principalTable: "Training",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MoveTraining",
+                schema: "dbo",
+                columns: table => new
+                {
+                    MoveId = table.Column<int>(type: "int", nullable: false),
+                    TrainingId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MoveTraining", x => new { x.MoveId, x.TrainingId });
+                    table.ForeignKey(
+                        name: "FK_MoveTraining_Move_MoveId",
+                        column: x => x.MoveId,
+                        principalSchema: "dbo",
+                        principalTable: "Move",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MoveTraining_Training_TrainingId",
+                        column: x => x.TrainingId,
+                        principalSchema: "dbo",
+                        principalTable: "Training",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserClaim",
                 schema: "dbo",
                 columns: table => new
@@ -136,6 +223,33 @@ namespace mPole.Migrations
                     table.PrimaryKey("PK_UserClaim", x => x.Id);
                     table.ForeignKey(
                         name: "FK_UserClaim_User_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "dbo",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserGroup",
+                schema: "dbo",
+                columns: table => new
+                {
+                    GroupId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserGroup", x => new { x.GroupId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_UserGroup_Group_GroupId",
+                        column: x => x.GroupId,
+                        principalSchema: "dbo",
+                        principalTable: "Group",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserGroup_User_UserId",
                         column: x => x.UserId,
                         principalSchema: "dbo",
                         principalTable: "User",
@@ -214,11 +328,50 @@ namespace mPole.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserClass",
+                schema: "dbo",
+                columns: table => new
+                {
+                    ClassId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserClass", x => new { x.ClassId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_UserClass_Class_ClassId",
+                        column: x => x.ClassId,
+                        principalSchema: "dbo",
+                        principalTable: "Class",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserClass_User_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "dbo",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Class_TrainingId",
+                schema: "dbo",
+                table: "Class",
+                column: "TrainingId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Image_MoveId",
                 schema: "dbo",
                 table: "Image",
                 column: "MoveId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MoveTraining_TrainingId",
+                schema: "dbo",
+                table: "MoveTraining",
+                column: "TrainingId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -255,6 +408,18 @@ namespace mPole.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserClass_UserId",
+                schema: "dbo",
+                table: "UserClass",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserGroup_UserId",
+                schema: "dbo",
+                table: "UserGroup",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserLogin_UserId",
                 schema: "dbo",
                 table: "UserLogin",
@@ -275,11 +440,23 @@ namespace mPole.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
+                name: "MoveTraining",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
                 name: "RoleClaim",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
                 name: "UserClaim",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "UserClass",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "UserGroup",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
@@ -299,11 +476,23 @@ namespace mPole.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
+                name: "Class",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "Group",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
                 name: "Role",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
                 name: "User",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "Training",
                 schema: "dbo");
         }
     }

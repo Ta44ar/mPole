@@ -59,7 +59,7 @@ else
                                             <MudGrid>
                                                 <MudItem xs="10"></MudItem>
                                                 <MudItem xs="2" Class="d-flex justify-end">
-                                                    <MudButton Variant="Variant.Filled" OnClick="() => OrganiseClassBasedOnTrainingPlan(training.Id)">
+                                                    <MudButton Variant="Variant.Filled" OnClick="() => OrganiseClassBasedOnTrainingPlan(training, mainLayout.user)">
                                                         @res["ClassOrganise"]
                                                     </MudButton>
                                                 </MudItem>
@@ -78,6 +78,9 @@ else
 }
 
 @code {
+    [CascadingParameter]
+    private MainLayout? mainLayout { get; set; }
+
     private ICollection<Training> trainings = new List<Training>();
     private ICollection<Training> paginatedTrainings = new List<Training>();
     private bool isLoading = true;
@@ -155,8 +158,12 @@ else
         }
     }
 
-    public async Task OrganiseClassBasedOnTrainingPlan(int trainingId)
+    private async Task OrganiseClassBasedOnTrainingPlan(Training training, ApplicationUser applicationUser)
     {
-        //class adding TO DO
+        var parameters = new DialogParameters { ["Training"] = training, ["User"] = applicationUser };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        var dialog = dialogService.Show<PDClassOrganiseDialog>(res["OrganiseClass"], parameters, options);
+        var result = await dialog.Result;
     }
+
 }

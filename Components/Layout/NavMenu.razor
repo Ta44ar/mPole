@@ -40,7 +40,10 @@
     <MudNavLink Href="/moves/gallery" Match="NavLinkMatch.Prefix">@res["MovesGallery"]</MudNavLink>
     <MudNavGroup Title="@res["Classes"]">
         <MudNavLink Href="/classes" Match="NavLinkMatch.Prefix">@res["Browse"]</MudNavLink>
-        <MudNavLink Href="@($"/classes/{mainLayout.userId}")" Match="NavLinkMatch.Prefix">@res["MyClasses"]</MudNavLink>
+        @if (mainLayout.isAuthenticated)
+        {
+            <MudNavLink Href="@($"/classes/{mainLayout.userId}")" Match="NavLinkMatch.Prefix">@res["MyClasses"]</MudNavLink>
+        }
     </MudNavGroup>
     
     @if (mainLayout.isInstructor) 

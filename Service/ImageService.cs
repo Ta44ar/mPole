@@ -7,12 +7,10 @@ namespace mPole.Service
 {
     public class ImageService : IImageService
     {
-        private readonly IImageRepository _imageRepository;
         private readonly IList<string> allowedFormats = new List<string> { "image/jpeg", "image/png", "image/gif" };
 
-        public ImageService(IImageRepository imageRepository, IWebHostEnvironment environment)
+        public ImageService()
         {
-            _imageRepository = imageRepository;
         }
 
         public string ConvertToBase64FromByte(byte[] imageData)
@@ -26,44 +24,73 @@ namespace mPole.Service
         public async Task<IList<string>> ConvertToBase64FromBrowserFiles(IList<IBrowserFile> files)
         {
             IList<string> base64Images = new List<string>();
-
             foreach (var file in files)
             {
-                using (var stream = file.OpenReadStream(maxAllowedSize: 1024 * 1024)) // 1 MB
-                using (var memoryStream = new MemoryStream())
+                if (!allowedFormats.Contains(file.ContentType, StringComparer.OrdinalIgnoreCase))
                 {
-                    await stream.CopyToAsync(memoryStream);
-                    var buffer = memoryStream.ToArray();
-                    var base64String = Convert.ToBase64String(buffer);
-                    base64Images.Add($"data:{file.ContentType};base64,{base64String}");
+                    continue;
+                }
+
+                try
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await file.OpenReadStream(maxAllowedSize: 4096 * 4096).CopyToAsync(memoryStream);
+                        var buffer = memoryStream.ToArray();
+
+                        var base64String = Convert.ToBase64String(buffer);
+                        base64Images.Add($"data:{file.ContentType};base64,{base64String}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error processing file {file.Name}: {ex.Message}");
                 }
             }
 
             return base64Images;
         }
 
-
         public async Task<IList<Image>> UploadImagesAsync(IList<IBrowserFile> files, Move move)
         {
-            var uploadedImages = await Task.WhenAll(
-                files
-                    .Where(file => allowedFormats.Contains(file.ContentType, StringComparer.OrdinalIgnoreCase))
-                    .Select(async file =>
+            var uploadedImages = new List<Image>();
+
+            foreach (var file in files)
+            {
+                if (!allowedFormats.Contains(file.ContentType, StringComparer.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($"File {file.Name} is not in the allowed formats.");
+                    continue;
+                }
+
+                try
+                {
+                    byte[] fileData;
+
+                    using (var memoryStream = new MemoryStream())
+                    using (var fileStream = file.OpenReadStream(maxAllowedSize: 4L * 1024 * 1024)) // 4MB limit
                     {
-                        using var memoryStream = new MemoryStream();
-                        await file.OpenReadStream().CopyToAsync(memoryStream);
+                        await fileStream.CopyToAsync(memoryStream);
+                        fileData = memoryStream.ToArray();
+                    }
 
-                        return new Image
-                        {
-                            Move = move,
-                            MoveId = move.Id,
-                            Name = move.Name,
-                            ImageData = memoryStream.ToArray()
-                        };
-                    })
-            );
+                    var image = new Image
+                    {
+                        Move = move,
+                        MoveId = move.Id,
+                        Name = move.Name,
+                        ImageData = fileData
+                    };
 
-            return uploadedImages.ToList();
+                    uploadedImages.Add(image);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error processing file '{file.Name}': {ex.Message}");
+                }
+            }
+
+            return uploadedImages;
         }
     }
 }

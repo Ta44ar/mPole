@@ -1,0 +1,34 @@
+﻿@inject IClassService classService
+@inject IStringLocalizer<SharedResource> res
+
+<MudDialog>
+    <DialogContent>
+        <MudPaper Elevation="4" Class="pa-4">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h4" Color="Color.Primary">@Training.Name</MudText>
+                    <MudText Typo="Typo.subtitle1" Color="Color.Secondary">@Training.Description</MudText>
+                </MudItem>
+                <MudItem xs="12">
+                    <PDClassForm classModel="classModel" User="User" OnCancel="Cancel" isEditMode="false"/>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public Training Training { get; set; } = default!;
+    [Parameter] public ApplicationUser User { get; set; } = default!;
+
+    private Class classModel = new Class();
+
+    protected override void OnInitialized()
+    {
+        classModel.Training = Training;
+    }
+
+    private void Cancel() => MudDialog.Close();
+}

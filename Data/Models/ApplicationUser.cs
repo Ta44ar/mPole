@@ -9,5 +9,6 @@ namespace mPole.Data.Models
         public DateTime DateOfBirth { get; set; }
         public byte[] ProfileImage { get; set; } = Array.Empty<byte>();
         public virtual ICollection<Class> Classes { get; set; } = new List<Class>();
+        public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
     }
 }
