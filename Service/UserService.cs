@@ -30,26 +30,22 @@ public class UserService : IUserService
         return await _userRepository.GetExistingRolesAsync();
     }
 
-    public async Task<IEnumerable<string>> SearchTrainersAsync(string value)
+    public async Task<IEnumerable<ApplicationUser>> SearchTrainersAsync(string searchText, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(value))
-            return new List<string>();
+        var trainers = await _userManager.GetUsersInRoleAsync("Instructor");
 
-        var users = await _userManager.GetUsersInRoleAsync("Instructor");
+        if (trainers == null)
+            return new List<ApplicationUser>();
 
-        if (users == null)
-            return new List<string>();
-
-        var trainers = users.Where(u => u.UserName.Contains(value, StringComparison.InvariantCultureIgnoreCase))
-                        .Select(u => u.FirstName + " " + u.LastName)
-                        .ToList();
-        return trainers;
+        return trainers.Where(t => t.UserName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                                   t.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                                   t.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase));
     }
 
     public async Task<ApplicationUser> GetCurrentUserAsync()
     {
         var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
+
         if (userId == null)
         {
             return null;

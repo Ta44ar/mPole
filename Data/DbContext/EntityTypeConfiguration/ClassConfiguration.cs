@@ -21,9 +21,9 @@ namespace mPole.Data.DbContext.EntityTypeConfiguration
                 .IsRequired()
                 .HasColumnType("nvarchar(50)");
 
-            builder.Property(c => c.Trainer)
+            builder.Property(c => c.TrainerId)
                 .IsRequired()
-                .HasColumnType("nvarchar(50)");
+                .HasColumnType("nvarchar(450)");
 
             builder.HasOne(c => c.Training)
                 .WithMany(t => t.Classes)
@@ -36,6 +36,11 @@ namespace mPole.Data.DbContext.EntityTypeConfiguration
                     "UserClass",
                     j => j.HasOne<ApplicationUser>().WithMany().HasForeignKey("UserId"),
                     j => j.HasOne<Class>().WithMany().HasForeignKey("ClassId"));
+
+            builder.HasOne(c => c.Trainer)
+                .WithMany(u => u.InstructedClasses)
+                .HasForeignKey(c => c.TrainerId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

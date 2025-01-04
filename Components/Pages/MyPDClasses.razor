@@ -6,6 +6,7 @@
 @inject ISnackbar Snackbar
 @inject UserManager<ApplicationUser> userManager
 @inject NavigationManager nav
+@inject IDialogService DialogService
 
 @if (isLoading)
 {
@@ -23,11 +24,13 @@ else
                             <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Training.Name)">@res["Name"]</MudTableSortLabel></MudTh>
                             <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Date ?? DateTime.MinValue)">@res["Date"]</MudTableSortLabel></MudTh>
                             <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Location)">@res["Location"]</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Trainer.LastName)">@res["Trainer"]</MudTableSortLabel></MudTh>
                         </HeaderContent>
                         <RowTemplate Context="userClass">
                             <MudTd DataLabel="@res["Name"]">@userClass.Training.Name</MudTd>
                             <MudTd DataLabel="@res["Date"]">@userClass.Date?.ToString("d")</MudTd>
                             <MudTd DataLabel="@res["Location"]">@userClass.Location</MudTd>
+                            <MudTd DataLabel="@res["Trainer"]">@userClass.Trainer.FirstName @userClass.Trainer.LastName</MudTd>
                         </RowTemplate>
                         <NoRecordsContent>
                             <MudText Typo="Typo.body1">@res["UserNoClassesFound"]</MudText>
@@ -55,7 +58,7 @@ else
                                 <MudTd DataLabel="@res["Date"]">@instructorClass.Date?.ToString("d")</MudTd>
                                 <MudTd DataLabel="@res["Location"]">@instructorClass.Location</MudTd>
                                 <MudTd DataLabel="@res["Actions"]">
-                                    <MudButton Color="Color.Primary" OnClick="() => EditClass(instructorClass.Id)">@res["Edit"]</MudButton>
+                                    <MudButton Color="Color.Primary" OnClick="() => EditClass(instructorClass)">@res["Edit"]</MudButton>
                                     <MudButton Color="Color.Error" OnClick="() => DeleteClass(instructorClass.Id)">@res["Delete"]</MudButton>
                                 </MudTd>
                             </RowTemplate>
@@ -76,7 +79,7 @@ else
         <NotAuthorized>
             <MudGrid>
                 <MudItem xs="12">
-                    <PleaseLogInView ReturnUrl="@nav.Uri"/>
+                    <PleaseLogInView ReturnUrl="@nav.Uri" />
                 </MudItem>
             </MudGrid>
         </NotAuthorized>
@@ -100,11 +103,11 @@ else
         {
             isInstructor = await userManager.IsInRoleAsync(user, "Instructor");
 
-            userClasses = await userService.GetClassesByUserAsync(user.Id);
+            userClasses = await userService.GetClassesByUserAsync(userId);
 
             if (isInstructor)
             {
-                instructorClasses = await userService.GetClassesByInstructorAsync(user.UserName);
+                instructorClasses = await userService.GetClassesByInstructorAsync(userId);
             }
 
             isLoading = false;
@@ -113,13 +116,38 @@ else
         isLoading = false;
     }
 
-    private void EditClass(int classId)
+    private void EditClass(Class classModel)
     {
-        // Navigate to edit class page
+        var parameters = new DialogParameters
+        {
+            { "Training", classModel.Training },
+            { "User", classModel.Trainer },
+            { "classModel", classModel }
+        };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        DialogService.Show<PDClassOrganiseDialog>(res["EditClass"], parameters, options);
     }
 
-    private void DeleteClass(int classId)
+    private async Task DeleteClass(int classId)
     {
-        // Delete class logic
+        bool? result = await DialogService.ShowMessageBox(
+            res["Warning"],
+            res["WarningClassDeletion"],
+            yesText: res["Delete"], cancelText: res["Cancel"]);
+
+        if (result == true)
+        {
+            try
+            {
+                await classService.DeleteClassAsync(classId, CancellationToken.None);
+                Snackbar.Add(res["SuccessClassDeletion"], MudBlazor.Severity.Success);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add(res["ErrorDuringClassDeletion"] + $": {ex.Message}", MudBlazor.Severity.Error);
+            }
+        }
+
+        StateHasChanged();
     }
 }

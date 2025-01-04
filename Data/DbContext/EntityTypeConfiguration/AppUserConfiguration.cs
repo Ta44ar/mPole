@@ -32,6 +32,11 @@ namespace mPole.Data.DbContext.EntityTypeConfiguration
                     "UserGroup",
                     j => j.HasOne<Group>().WithMany().HasForeignKey("GroupId"),
                     j => j.HasOne<ApplicationUser>().WithMany().HasForeignKey("UserId"));
+
+            builder.HasMany(e => e.InstructedClasses)
+                .WithOne(c => c.Trainer)
+                .HasForeignKey(c => c.TrainerId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

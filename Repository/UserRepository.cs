@@ -74,21 +74,27 @@ public class UserRepository : IUserRepository
 
             return await context.Classes
                 .Include(c => c.Training)
+                .Include(c => c.Trainer)
                 .Where(c => c.RegisteredUsers.Any(u => u.Id == userId))
+                .AsNoTracking()
                 .ToListAsync();
         }
     }
 
-    public async Task<ICollection<Class>> GetClassesByInstructorAsync(string instructorName)
+    public async Task<ICollection<Class>> GetClassesByInstructorAsync(string instructorId)
     {
         using (var scope = _serviceScopeFactory.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            return await context.Classes
+            var classes = await context.Classes
+                .Include(c => c.Trainer)
                 .Include(c => c.Training)
-                .Where(c => c.Trainer == instructorName)
+                .Where(c => c.Trainer.Id == instructorId)
+                .AsNoTracking()
                 .ToListAsync();
+
+            return classes;
         }
     }
 }
