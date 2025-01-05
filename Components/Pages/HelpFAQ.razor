@@ -1,0 +1,68 @@
+﻿@page "/help"
+
+@inject NavigationManager Navigation
+@inject IStringLocalizer<SharedResource> res
+@inject ISnackbar snackbar
+
+<PageTitle>@res["HelpFAQ"]</PageTitle>
+
+<MudText Typo="Typo.h4" Class="d-flex justify-center mb-4">@res["HelpFAQ"]</MudText>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mb-6">
+    <MudPaper Class="pa-4">
+        <MudExpansionPanels>
+            <MudExpansionPanel Text="@res["Question1"]">
+                <MudText Typo="Typo.body1">@res["Answer1"]</MudText>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="@res["Question2"]">
+                <MudText Typo="Typo.body1">@res["Answer2"]</MudText>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="@res["Question3"]">
+                <MudText Typo="Typo.body1">@res["Answer3"]</MudText>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    </MudPaper>
+</MudContainer>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudPaper Class="pa-4">
+        <h2>@res["HaveAQuestion"]</h2>
+        <EditForm Model="questionModel" OnValidSubmit="SubmitQuestion">
+            <DataAnnotationsValidator />
+            <MudTextField @bind-Value="questionModel.Email" Label="@res["Email"]" Required="true" />
+            <MudTextField @bind-Value="questionModel.Question" Label="@res["Question"]" Lines="5" Required="true" />
+            <MudButton OnClick="SubmitQuestion" Variant="Variant.Filled" Color="Color.Primary" Class="mt-2">@res["Send"]</MudButton>
+        </EditForm>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private QuestionModel questionModel = new();
+    private QuestionValidator? questionValidator;
+
+    private async Task SubmitQuestion()
+    {
+        questionValidator = new QuestionValidator(res);
+
+        var validationResult = await questionValidator.ValidateAsync(questionModel);
+        if (!validationResult.IsValid)
+        {
+            foreach (var error in validationResult.Errors)
+            {
+                snackbar.Add(error.ErrorMessage, MudBlazor.Severity.Error);
+            }
+            return;
+        }
+
+        // temporary solution !!! 
+        else
+        {
+            snackbar.Add(res["SuccessEmailSend"], MudBlazor.Severity.Success);
+            questionModel = new QuestionModel();
+        }
+        
+
+        // Handle the question submission logic here TO DO
+        await Task.CompletedTask;
+    }
+}

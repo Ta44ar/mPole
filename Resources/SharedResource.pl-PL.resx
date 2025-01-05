@@ -349,7 +349,7 @@
     <value>Nie wybrano żadnych obrazów.</value>
   </data>
   <data name="SuccessImagesUpload" xml:space="preserve">
-    <value>Pomyślnie dodano obrazy.</value>
+    <value>Pomyślnie dodano obrazy</value>
   </data>
   <data name="DragAndDropImagesHereToAdd" xml:space="preserve">
     <value>Przenieś i upuść tutaj obrazy, które chcesz dodać</value>
@@ -413,5 +413,29 @@
   </data>
   <data name="ClassOrganise" xml:space="preserve">
     <value>Organizuj zajęcia</value>
+  </data>
+  <data name="HelpFAQ" xml:space="preserve">
+    <value>Pomoc - FAQ</value>
+  </data>
+  <data name="ValidationEmailRequired" xml:space="preserve">
+    <value>Pole e-mail nie może być puste</value>
+  </data>
+  <data name="ValidationEmailInvalid" xml:space="preserve">
+    <value>Adres e-mail nieprawidłowy</value>
+  </data>
+  <data name="ValidationQuestionRequired" xml:space="preserve">
+    <value>Pole pytania nie może być puste</value>
+  </data>
+  <data name="HaveAQuestion" xml:space="preserve">
+    <value>Masz pytanie? Napisz do nas!</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Wyślij</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Pytanie</value>
+  </data>
+  <data name="SuccessEmailSend" xml:space="preserve">
+    <value>Pomyślnie wysłano twoją wiadomość</value>
   </data>
 </root>

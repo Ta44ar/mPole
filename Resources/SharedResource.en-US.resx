@@ -414,4 +414,28 @@
   <data name="ClassOrganise" xml:space="preserve">
     <value>Organise class</value>
   </data>
+  <data name="HelpFAQ" xml:space="preserve">
+    <value>Help - FAQ</value>
+  </data>
+  <data name="ValidationEmailRequired" xml:space="preserve">
+    <value>Email field required</value>
+  </data>
+  <data name="ValidationEmailInvalid" xml:space="preserve">
+    <value>Email address invalid</value>
+  </data>
+  <data name="ValidationQuestionRequired" xml:space="preserve">
+    <value>Question field required</value>
+  </data>
+  <data name="HaveAQuestion" xml:space="preserve">
+    <value>Have a question? Let us know!</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Question</value>
+  </data>
+  <data name="SuccessEmailSend" xml:space="preserve">
+    <value>Your message was send succesfully</value>
+  </data>
 </root>
