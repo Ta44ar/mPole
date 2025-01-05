@@ -12,6 +12,22 @@ public class UserRepository : IUserRepository
         _serviceScopeFactory = serviceScopeFactory;
     }
 
+    public async Task<ApplicationUser?> GetUserByIdAsync(string userId)
+    {
+        using (var scope = _serviceScopeFactory.CreateScope())
+        {
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new ArgumentNullException("No user with given ID found.");
+            }
+
+            return user;
+        }
+    }
+
     public async Task<ApplicationUser?> GetUserByNameAsync(string userName)
     {
         using (var scope = _serviceScopeFactory.CreateScope())
@@ -69,21 +85,6 @@ public class UserRepository : IUserRepository
             }
 
             return allRoles;
-        }
-    }
-
-    public async Task<ICollection<Class>> GetClassesByUserAsync(string userId)
-    {
-        using (var scope = _serviceScopeFactory.CreateScope())
-        {
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            return await context.Classes
-                .Include(c => c.Training)
-                .Include(c => c.Trainer)
-                .Where(c => c.RegisteredUsers.Any(u => u.Id == userId))
-                .AsNoTracking()
-                .ToListAsync();
         }
     }
 

@@ -30,12 +30,10 @@ namespace mPole.Data.DbContext.EntityTypeConfiguration
                 .HasForeignKey(c => c.TrainingId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(c => c.RegisteredUsers)
-                .WithMany(u => u.Classes)
-                .UsingEntity<Dictionary<string, object>>(
-                    "UserClass",
-                    j => j.HasOne<ApplicationUser>().WithMany().HasForeignKey("UserId"),
-                    j => j.HasOne<Class>().WithMany().HasForeignKey("ClassId"));
+            builder.HasMany(c => c.Registrations)
+                .WithOne(r => r.Class)
+                .HasForeignKey(r => r.ClassId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(c => c.Trainer)
                 .WithMany(u => u.InstructedClasses)

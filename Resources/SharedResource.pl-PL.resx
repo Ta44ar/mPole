@@ -504,4 +504,13 @@
   <data name="ErrorDuringClassDeletion" xml:space="preserve">
     <value>Błąd podczas usuwania zajęć</value>
   </data>
+  <data name="Attendants" xml:space="preserve">
+    <value>Uczestnicy</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edycja</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Szczegóły</value>
+  </data>
 </root>

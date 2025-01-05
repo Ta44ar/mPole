@@ -14,6 +14,10 @@ public class UserService : IUserService
         _serviceScopeFactory = serviceScopeFactory;
         _httpContextAccessor = httpContextAccessor;
     }
+    public async Task<ApplicationUser?> GetUserByIdAsync(string userId)
+    {
+        return await _userRepository.GetUserByIdAsync(userId);
+    }
 
     public async Task<ApplicationUser?> GetUserByNameAsync(string userName)
     {
@@ -66,11 +70,6 @@ public class UserService : IUserService
 
             return user;
         }
-    }
-
-    public async Task<ICollection<Class>> GetClassesByUserAsync(string userId)
-    {
-        return await _userRepository.GetClassesByUserAsync(userId);
     }
 
     public async Task<ICollection<Class>> GetClassesByInstructorAsync(string instructorName)
