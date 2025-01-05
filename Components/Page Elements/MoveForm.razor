@@ -70,7 +70,7 @@ else
 
     private MoveValidator? moveValidator;
 
-    private List<string> urlImages = new List<string>();
+    private ICollection<string> urlImages = new List<string>();
 
     protected override void OnParametersSet()
     {
@@ -80,8 +80,6 @@ else
         {
             move = new Move();
         }
-
-        moveValidator = new MoveValidator(res);
     }
 
     private async Task OpenUploadModal()
@@ -95,7 +93,7 @@ else
     {
         if (urlImages.Any())
         {
-            urlImages.AddRange(newUrlImages);
+            ((List<string>)urlImages).AddRange(newUrlImages);
         }
         else
         {
@@ -109,14 +107,9 @@ else
     {
         isLoading = true;
 
-        var validationResult = await moveValidator.ValidateAsync(move);
-        if (!validationResult.IsValid)
+        if (!await CustomValidators.ValidateAndShowErrors(new MoveValidator(res), move, snackbar))
         {
-            foreach (var error in validationResult.Errors)
-            {
-                snackbar.Add(error.ErrorMessage, MudBlazor.Severity.Error);
-                isLoading = false;
-            }
+            isLoading = false;
             return;
         }
 

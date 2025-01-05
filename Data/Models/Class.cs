@@ -13,6 +13,7 @@ namespace mPole.Data.Models
         public virtual Training Training { get; set; } = new();
         public string TrainerId { get; set; } = string.Empty;
         public virtual ApplicationUser Trainer { get; set; } = new();
-        public virtual ICollection<Registration> Registrations { get; set; } = new List<Registration>();
+        public virtual ICollection<Registration> Registrations { get; set; } = default!;
+        public bool IsRegistrationOpen { get; set; } = true;
     }
 }

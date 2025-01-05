@@ -8,10 +8,12 @@ namespace mPole.Repository
     public class ClassRepository : IClassRepository
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IRegistrationRepository _registrationRepository;
 
-        public ClassRepository(IServiceScopeFactory serviceScopeFactory)
+        public ClassRepository(IServiceScopeFactory serviceScopeFactory, IRegistrationRepository registrationRepository)
         {
             _serviceScopeFactory = serviceScopeFactory;
+            _registrationRepository = registrationRepository;
         }
 
         public async Task AddAsync(Class poleDanceClass, CancellationToken cancellationToken)
@@ -47,6 +49,7 @@ namespace mPole.Repository
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                await _registrationRepository.RemoveOldClassRegistrationsAsync(poleDanceClass.Id);
                 context.Classes.Update(poleDanceClass);
                 await context.SaveChangesAsync(cancellationToken);
             }

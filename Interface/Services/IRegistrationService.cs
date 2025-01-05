@@ -4,5 +4,5 @@ using mPole.Data.Models;
 public interface IRegistrationService
 {
     Task RegisterForClassAsync(RegisterForClassDto dto);
-    Task<ICollection<Class>> GetClassesByUserIdAsync(string userId, RegistrationStatus status);
+    Task<ICollection<ApplicationUser>> GetRegisteredUsersByClassIdAsync(int classId);
 }

@@ -45,8 +45,8 @@
         _events = poleDanceClasses.Select(c => new Event
             {
                 EventId = c.Id,
-                Start = c.Date ?? DateTime.MinValue,
-                End = (c.Date ?? DateTime.MinValue).AddHours(c.Duration),
+                Start = c.Date ?? DateTime.UtcNow,
+                End = (c.Date ?? DateTime.UtcNow).AddHours(c.Duration),
                 Title = c.Training.Name,
                 Location = c.Location,
                 Text = res["Trainer"] + $": {c.Trainer.FirstName} {c.Trainer.LastName}",

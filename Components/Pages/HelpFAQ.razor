@@ -44,15 +44,8 @@
 
     private async Task SubmitQuestion()
     {
-        questionValidator = new QuestionValidator(res);
-
-        var validationResult = await questionValidator.ValidateAsync(questionModel);
-        if (!validationResult.IsValid)
+        if (!await CustomValidators.ValidateAndShowErrors(new QuestionValidator(res), questionModel, snackbar))
         {
-            foreach (var error in validationResult.Errors)
-            {
-                snackbar.Add(error.ErrorMessage, MudBlazor.Severity.Error);
-            }
             return;
         }
 

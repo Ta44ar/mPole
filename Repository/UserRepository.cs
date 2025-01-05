@@ -53,9 +53,11 @@ public class UserRepository : IUserRepository
                 .AsNoTracking()
                 .Select(u => new ApplicationUser
                 {
+                    Id = u.Id,
                     UserName = u.UserName,
                     FirstName = u.FirstName,
-                    LastName = u.LastName
+                    LastName = u.LastName,
+                    ProfileImage = u.ProfileImage
                 })
                 .ToListAsync();
 
@@ -98,6 +100,24 @@ public class UserRepository : IUserRepository
                 .Include(c => c.Trainer)
                 .Include(c => c.Training)
                 .Where(c => c.Trainer.Id == instructorId)
+                .AsNoTracking()
+                .ToListAsync();
+
+            return classes;
+        }
+    }
+
+    public async Task<ICollection<Class>> GetClassesByUserIdAsync(string userId)
+    {
+        using (var scope = _serviceScopeFactory.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var classes = await context.Classes
+                .Include(c => c.Trainer)
+                .Include(c => c.Training)
+                .Include(c => c.Registrations)
+                .Where(c => c.Registrations.Any(r => r.UserId == userId))
                 .AsNoTracking()
                 .ToListAsync();
 

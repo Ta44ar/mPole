@@ -513,4 +513,28 @@
   <data name="Details" xml:space="preserve">
     <value>Details</value>
   </data>
+  <data name="IsRegistrationOpen" xml:space="preserve">
+    <value>Registration possibilities:</value>
+  </data>
+  <data name="RegistrationOpen" xml:space="preserve">
+    <value>Yes, registration opened</value>
+  </data>
+  <data name="RegistrationClosed" xml:space="preserve">
+    <value>No, registration closed</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="RegisteredParticipants" xml:space="preserve">
+    <value>Registered participants</value>
+  </data>
+  <data name="Participants" xml:space="preserve">
+    <value>Participants</value>
+  </data>
+  <data name="ParticipantAlreadyAdded" xml:space="preserve">
+    <value>This user has been added already!</value>
+  </data>
 </root>

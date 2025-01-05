@@ -1,0 +1,56 @@
+﻿@inject IStringLocalizer<SharedResource> res
+@inject IImageService imageService
+
+<MudDialog>
+    <DialogContent>
+        <MudPaper Width="300px">
+            <MudList T="ApplicationUser">
+                @foreach (var participant in Participants)
+                {
+                    <MudListItem>
+                        <AvatarContent>
+                            <MudAvatar>
+                                @if (participant.ProfileImage != null && participant.ProfileImage.Length > 0)
+                                {
+                                    <MudImage Src="@imageService.ConvertToBase64FromByte(participant.ProfileImage)" />
+                                }
+                                else
+                                {
+                                    <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Primary" />
+                                }
+                            </MudAvatar>
+                        </AvatarContent>
+                        <ChildContent>
+                            @participant.FirstName @participant.LastName
+                            <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="@(() => RemoveParticipant(participant))" />
+                        </ChildContent>
+                    </MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="CloseDialog" Color="Color.Primary">@res["Close"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public List<ApplicationUser> Participants { get; set; } = new List<ApplicationUser>();
+
+    [Parameter]
+    public EventCallback<ApplicationUser> OnRemoveParticipant { get; set; }
+
+    private void RemoveParticipant(ApplicationUser participant)
+    {
+        OnRemoveParticipant.InvokeAsync(participant);
+    }
+
+    private void CloseDialog()
+    {
+        MudDialog.Close();
+    }
+}

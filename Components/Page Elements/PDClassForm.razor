@@ -2,23 +2,48 @@
 @inject ISnackbar snackbar
 @inject IUserService userService
 @inject IClassService classService
+@inject IDialogService DialogService
+@inject IRegistrationService registrationService
 
-<EditForm Model="classModel" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="ClassModel" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <MudGrid>
-        <MudItem xs="12">
+        <MudItem xs="7">
             <MudAutocomplete T="ApplicationUser" @bind-Value="selectedTrainer" Label="@res["Trainer"]"
-                             SearchFunc="SearchTrainers" Clearable="true" ToStringFunc="@(user => user?.FirstName + " " + user?.LastName)" />
+            SearchFunc="SearchTrainers" Clearable="true" ToStringFunc="@(user => user?.FirstName + " " + user?.LastName)" />
+        </MudItem>
+        <MudItem xs="5">
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudText>
+                        @res["IsRegistrationOpen"]
+                    </MudText>
+                </MudItem>
+                <MudItem xs="6">
+                    @if (ClassModel.IsRegistrationOpen)
+                    {
+                        <MudTooltip Text="@res["RegistrationOpen"]">
+                            <MudSwitch @bind-Value="ClassModel.IsRegistrationOpen" Color="Color.Primary" />
+                        </MudTooltip>
+                    }
+                    else
+                    {
+                        <MudTooltip Text="@res["RegistrationClosed"]">
+                            <MudSwitch @bind-Value="ClassModel.IsRegistrationOpen" Color="Color.Secondary" />
+                        </MudTooltip>
+                    }
+                </MudItem>
+            </MudGrid>
         </MudItem>
         <MudItem xs="12">
             <MudGrid>
                 <MudItem xs="6">
-                    <MudDatePicker @bind-Date="classModel.Date"
-                                   Label="@res["Date"]"
-                                   Required="true"
-                                   IsDateDisabledFunc="@((DateTime dt) => dt < DateTime.Today)"
-                                   PickerVariant="PickerVariant.Dialog" />
+                    <MudDatePicker @bind-Date="ClassModel.Date"
+                    Label="@res["Date"]"
+                    Required="true"
+                    IsDateDisabledFunc="@((DateTime dt) => dt < DateTime.Today)"
+                    PickerVariant="PickerVariant.Dialog" />
                 </MudItem>
                 <MudItem xs="6">
                     <DateTimePicker Time="_time" TimeChanged="OnTimeChanged" />
@@ -28,10 +53,20 @@
         <MudItem xs="12">
             <MudGrid>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="classModel.Duration" Label="@res["DurationInHours"]" />
+                    <MudTextField @bind-Value="ClassModel.Duration" Label="@res["DurationInHours"]" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="classModel.Location" Label="@res["Location"]" />
+                    <MudTextField @bind-Value="ClassModel.Location" Label="@res["Location"]" />
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+        <MudItem xs="12">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudAutocomplete T="ApplicationUser" @bind-Value="selectedParticipant" Label="@res["Participants"]"
+                    SearchFunc="SearchParticipants" Clearable="true" ToStringFunc="@(user => user?.FirstName + " " + user?.LastName)" />
+                    <MudButton OnClick="AddParticipant" Color="Color.Primary" Variant="Variant.Filled">@res["AddParticipant"]</MudButton>
+                    <MudButton Disabled="@(!Participants.Any())" OnClick="ShowParticipants" Color="Color.Primary" Variant="Variant.Filled">@res["Registered"] (@Participants.Count)</MudButton>
                 </MudItem>
             </MudGrid>
         </MudItem>
@@ -50,7 +85,7 @@
 
 @code {
     [Parameter]
-    public Class? classModel { get; set; }
+    public Class? ClassModel { get; set; }
 
     [Parameter]
     public EventCallback OnCancel { get; set; }
@@ -59,40 +94,47 @@
     public ApplicationUser? User { get; set; } = new ApplicationUser();
 
     [Parameter]
-    public bool isEditMode { get; set; }
+    public bool IsEditMode { get; set; }
+
+    [Parameter]
+    public ICollection<ApplicationUser> Participants { get; set; } = new List<ApplicationUser>();
 
     private PDClassValidator? classValidator;
     private TimeSpan? _time;
     private ApplicationUser? selectedTrainer;
+    private ApplicationUser? selectedParticipant;
+    private ICollection<ApplicationUser> allUsers = new List<ApplicationUser>();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        if (!isEditMode)
+        if (!IsEditMode)
         {
-            if (classModel == null)
+            if (ClassModel == null)
             {
-                classModel = new Class();
+                ClassModel = new Class();
             }
 
             if (User != null)
             {
                 selectedTrainer = User;
-                classModel.Trainer = selectedTrainer;
+                ClassModel.Trainer = selectedTrainer;
             }
 
-            _time = DateTime.Now.TimeOfDay;
-            classModel.Date = DateTime.Today;
+            _time = DateTime.UtcNow.TimeOfDay;
+            ClassModel.Date = DateTime.Today;
         }
         else
         {
-            selectedTrainer = classModel.Trainer;
+            selectedTrainer = ClassModel.Trainer;
         }
+
+        allUsers = await userService.GetAllUsersAsync();
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        classValidator = new PDClassValidator(res);
-        _time = classModel.Date?.TimeOfDay;
+        _time = ClassModel.Date?.TimeOfDay;
+        Participants = await registrationService.GetRegisteredUsersByClassIdAsync(ClassModel.Id);
     }
 
     private async Task<IEnumerable<ApplicationUser>> SearchTrainers(string searchText, CancellationToken cancellationToken)
@@ -100,31 +142,68 @@
         return await userService.SearchTrainersAsync(searchText, cancellationToken);
     }
 
+    private async Task<IEnumerable<ApplicationUser>> SearchParticipants(string searchText, CancellationToken cancellationToken)
+    {
+        return await userService.SearchParticipantsAsync(searchText, cancellationToken);
+    }
+
+    private void AddParticipant()
+    {
+        if (selectedParticipant != null && !Participants.Any(p => p.Id == selectedParticipant.Id))
+        {
+            Participants.Add(selectedParticipant);
+        }
+        else
+        {
+            snackbar.Add(res["ParticipantAlreadyAdded"], Severity.Warning);
+        }
+    }
+
+    private void RemoveParticipant(ApplicationUser participant)
+    {
+        Participants.Remove(participant);
+    }
+
+    private void ShowParticipants()
+    {
+        var parameters = new DialogParameters
+        {
+            { "Participants", Participants },
+            { "OnRemoveParticipant", EventCallback.Factory.Create<ApplicationUser>(this, RemoveParticipant) }
+        };
+
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        DialogService.Show<ParticipantsDialog>(res["RegisteredParticipants"], parameters, options);
+    }
+
     private async Task HandleValidSubmit()
     {
-        var validationResult = await classValidator.ValidateAsync(classModel);
-        if (!validationResult.IsValid)
+        if (!await CustomValidators.ValidateAndShowErrors(new PDClassValidator(res), ClassModel, snackbar))
         {
-            foreach (var error in validationResult.Errors)
-            {
-                snackbar.Add(error.ErrorMessage, MudBlazor.Severity.Error);
-            }
             return;
         }
 
         try
         {
-            if (isEditMode)
+            ClassModel.Trainer = selectedTrainer;
+
+            ClassModel.Registrations.Clear();
+            ClassModel.Registrations = Participants
+                                            .DistinctBy(p => p.Id)
+                                            .Select(p => new Registration { User = p, UserId = p.Id, Status = RegistrationStatus.Confirmed })
+                                            .ToList();
+
+            if (IsEditMode)
             {
-                classModel.Date = classModel.Date + _time;
-                await classService.UpdateClassAsync(classModel, CancellationToken.None);
+                ClassModel.Date = ClassModel.Date + _time;
+                await classService.UpdateClassAsync(ClassModel, CancellationToken.None);
                 snackbar.Add(res["SuccessClassEdition"], MudBlazor.Severity.Success);
                 await Cancel();
             }
             else
             {
-                classModel.Date = classModel.Date + _time;
-                await classService.AddNewClassAsync(classModel, CancellationToken.None);
+                ClassModel.Date = ClassModel.Date + _time;
+                await classService.AddNewClassAsync(ClassModel, CancellationToken.None);
                 snackbar.Add(res["SuccessClassAddition"], MudBlazor.Severity.Success);
                 await Cancel();
             }
@@ -132,6 +211,7 @@
         catch (Exception ex)
         {
             snackbar.Add(res["ErrorDuringClassOperation"] + $": {ex.Message}", MudBlazor.Severity.Error);
+            await OnInitializedAsync();
         }
     }
 

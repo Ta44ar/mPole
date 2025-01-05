@@ -133,7 +133,7 @@ else
         {
             isInstructor = await userManager.IsInRoleAsync(user, "Instructor");
 
-            userClasses = await registrationService.GetClassesByUserIdAsync(user.Id, RegistrationStatus.Confirmed);
+            userClasses = await userService.GetClassesByUserIdAsync(user.Id, RegistrationStatus.Confirmed);
 
             if (isInstructor)
             {
