@@ -7,87 +7,108 @@ namespace mPole.Data.Repositories
 {
     public class TrainingRepository : ITrainingRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public TrainingRepository(ApplicationDbContext context)
+        public TrainingRepository(IServiceScopeFactory serviceScopeFactory)
         {
-            _context = context;
+            _serviceScopeFactory = serviceScopeFactory;
         }
-
-        public IQueryable<Training> Trainings =>
-            _context.Trainings.Include(t => t.Moves);
 
         public async Task AddAsync(Training training, CancellationToken cancellationToken)
         {
-            await _context.AddAsync(training);
-            await _context.SaveChangesAsync();
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                await context.AddAsync(training);
+                await context.SaveChangesAsync(cancellationToken);
+            }
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            var trainingToDelete = await _context.Trainings.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
-
-            if (trainingToDelete != null)
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                _context.Remove(trainingToDelete);
-                await _context.SaveChangesAsync(cancellationToken);
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                var trainingToDelete = await context.Trainings.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
+
+                if (trainingToDelete != null)
+                {
+                    context.Remove(trainingToDelete);
+                    await context.SaveChangesAsync(cancellationToken);
+                }
             }
         }
 
         public async Task UpdateAsync(Training training, CancellationToken cancellationToken)
         {
-            if (training == null)
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                throw new ArgumentNullException(nameof(training));
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                if (training == null)
+                {
+                    throw new ArgumentNullException(nameof(training));
+                }
+
+                Training entity = await context.Trainings.FirstOrDefaultAsync(t => t.Id == training.Id, cancellationToken);
+
+                if (entity == null)
+                {
+                    throw new Exception($"Training with id {training.Id} not found");
+                }
+
+                entity.Name = training.Name;
+                entity.Description = training.Description;
+                entity.Type = training.Type;
+                entity.Level = training.Level;
+                entity.ImageUrl = training.ImageUrl;
+                entity.Moves = training.Moves;
+
+                await context.SaveChangesAsync(cancellationToken);
             }
-
-            Training entity = Trainings.FirstOrDefault(t => t.Id == training.Id);
-
-            if (entity == null)
-            {
-                throw new Exception($"Training with id {training.Id} not found");
-            }
-
-            entity.Name = training.Name;
-            entity.Description = training.Description;
-            entity.Type = training.Type;
-            entity.Level = training.Level;
-            entity.ImageUrl = training.ImageUrl;
-            entity.Moves = training.Moves;
-
-            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<ICollection<Training>> GetAllTrainingsAsync()
         {
-            var trainings = await _context.Trainings
-                                    .Include(t => t.Moves)
-                                    .Include(t => t.Classes)
-                                    .AsNoTracking()
-                                    .ToListAsync();
-
-            if (trainings == null)
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                throw new ArgumentNullException($"No trainings found");
-            }
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            return trainings;
+                var trainings = await context.Trainings
+                                        .Include(t => t.Moves)
+                                        .Include(t => t.Classes)
+                                        .AsNoTracking()
+                                        .ToListAsync();
+
+                if (trainings == null)
+                {
+                    throw new ArgumentNullException($"No trainings found");
+                }
+
+                return trainings;
+            }
         }
 
         public async Task<Training> GetTrainingByIdAsync(int trainingId)
         {
-            var training = await _context.Trainings
-                                .Where(t => t.Id == trainingId)
-                                .Include(t => t.Moves)
-                                .AsNoTracking()
-                                .FirstOrDefaultAsync();
-
-            if (training == null)
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                throw new ArgumentNullException($"Training with id {trainingId} not found");
-            }
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            return training;
+                var training = await context.Trainings
+                                    .Where(t => t.Id == trainingId)
+                                    .Include(t => t.Moves)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync();
+
+                if (training == null)
+                {
+                    throw new ArgumentNullException($"Training with id {trainingId} not found");
+                }
+
+                return training;
+            }
         }
     }
 }

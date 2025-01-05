@@ -186,7 +186,22 @@ namespace mPole.Migrations
                     b.ToTable("UserClass", "dbo");
                 });
 
-            modelBuilder.Entity("ApplicationUser", b =>
+            modelBuilder.Entity("UserGroup", b =>
+                {
+                    b.Property<string>("GroupId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("GroupId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserGroup", "dbo");
+                });
+
+            modelBuilder.Entity("mPole.Data.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -210,11 +225,11 @@ namespace mPole.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -266,7 +281,7 @@ namespace mPole.Migrations
                     b.ToTable("User", "dbo");
                 });
 
-            modelBuilder.Entity("Class", b =>
+            modelBuilder.Entity("mPole.Data.Models.Class", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -299,7 +314,31 @@ namespace mPole.Migrations
                     b.ToTable("Class", "dbo");
                 });
 
-            modelBuilder.Entity("Image", b =>
+            modelBuilder.Entity("mPole.Data.Models.Group", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CapacityLimit")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("RegularClassTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Group", "dbo");
+                });
+
+            modelBuilder.Entity("mPole.Data.Models.Image", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -325,7 +364,7 @@ namespace mPole.Migrations
                     b.ToTable("Image", "dbo");
                 });
 
-            modelBuilder.Entity("Move", b =>
+            modelBuilder.Entity("mPole.Data.Models.Move", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -349,7 +388,7 @@ namespace mPole.Migrations
                     b.ToTable("Move", "dbo");
                 });
 
-            modelBuilder.Entity("Training", b =>
+            modelBuilder.Entity("mPole.Data.Models.Training", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -392,7 +431,7 @@ namespace mPole.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("ApplicationUser", null)
+                    b.HasOne("mPole.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -401,7 +440,7 @@ namespace mPole.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ApplicationUser", null)
+                    b.HasOne("mPole.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -416,7 +455,7 @@ namespace mPole.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ApplicationUser", null)
+                    b.HasOne("mPole.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -425,7 +464,7 @@ namespace mPole.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("ApplicationUser", null)
+                    b.HasOne("mPole.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -434,13 +473,13 @@ namespace mPole.Migrations
 
             modelBuilder.Entity("MoveTraining", b =>
                 {
-                    b.HasOne("Move", null)
+                    b.HasOne("mPole.Data.Models.Move", null)
                         .WithMany()
                         .HasForeignKey("MoveId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Training", null)
+                    b.HasOne("mPole.Data.Models.Training", null)
                         .WithMany()
                         .HasForeignKey("TrainingId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -449,22 +488,37 @@ namespace mPole.Migrations
 
             modelBuilder.Entity("UserClass", b =>
                 {
-                    b.HasOne("Class", null)
+                    b.HasOne("mPole.Data.Models.Class", null)
                         .WithMany()
                         .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ApplicationUser", null)
+                    b.HasOne("mPole.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Class", b =>
+            modelBuilder.Entity("UserGroup", b =>
                 {
-                    b.HasOne("Training", "Training")
+                    b.HasOne("mPole.Data.Models.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("mPole.Data.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("mPole.Data.Models.Class", b =>
+                {
+                    b.HasOne("mPole.Data.Models.Training", "Training")
                         .WithMany("Classes")
                         .HasForeignKey("TrainingId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -473,9 +527,9 @@ namespace mPole.Migrations
                     b.Navigation("Training");
                 });
 
-            modelBuilder.Entity("Image", b =>
+            modelBuilder.Entity("mPole.Data.Models.Image", b =>
                 {
-                    b.HasOne("Move", "Move")
+                    b.HasOne("mPole.Data.Models.Move", "Move")
                         .WithMany("Images")
                         .HasForeignKey("MoveId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -484,12 +538,12 @@ namespace mPole.Migrations
                     b.Navigation("Move");
                 });
 
-            modelBuilder.Entity("Move", b =>
+            modelBuilder.Entity("mPole.Data.Models.Move", b =>
                 {
                     b.Navigation("Images");
                 });
 
-            modelBuilder.Entity("Training", b =>
+            modelBuilder.Entity("mPole.Data.Models.Training", b =>
                 {
                     b.Navigation("Classes");
                 });

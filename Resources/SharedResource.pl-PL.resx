@@ -277,7 +277,7 @@
     <value>Dodaj plan</value>
   </data>
   <data name="TrainingNoPlansMessage" xml:space="preserve">
-    <value>Brak dostępnyych planów treningów.</value>
+    <value>Brak dostępnych planów treningowych.</value>
   </data>
   <data name="UsersNotFound" xml:space="preserve">
     <value>Nie znaleziono użytkowników.</value>
@@ -349,7 +349,7 @@
     <value>Nie wybrano żadnych obrazów.</value>
   </data>
   <data name="SuccessImagesUpload" xml:space="preserve">
-    <value>Pomyślnie dodano obrazy</value>
+    <value>Pomyślnie dodano obrazy!</value>
   </data>
   <data name="DragAndDropImagesHereToAdd" xml:space="preserve">
     <value>Przenieś i upuść tutaj obrazy, które chcesz dodać</value>
@@ -394,16 +394,16 @@
     <value>Dodaj opcjonalną miniaturę</value>
   </data>
   <data name="SuccessTrainingEdition" xml:space="preserve">
-    <value>Pomyślnie edytowano plan treningowy</value>
+    <value>Pomyślnie edytowano plan treningowy!</value>
   </data>
   <data name="ErrorDuringTrainingOperation" xml:space="preserve">
     <value>Wystąpił błąd podczas zapisu planu treningowego</value>
   </data>
   <data name="SuccessTrainingAddition" xml:space="preserve">
-    <value>Pomyślnie dodano nowy plan treningowy</value>
+    <value>Pomyślnie dodano nowy plan treningowy!</value>
   </data>
   <data name="SuccessTrainingDeletionMessage" xml:space="preserve">
-    <value>Pomyślnie usunięto plan treningowy</value>
+    <value>Pomyślnie usunięto plan treningowy!</value>
   </data>
   <data name="ErrorDuringTrainingDeletion" xml:space="preserve">
     <value>Błąd podczas usuwania planu treningowego</value>
@@ -436,6 +436,60 @@
     <value>Pytanie</value>
   </data>
   <data name="SuccessEmailSend" xml:space="preserve">
-    <value>Pomyślnie wysłano twoją wiadomość</value>
+    <value>Pomyślnie wysłano twoją wiadomość!</value>
+  </data>
+  <data name="OrganiseClass" xml:space="preserve">
+    <value>Zaplanuj zajęcia</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="SuccessClassEdition" xml:space="preserve">
+    <value>Pomyślnie edytowano zajęcia!</value>
+  </data>
+  <data name="SuccessClassAddition" xml:space="preserve">
+    <value>Pomyślnie dodano nowe zajęcia!</value>
+  </data>
+  <data name="ValidationTrainerRequired" xml:space="preserve">
+    <value>Pole trener nie może być puste</value>
+  </data>
+  <data name="ValidationDateRequired" xml:space="preserve">
+    <value>Pole data nie może być puste</value>
+  </data>
+  <data name="ValidationDateInFuture" xml:space="preserve">
+    <value>Wprowadź datę przyszłą</value>
+  </data>
+  <data name="ValidationDurationPositive" xml:space="preserve">
+    <value>Czas trwanie powinien być dłuższy niż 0</value>
+  </data>
+  <data name="ValidationLocationRequired" xml:space="preserve">
+    <value>Pole lokalizacji nie może być puste</value>
+  </data>
+  <data name="DurationInHours" xml:space="preserve">
+    <value>Czas trwania (w godzinach)</value>
+  </data>
+  <data name="AttendantClasses" xml:space="preserve">
+    <value>Zajęcia, których jesteś uczestnikiem:</value>
+  </data>
+  <data name="InstructorClasses" xml:space="preserve">
+    <value>Zajęcia, które prowadzisz jako instruktor:</value>
+  </data>
+  <data name="InstructorNoClassesFound" xml:space="preserve">
+    <value>Nie zaplanowałeś na razie żadnych zajęć.</value>
+  </data>
+  <data name="UserNoClassesFound" xml:space="preserve">
+    <value>Nie zapisałeś się jeszcze na żadne zajęcia.</value>
+  </data>
+  <data name="ClassSignIn" xml:space="preserve">
+    <value>Zapisz się na zajęcia</value>
+  </data>
+  <data name="PleaseLogIn" xml:space="preserve">
+    <value>Zaloguj się, by mieć dostęp do zawartości</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Godzina</value>
+  </data>
+  <data name="ValidationOneImageAtLeast" xml:space="preserve">
+    <value>Przynajmniej jedno zdjęcie musi być dołączone</value>
   </data>
 </root>

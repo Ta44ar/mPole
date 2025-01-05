@@ -16,6 +16,7 @@ namespace mPole.Data.DbContext
         public DbSet<Image> Images { get; set; }
         public DbSet<Training> Trainings { get; set; }
         public DbSet<Class> Classes { get; set; }
+        public DbSet<Group> Groups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,32 +28,39 @@ namespace mPole.Data.DbContext
             modelBuilder.ApplyConfiguration(new ImageConfiguration());
             modelBuilder.ApplyConfiguration(new TrainingConfiguration());
             modelBuilder.ApplyConfiguration(new ClassConfiguration());
+            modelBuilder.ApplyConfiguration(new GroupConfiguration());
+            modelBuilder.ApplyConfiguration(new AppUserConfiguration());
 
             modelBuilder.Entity<ApplicationUser>(entity =>
             {
                 entity.ToTable(name: "User");
-                entity.Property(e => e.ProfileImage).HasColumnType("varbinary(max)");
             });
+
             modelBuilder.Entity<IdentityRole>(entity =>
             {
                 entity.ToTable(name: "Role");
             });
+
             modelBuilder.Entity<IdentityUserRole<string>>(entity =>
             {
                 entity.ToTable("UserRole");
             });
+
             modelBuilder.Entity<IdentityUserClaim<string>>(entity =>
             {
                 entity.ToTable("UserClaim");
             });
+
             modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
             {
                 entity.ToTable("UserLogin");
             });
+
             modelBuilder.Entity<IdentityUserToken<string>>(entity =>
             {
                 entity.ToTable("UserToken");
             });
+
             modelBuilder.Entity<IdentityRoleClaim<string>>(entity =>
             {
                 entity.ToTable("RoleClaim");
@@ -76,6 +84,11 @@ namespace mPole.Data.DbContext
             modelBuilder.Entity<Class>(entity =>
             {
                 entity.ToTable(name: "Class");
+            });
+
+            modelBuilder.Entity<Group>(entity =>
+            {
+                entity.ToTable(name: "Group");
             });
         }
     }

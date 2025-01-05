@@ -31,7 +31,9 @@
             <DataAnnotationsValidator />
             <MudTextField @bind-Value="questionModel.Email" Label="@res["Email"]" Required="true" />
             <MudTextField @bind-Value="questionModel.Question" Label="@res["Question"]" Lines="5" Required="true" />
-            <MudButton OnClick="SubmitQuestion" Variant="Variant.Filled" Color="Color.Primary" Class="mt-2">@res["Send"]</MudButton>
+            <MudToolBar Class="d-flex justify-end">
+                <MudButton OnClick="SubmitQuestion" Variant="Variant.Filled" Color="Color.Primary" Class="mt-2">@res["Send"]</MudButton>
+            </MudToolBar>        
         </EditForm>
     </MudPaper>
 </MudContainer>
@@ -61,7 +63,6 @@
             questionModel = new QuestionModel();
         }
         
-
         // Handle the question submission logic here TO DO
         await Task.CompletedTask;
     }

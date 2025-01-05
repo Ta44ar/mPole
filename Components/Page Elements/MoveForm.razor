@@ -23,7 +23,7 @@ else
                 <MudRating SelectedValue="0" SelectedValueChanged="SetDifficulty" @bind-Value="move.DifficultyLevel" />
             </MudItem>
             <MudItem xs="12">
-                <MudTextField @bind-Value="move.Description" Lines="5" Label="Opis figury:" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="move.Description" Lines="5" Label="@res["Description"]" Variant="Variant.Outlined" />
             </MudItem>
             <MudItem xs="12">
                 <MudGrid>

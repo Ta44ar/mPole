@@ -247,7 +247,7 @@
     <value>Multimedia included</value>
   </data>
   <data name="SuccessMoveAddition" xml:space="preserve">
-    <value>Succesfully added new move!</value>
+    <value>Successfully added new move!</value>
   </data>
   <data name="ErrorDuringMoveAddition" xml:space="preserve">
     <value>Error when adding the move</value>
@@ -268,7 +268,7 @@
     <value>Error while loading move</value>
   </data>
   <data name="SuccessMoveEdition" xml:space="preserve">
-    <value>Succesfully edited move!</value>
+    <value>Successfully edited move!</value>
   </data>
   <data name="ErrorDuringMoveEdition" xml:space="preserve">
     <value>Error while editing move</value>
@@ -394,16 +394,16 @@
     <value>Add optional miniature</value>
   </data>
   <data name="SuccessTrainingEdition" xml:space="preserve">
-    <value>Successfully edited training plan</value>
+    <value>Successfully edited training plan!</value>
   </data>
   <data name="ErrorDuringTrainingOperation" xml:space="preserve">
     <value>Error occured during training plan save</value>
   </data>
   <data name="SuccessTrainingAddition" xml:space="preserve">
-    <value>Successfully added new training plan</value>
+    <value>Successfully added new training plan!</value>
   </data>
   <data name="SuccessTrainingDeletionMessage" xml:space="preserve">
-    <value>Successfully deleted training plan</value>
+    <value>Successfully deleted training plan!</value>
   </data>
   <data name="ErrorDuringTrainingDeletion" xml:space="preserve">
     <value>Error when deleting training plan</value>
@@ -436,6 +436,60 @@
     <value>Question</value>
   </data>
   <data name="SuccessEmailSend" xml:space="preserve">
-    <value>Your message was send succesfully</value>
+    <value>Your message was send succesfully!</value>
+  </data>
+  <data name="OrganiseClass" xml:space="preserve">
+    <value>Schedule class</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="SuccessClassEdition" xml:space="preserve">
+    <value>Successfully edited class!</value>
+  </data>
+  <data name="SuccessClassAddition" xml:space="preserve">
+    <value>Successfully added new class!</value>
+  </data>
+  <data name="ValidationTrainerRequired" xml:space="preserve">
+    <value>Trainer field required</value>
+  </data>
+  <data name="ValidationDateRequired" xml:space="preserve">
+    <value>Datetime field required</value>
+  </data>
+  <data name="ValidationDateInFuture" xml:space="preserve">
+    <value>Please eneter a future date</value>
+  </data>
+  <data name="ValidationDurationPositive" xml:space="preserve">
+    <value>Duration should be greater than 0</value>
+  </data>
+  <data name="ValidationLocationRequired" xml:space="preserve">
+    <value>Location field required</value>
+  </data>
+  <data name="DurationInHours" xml:space="preserve">
+    <value>Duration (in hours)</value>
+  </data>
+  <data name="AttendantClasses" xml:space="preserve">
+    <value>Classes you are participating in:</value>
+  </data>
+  <data name="InstructorClasses" xml:space="preserve">
+    <value>Classes you teach as an instructor:</value>
+  </data>
+  <data name="InstructorNoClassesFound" xml:space="preserve">
+    <value>You haven't scheduled any activities for now.</value>
+  </data>
+  <data name="UserNoClassesFound" xml:space="preserve">
+    <value>You haven't signed up for any classes.</value>
+  </data>
+  <data name="ClassSignIn" xml:space="preserve">
+    <value>Sign up for classes</value>
+  </data>
+  <data name="PleaseLogIn" xml:space="preserve">
+    <value>Log in to access content</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Hour</value>
+  </data>
+  <data name="ValidationOneImageAtLeast" xml:space="preserve">
+    <value>At least one image should be added</value>
   </data>
 </root>

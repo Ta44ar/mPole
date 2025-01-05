@@ -1,0 +1,23 @@
+﻿@inject IStringLocalizer<SharedResource> res
+
+<MudTimePicker Label="@res["Hour"]" @bind-Time="Time" PickerVariant="PickerVariant.Dialog"/>
+
+@code {
+    [Parameter]
+    public TimeSpan? Time { get; set; }
+
+    [Parameter]
+    public EventCallback<TimeSpan?> TimeChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var currentTime = DateTime.Now.TimeOfDay;
+        Time = new TimeSpan(currentTime.Hours, currentTime.Minutes, 0);
+    }
+
+    private async Task OnTimeChanged(TimeSpan? newTime)
+    {
+        Time = newTime;
+        await TimeChanged.InvokeAsync(newTime);
+    }
+}

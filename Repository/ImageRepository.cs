@@ -7,11 +7,11 @@ namespace mPole.Data.Repositories
 {
     public class ImageRepository : IImageRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public ImageRepository(ApplicationDbContext context)
+        public ImageRepository(IServiceScopeFactory serviceScopeFactory)
         {
-            _context = context;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public async Task AddImageAsync(Image image)
@@ -21,23 +21,31 @@ namespace mPole.Data.Repositories
                 throw new ArgumentNullException(nameof(image));
             }
 
-            await _context.Images.AddAsync(image);
-            await _context.SaveChangesAsync();
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                await context.Images.AddAsync(image);
+                await context.SaveChangesAsync();
+            }
         }
 
         public async Task<Image> GetImageByMoveIdAsync(int moveId)
         {
-            var image = await _context.Images
-                                .Where(i => i.Move.Id == moveId)
-                                .AsNoTracking()
-                                .FirstOrDefaultAsync();
-
-            if (image == null)
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                throw new ArgumentNullException();
-            }
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var image = await context.Images
+                                    .Where(i => i.Move.Id == moveId)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync();
 
-            return image;
+                if (image == null)
+                {
+                    throw new ArgumentNullException();
+                }
+
+                return image;
+            }
         }
     }
 }
