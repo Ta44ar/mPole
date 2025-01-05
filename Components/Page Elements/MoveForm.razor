@@ -35,13 +35,7 @@ else
                         @foreach (var imageUrl in urlImages)
                         {
                             <MudItem xs=@(urlImages.Count > 3 ? 4 : (urlImages.Count == 2 ? 6 : 12))>
-                                <img style="
-    width: 100%;
-    height: 100%;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-    border-radius: 4px;
-                                            " src="@imageUrl" alt="Image" />
+                                <img class="mini-image" src="@imageUrl" alt="Image" />
                             </MudItem>
                         }
                     }
@@ -74,18 +68,20 @@ else
 
     private bool isLoading = false;
 
-    private MoveValidator moveValidator = new MoveValidator();
+    private MoveValidator? moveValidator;
 
-    private ICollection<string> urlImages = new List<string>();
+    private List<string> urlImages = new List<string>();
 
     protected override void OnParametersSet()
     {
-        urlImages = editedMoveImages;
+        urlImages = editedMoveImages.ToList();
 
         if (move == null)
         {
             move = new Move();
         }
+
+        moveValidator = new MoveValidator(res);
     }
 
     private async Task OpenUploadModal()
@@ -99,10 +95,7 @@ else
     {
         if (urlImages.Any())
         {
-            foreach (var image in newUrlImages)
-            {
-                urlImages.Add(image);
-            }
+            urlImages.AddRange(newUrlImages);
         }
         else
         {
@@ -122,6 +115,7 @@ else
             foreach (var error in validationResult.Errors)
             {
                 snackbar.Add(error.ErrorMessage, MudBlazor.Severity.Error);
+                isLoading = false;
             }
             return;
         }
