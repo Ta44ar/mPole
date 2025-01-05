@@ -50,7 +50,7 @@
                 Title = c.Training.Name,
                 Location = c.Location,
                 Text = res["Trainer"] + $": {c.Trainer.FirstName} {c.Trainer.LastName}",
-                Color = c.RegisteredUsers.Any(u => u.Id == mainLayout.userId) ? Event.UserRegisteredEventColor : Event.DefaultEventColor
+                Color = c.Registrations.Any(u => u.UserId == mainLayout.userId) ? Event.UserRegisteredEventColor : Event.DefaultEventColor
             }).ToList();
     }
 

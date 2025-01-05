@@ -17,6 +17,7 @@ namespace mPole.Data.DbContext
         public DbSet<Training> Trainings { get; set; }
         public DbSet<Class> Classes { get; set; }
         public DbSet<Group> Groups { get; set; }
+        public DbSet<Registration> Registrations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +31,7 @@ namespace mPole.Data.DbContext
             modelBuilder.ApplyConfiguration(new ClassConfiguration());
             modelBuilder.ApplyConfiguration(new GroupConfiguration());
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
+            modelBuilder.ApplyConfiguration(new RegistrationConfiguration());
 
             modelBuilder.Entity<ApplicationUser>(entity =>
             {
@@ -89,6 +91,11 @@ namespace mPole.Data.DbContext
             modelBuilder.Entity<Group>(entity =>
             {
                 entity.ToTable(name: "Group");
+            });
+
+            modelBuilder.Entity<Registration>(entity =>
+            {
+                entity.ToTable(name: "Registration");
             });
         }
     }

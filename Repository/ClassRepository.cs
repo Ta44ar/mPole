@@ -59,7 +59,7 @@ namespace mPole.Repository
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 return await context.Classes
                     .Include(c => c.Training)
-                    .Include(c => c.RegisteredUsers)
+                    .Include(c => c.Registrations)
                     .AsNoTracking()
                     .ToListAsync(cancellationToken);
             }
@@ -74,7 +74,7 @@ namespace mPole.Repository
                                     .Where(t => t.Id == classId)
                                     .Include(t => t.Trainer)
                                     .Include(t => t.Training)
-                                    .Include(t => t.RegisteredUsers)
+                                    .Include(t => t.Registrations)
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync(cancellationToken);
 
@@ -97,7 +97,7 @@ namespace mPole.Repository
                     .AsNoTracking()
                     .Include(t => t.Trainer)
                     .Include(c => c.Training)
-                    .Include(c => c.RegisteredUsers)
+                    .Include(c => c.Registrations)
                     .ToListAsync(cancellationToken);
 
                 if (classes == null)

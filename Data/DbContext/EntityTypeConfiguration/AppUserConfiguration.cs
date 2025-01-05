@@ -19,13 +19,6 @@ namespace mPole.Data.DbContext.EntityTypeConfiguration
             builder.Property(e => e.ProfileImage)
                 .HasColumnType("varbinary(max)");
 
-            builder.HasMany(e => e.Classes)
-                .WithMany(c => c.RegisteredUsers)
-                .UsingEntity<Dictionary<string, object>>(
-                    "UserClass",
-                    j => j.HasOne<Class>().WithMany().HasForeignKey("ClassId"),
-                    j => j.HasOne<ApplicationUser>().WithMany().HasForeignKey("UserId"));
-
             builder.HasMany(e => e.Groups)
                 .WithMany(g => g.Members)
                 .UsingEntity<Dictionary<string, object>>(

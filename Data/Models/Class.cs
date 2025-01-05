@@ -10,9 +10,9 @@ namespace mPole.Data.Models
         public DateTime? Date { get; set; }
         public string Location { get; set; } = string.Empty;
         public int TrainingId { get; set; }
-        public virtual Training Training { get; set; } = null!;
+        public virtual Training Training { get; set; } = new();
         public string TrainerId { get; set; } = string.Empty;
-        public virtual ApplicationUser Trainer { get; set; } = null!;
-        public virtual IList<ApplicationUser> RegisteredUsers { get; set; } = new List<ApplicationUser>();
+        public virtual ApplicationUser Trainer { get; set; } = new();
+        public virtual ICollection<Registration> Registrations { get; set; } = new List<Registration>();
     }
 }
