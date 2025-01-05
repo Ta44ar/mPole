@@ -8,8 +8,8 @@
     <ValidationSummary />
     <MudGrid>
         <MudItem xs="12">
-            <MudAutocomplete T="string" @bind-Value="selectedTrainer" Label="@res["Trainer"]"
-                             SearchFunc="SearchTrainers" Clearable="true" />
+            <MudAutocomplete T="ApplicationUser" @bind-Value="selectedTrainer" Label="@res["Trainer"]"
+                             SearchFunc="SearchTrainers" Clearable="true" ToStringFunc="@(user => user?.FirstName + " " + user?.LastName)" />
         </MudItem>
         <MudItem xs="12">
             <MudGrid>
@@ -63,13 +63,12 @@
 
     private PDClassValidator? classValidator;
     private TimeSpan? _time;
-    private string selectedTrainer = string.Empty;
+    private ApplicationUser? selectedTrainer;
 
     protected override void OnInitialized()
     {
         if (!isEditMode)
         {
-
             if (classModel == null)
             {
                 classModel = new Class();
@@ -77,23 +76,28 @@
 
             if (User != null)
             {
-                selectedTrainer = $"{User.FirstName} {User.LastName}";
+                selectedTrainer = User;
                 classModel.Trainer = selectedTrainer;
             }
-        }
 
-        classModel.Date = DateTime.Today;
-        _time = DateTime.Now.TimeOfDay; // Initialize _time with the current time
+            _time = DateTime.Now.TimeOfDay;
+            classModel.Date = DateTime.Today;
+        }
+        else
+        {
+            selectedTrainer = classModel.Trainer;
+        }
     }
 
     protected override void OnParametersSet()
     {
         classValidator = new PDClassValidator(res);
+        _time = classModel.Date?.TimeOfDay;
     }
 
-    private async Task<IEnumerable<string>> SearchTrainers(string value, CancellationToken token)
+    private async Task<IEnumerable<ApplicationUser>> SearchTrainers(string searchText, CancellationToken cancellationToken)
     {
-        return await userService.SearchTrainersAsync(value);
+        return await userService.SearchTrainersAsync(searchText, cancellationToken);
     }
 
     private async Task HandleValidSubmit()

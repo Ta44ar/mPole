@@ -492,4 +492,16 @@
   <data name="ValidationOneImageAtLeast" xml:space="preserve">
     <value>At least one image should be added</value>
   </data>
+  <data name="ClassEdition" xml:space="preserve">
+    <value>Class edition</value>
+  </data>
+  <data name="WarningClassDeletion" xml:space="preserve">
+    <value>Removal of the class will be irreversible.</value>
+  </data>
+  <data name="SuccessClassDeletion" xml:space="preserve">
+    <value>Successfully removed class!</value>
+  </data>
+  <data name="ErrorDuringClassDeletion" xml:space="preserve">
+    <value>Error when deleting class</value>
+  </data>
 </root>

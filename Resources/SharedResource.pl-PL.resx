@@ -229,7 +229,7 @@
     <value>Ostrzeżenie</value>
   </data>
   <data name="WarningMoveDeletion" xml:space="preserve">
-    <value>Usunięcie figury będzie nieodwracalne.</value>
+    <value>Usunięcie tej figury będzie nieodwracalne.</value>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>Usuń</value>
@@ -491,5 +491,17 @@
   </data>
   <data name="ValidationOneImageAtLeast" xml:space="preserve">
     <value>Przynajmniej jedno zdjęcie musi być dołączone</value>
+  </data>
+  <data name="ClassEdition" xml:space="preserve">
+    <value>Edycja zajęć</value>
+  </data>
+  <data name="WarningClassDeletion" xml:space="preserve">
+    <value>Usunięcie tych zajęć będzie nieodwracalne.</value>
+  </data>
+  <data name="SuccessClassDeletion" xml:space="preserve">
+    <value>Pomyślnie usunięto zajęcia!</value>
+  </data>
+  <data name="ErrorDuringClassDeletion" xml:space="preserve">
+    <value>Błąd podczas usuwania zajęć</value>
   </data>
 </root>

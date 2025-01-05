@@ -20,6 +20,7 @@ namespace mPole.Repository
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
+                context.Entry(poleDanceClass.Trainer).State = EntityState.Unchanged;
                 context.Entry(poleDanceClass.Training).State = EntityState.Unchanged;
 
                 await context.Classes.AddAsync(poleDanceClass, cancellationToken);
@@ -71,6 +72,7 @@ namespace mPole.Repository
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 var poleDanceClass = await context.Classes
                                     .Where(t => t.Id == classId)
+                                    .Include(t => t.Trainer)
                                     .Include(t => t.Training)
                                     .Include(t => t.RegisteredUsers)
                                     .AsNoTracking()
@@ -93,6 +95,7 @@ namespace mPole.Repository
                 var classes = await context.Classes
                     .Where(c => c.Date >= startDate && c.Date <= endDate)
                     .AsNoTracking()
+                    .Include(t => t.Trainer)
                     .Include(c => c.Training)
                     .Include(c => c.RegisteredUsers)
                     .ToListAsync(cancellationToken);

@@ -33,7 +33,7 @@
     {
         var eventItem = _events.FirstOrDefault(e => e.Start == item.Start);
 
-        await ShowEventDialog(eventItem);
+        await ShowEventDialog(eventItem, mainLayout);
     }
 
     private async Task LoadCalendarEvents(DateRange dateRange)
@@ -49,16 +49,21 @@
                 End = (c.Date ?? DateTime.MinValue).AddHours(c.Duration),
                 Title = c.Training.Name,
                 Location = c.Location,
-                Text = res["Trainer"] + $": {c.Trainer}",
+                Text = res["Trainer"] + $": {c.Trainer.FirstName} {c.Trainer.LastName}",
                 Color = c.RegisteredUsers.Any(u => u.Id == mainLayout.userId) ? Event.UserRegisteredEventColor : Event.DefaultEventColor
             }).ToList();
     }
 
-    private async Task ShowEventDialog(Event item)
+    private async Task ShowEventDialog(Event item, MainLayout mainLayout)
     {
         var poleDanceClass = await classService.GetClassByIdAsync(item.EventId, CancellationToken.None);
-        var parameters = new DialogParameters { ["Class"] = poleDanceClass };
+        var parameters = new DialogParameters { ["Class"] = poleDanceClass, ["MainLayout"] = mainLayout, ["OnClassEdited"] = EventCallback.Factory.Create(this, OnClassEdited) };
         var options = new DialogOptions { MaxWidth = MaxWidth.Large, FullWidth = true };
         dialogService.Show<PDClassViewDialog>(res["ClassDetails"], parameters, options);
+    }
+
+    private async Task OnClassEdited()
+    {
+        await LoadCalendarEvents(new DateRange(DateTime.Today, DateTime.Today.AddMonths(1)));
     }
 }
