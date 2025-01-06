@@ -10,7 +10,7 @@
                     <MudText Typo="Typo.subtitle1" Color="Color.Secondary">@Training.Description</MudText>
                 </MudItem>
                 <MudItem xs="12">
-                    <PDClassForm ClassModel="ClassModel" User="User" OnCancel="Cancel" IsEditMode="isEditMode" Participants="Participants"/>
+                    <PDClassForm ClassModel="ClassModel" User="User" OnCancel="Cancel" IsEditMode="isEditMode" Participants="Participants" />
                 </MudItem>
             </MudGrid>
         </MudPaper>
@@ -18,13 +18,13 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] 
+    [CascadingParameter]
     MudDialogInstance MudDialog { get; set; } = default!;
 
-    [Parameter] 
+    [Parameter]
     public Training Training { get; set; } = default!;
 
-    [Parameter] 
+    [Parameter]
     public ApplicationUser User { get; set; } = default!;
 
     [Parameter]
@@ -39,7 +39,14 @@
     {
         if (ClassModel is null)
         {
-            ClassModel = new Class();
+            ClassModel = new Class()
+                {
+                    Date = DateTime.UtcNow,
+                    Duration = TimeSpan.FromHours(1),
+                    Trainer = User,
+                    Registrations = new List<Registration>(),
+                    Training = Training
+                };
         }
         else
         {

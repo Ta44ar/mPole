@@ -160,10 +160,14 @@ else
 
     private async Task OrganiseClassBasedOnTrainingPlan(Training training, ApplicationUser applicationUser)
     {
-        var parameters = new DialogParameters { ["Training"] = training, ["User"] = applicationUser };
+        var parameters = new DialogParameters {
+            ["Training"] = training, 
+            ["User"] = applicationUser,
+            ["Participants"] = new List<ApplicationUser>(),
+            ["ClassModel"] = null
+        };
         var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
         var dialog = dialogService.Show<PDClassOrganiseDialog>(res["OrganiseClass"], parameters, options);
         var result = await dialog.Result;
     }
-
 }

@@ -46,7 +46,7 @@
             {
                 EventId = c.Id,
                 Start = c.Date ?? DateTime.UtcNow,
-                End = (c.Date ?? DateTime.UtcNow).AddHours(c.Duration),
+                End = (c.Date ?? DateTime.UtcNow).Add(c.Duration),
                 Title = c.Training.Name,
                 Location = c.Location,
                 Text = res["Trainer"] + $": {c.Trainer.FirstName} {c.Trainer.LastName}",

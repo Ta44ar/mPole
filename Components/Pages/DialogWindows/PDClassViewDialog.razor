@@ -11,7 +11,7 @@
             <MudGrid>
                 <MudItem xs="12" sm="6">
                     <MudText Typo="Typo.h4" Color="Color.Primary">@Class.Training.Name</MudText>
-                    <MudText Typo="Typo.subtitle1" Color="Color.Secondary">@Class.Date?.ToString("dd-MM-yyyy HH:mm")</MudText>
+                    <MudText Typo="Typo.subtitle1" Color="Color.Secondary">@Class.DateTime?.ToString("dd-MM-yyyy HH:mm")</MudText>
                 </MudItem>
                 <MudItem xs="12" sm="6" Class="text-right d-flex justify-end">
                     @if (!string.IsNullOrEmpty(Class.Training.ImageUrl))
@@ -27,7 +27,7 @@
             <MudDivider Class="my-2" />
             <MudText Class="d-flex gap-2 align-items-center" Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.Place" /> @res["Location"]: <b>@Class.Location</b></MudText>
             <MudText Class="d-flex gap-2 align-items-center" Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.Person" /> @res["Trainer"]: <b>@Class.Trainer.FirstName @Class.Trainer.LastName</b></MudText>
-            <MudText Class="d-flex gap-2 align-items-center" Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.Schedule" /> @res["Duration"]: <b>@Class.Duration</b></MudText>
+            <MudText Class="d-flex gap-2 align-items-center" Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.Schedule" /> @res["Duration"]: <b>@($"{Class.Duration.Hours}h {Class.Duration.Minutes}m")</b></MudText>
             <MudText Class="d-flex gap-2 align-items-center" Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.Group" /> @res["UsersRegistered"]: <b>@Class.Registrations.Count</b></MudText>
             <MudText Class="d-flex gap-2 align-items-center" Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.EventAvailable" /> @res["IsRegistrationOpen"] <b>@(Class.IsRegistrationOpen ? res["Yes"] : res["No"])</b></MudText>
         </MudPaper>
@@ -73,13 +73,13 @@
     private async Task EditClass()
     {
         var training = await trainingService.GetTrainingAsync(Class.TrainingId);
-        var parameters = new DialogParameters 
-        { 
-            ["classModel"] = Class, 
-            ["Training"] = training, 
-            ["User"] = MainLayout.user,
-            ["Participants"] = participants
-        };
+        var parameters = new DialogParameters
+            {
+                ["classModel"] = Class,
+                ["Training"] = training,
+                ["User"] = MainLayout.user,
+                ["Participants"] = participants
+            };
         var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
         var dialog = dialogService.Show<PDClassOrganiseDialog>(res["ClassEdition"], parameters, options);
         var result = await dialog.Result;
