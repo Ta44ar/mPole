@@ -537,4 +537,28 @@
   <data name="ParticipantAlreadyAdded" xml:space="preserve">
     <value>This user has been added already!</value>
   </data>
+  <data name="ErrorDuringClassSignIn" xml:space="preserve">
+    <value>An error ocurred during class sign in</value>
+  </data>
+  <data name="ClassResign" xml:space="preserve">
+    <value>Resign</value>
+  </data>
+  <data name="SuccessClassSignIn" xml:space="preserve">
+    <value>Successfully signed for class!</value>
+  </data>
+  <data name="SuccessClassResign" xml:space="preserve">
+    <value>Succesfully resigned from class!</value>
+  </data>
+  <data name="ErrorDuringClassResign" xml:space="preserve">
+    <value>An error occured during resignation</value>
+  </data>
+  <data name="ColorLegendTitle" xml:space="preserve">
+    <value>Event colors meaning:</value>
+  </data>
+  <data name="ColorLegendYourClasses" xml:space="preserve">
+    <value>classes in which you participate</value>
+  </data>
+  <data name="ColorLegendOtherClasses" xml:space="preserve">
+    <value>other classes</value>
+  </data>
 </root>

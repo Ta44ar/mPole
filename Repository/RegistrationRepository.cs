@@ -46,6 +46,17 @@ namespace mPole.Data.Repositories
             }
         }
 
+        public Task<bool> IsUserRegisteredForClassAsync(string userId, int classId)
+        {
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                bool isUserRegistered = context.Registrations.Any(r => r.UserId == userId && r.ClassId == classId);
+
+                return Task.FromResult(isUserRegistered);
+            }
+        }
+
         public async Task RemoveOldClassRegistrationsAsync(int classId)
         {
             using (var scope = _serviceScopeFactory.CreateScope())
@@ -57,6 +68,27 @@ namespace mPole.Data.Repositories
                 {
                     await DeleteAsync(registration);
                 }
+            }
+        }
+
+        public async Task<Registration?> GetRegistrationAsync(string userId, int classId)
+        {
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                return await context.Registrations
+                    .FirstOrDefaultAsync(r => r.UserId == userId && r.ClassId == classId);
+            }
+        }
+
+        public async Task<ICollection<Registration>> GetRegistrationsByClassIdAsync(int classId)
+        {
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                return await context.Registrations
+                    .Where(r => r.ClassId == classId)
+                    .ToListAsync();
             }
         }
     }
