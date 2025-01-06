@@ -1,3 +1,4 @@
+using Microsoft.Identity.Client;
 using mPole.Data.DTOs;
 using mPole.Data.Models;
 using mPole.Interface.Repositories;
@@ -37,8 +38,8 @@ public class RegistrationService : IRegistrationService
         await _registrationRepository.AddAsync(registration);
     }
 
-    public async Task<ICollection<Class>> GetClassesByUserIdAsync(string userId, RegistrationStatus status)
+    public async Task<ICollection<ApplicationUser>> GetRegisteredUsersByClassIdAsync(int classId)
     {
-        return await _registrationRepository.GetClassesByUserIdAsync(userId, status);
+        return await _registrationRepository.GetRegisteredUsersByClassIdAsync(classId);
     }
 }

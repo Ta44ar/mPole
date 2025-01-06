@@ -10,7 +10,6 @@ namespace mPole.Data.Models
         public int ClassId { get; set; }
         public DateTime RegistrationDate { get; set; }
         public RegistrationStatus Status { get; set; } = RegistrationStatus.Pending;
-
         public virtual ApplicationUser User { get; set; }
         public virtual Class Class { get; set; }
     }

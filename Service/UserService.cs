@@ -44,15 +44,46 @@ public class UserService : IUserService
             if (trainers == null)
                 return new List<ApplicationUser>();
 
-            return trainers.Where(t => t.UserName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                                       t.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                                       t.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+            try
+            {
+                return trainers.Where(t => t.UserName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                                           t.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                                           t.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+            } 
+            catch
+            {
+                return new List<ApplicationUser>();
+            }
         }
     }
 
+    public async Task<IEnumerable<ApplicationUser>> SearchParticipantsAsync(string searchText, CancellationToken cancellationToken)
+    {
+        using (var scope = _serviceScopeFactory.CreateScope())
+        {
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var participants = await userManager.GetUsersInRoleAsync("User");
+
+            if (participants == null)
+                return new List<ApplicationUser>();
+
+            try
+            {
+                return participants.Where(p => p.UserName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                                                p.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                                                p.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+            }
+            catch
+            {
+                return new List<ApplicationUser>();
+            }
+        }
+    }
+
+
     public async Task<ApplicationUser> GetCurrentUserAsync()
     {
-        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
         {
@@ -76,4 +107,11 @@ public class UserService : IUserService
     {
         return await _userRepository.GetClassesByInstructorAsync(instructorName);
     }
+
+    public async Task<ICollection<Class>> GetClassesByUserIdAsync(string userId, RegistrationStatus status)
+    {
+        var classes = await _userRepository.GetClassesByUserIdAsync(userId);
+        return classes.Where(c => c.Registrations != null && c.Registrations.Any(r => r.Status == status)).ToList();
+    }
+
 }

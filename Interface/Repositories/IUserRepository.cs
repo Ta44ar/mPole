@@ -6,5 +6,6 @@ public interface IUserRepository
     Task<ApplicationUser?> GetUserByNameAsync(string userName);
     Task<ICollection<ApplicationUser>> GetAllUsersAsync();
     Task<ICollection<string?>> GetExistingRolesAsync();
-    Task<ICollection<Class>> GetClassesByInstructorAsync(string name);
+    Task<ICollection<Class>> GetClassesByInstructorAsync(string instructorId);
+    Task<ICollection<Class>> GetClassesByUserIdAsync(string userId);
 }
