@@ -36,11 +36,11 @@ else
                                     <MudTd DataLabel="@res["Location"]">@userClass.Location</MudTd>
                                     <MudTd DataLabel="@res["Trainer"]">@userClass.Trainer.FirstName @userClass.Trainer.LastName</MudTd>
                                     <MudTd DataLabel="@res["Actions"]">
-                                        <MudTooltip Text="@res["Details"]">
-                                            <MudIconButton Icon="@Icons.Material.Filled.Info" OnClick="() => ShowClassDetails(userClass)" />
-                                        </MudTooltip>
                                         <MudTooltip Text="@res["Attendants"]">
                                             <MudIconButton Icon="@Icons.Material.Filled.People" OnClick="() => ViewAttendants(userClass)" />
+                                        </MudTooltip>
+                                        <MudTooltip Text="@res["Details"]">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Info" OnClick="() => ShowClassDetails(userClass)" />
                                         </MudTooltip>
                                     </MudTd>
                                 </RowTemplate>

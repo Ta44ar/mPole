@@ -25,6 +25,11 @@ namespace mPole.Repository
                 context.Entry(poleDanceClass.Trainer).State = EntityState.Unchanged;
                 context.Entry(poleDanceClass.Training).State = EntityState.Unchanged;
 
+                foreach (var registration in poleDanceClass.Registrations)
+                {
+                    context.Entry(registration.User).State = EntityState.Unchanged;
+                }
+
                 await context.Classes.AddAsync(poleDanceClass, cancellationToken);
                 await context.SaveChangesAsync(cancellationToken);
             }
@@ -35,7 +40,10 @@ namespace mPole.Repository
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                var poleDanceClass = await context.Classes.FindAsync(new object[] { id }, cancellationToken);
+                var poleDanceClass = await context.Classes
+                    .Include(c => c.Registrations)
+                    .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+
                 if (poleDanceClass != null)
                 {
                     context.Classes.Remove(poleDanceClass);
@@ -43,6 +51,8 @@ namespace mPole.Repository
                 }
             }
         }
+
+
 
         public async Task UpdateAsync(Class poleDanceClass, CancellationToken cancellationToken)
         {
@@ -61,6 +71,7 @@ namespace mPole.Repository
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 return await context.Classes
+                    .Include(c => c.Trainer)
                     .Include(c => c.Training)
                     .Include(c => c.Registrations)
                     .AsNoTracking()

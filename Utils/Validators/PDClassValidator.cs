@@ -12,15 +12,18 @@ public class PDClassValidator : AbstractValidator<Class>
         _res = res;
 
         RuleFor(c => c.Trainer)
-            .NotEmpty().WithMessage(_res["ValidationTrainerRequired"]);
+            .NotNull().WithMessage(_res["ValidationTrainerRequired"]);
 
         RuleFor(c => c.Date)
             .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage(_res["ValidationDateRequired"])
             .GreaterThanOrEqualTo(DateTime.Today).WithMessage(_res["ValidationDateInFuture"]);
 
+        RuleFor(c => c.Time)
+            .NotEmpty().WithMessage(_res["ValidationTimeRequired"]);
+
         RuleFor(c => c.Duration)
-            .GreaterThan(0).WithMessage(_res["ValidationDurationPositive"]);
+            .GreaterThan(TimeSpan.Zero).WithMessage(_res["ValidationDurationPositive"]);
 
         RuleFor(c => c.Location)
             .NotEmpty().WithMessage(_res["ValidationLocationRequired"]);

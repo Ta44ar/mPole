@@ -46,7 +46,7 @@
                     PickerVariant="PickerVariant.Dialog" />
                 </MudItem>
                 <MudItem xs="6">
-                    <DateTimePicker Time="_time" TimeChanged="OnTimeChanged" />
+                    <DateTimePicker Time="ClassModel.Time" TimeChanged="OnTimeChanged" />
                 </MudItem>
             </MudGrid>
         </MudItem>
@@ -100,7 +100,6 @@
     public ICollection<ApplicationUser> Participants { get; set; } = new List<ApplicationUser>();
 
     private PDClassValidator? classValidator;
-    private TimeSpan? _time;
     private ApplicationUser? selectedTrainer;
     private ApplicationUser? selectedParticipant;
     private ICollection<ApplicationUser> allUsers = new List<ApplicationUser>();
@@ -109,19 +108,10 @@
     {
         if (!IsEditMode)
         {
-            if (ClassModel == null)
-            {
-                ClassModel = new Class();
-            }
-
             if (User != null)
             {
                 selectedTrainer = User;
-                ClassModel.Trainer = selectedTrainer;
             }
-
-            _time = DateTime.UtcNow.TimeOfDay;
-            ClassModel.Date = DateTime.Today;
         }
         else
         {
@@ -133,7 +123,6 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        _time = ClassModel.Date?.TimeOfDay;
         Participants = await registrationService.GetRegisteredUsersByClassIdAsync(ClassModel.Id);
     }
 
@@ -187,22 +176,19 @@
         {
             ClassModel.Trainer = selectedTrainer;
 
-            ClassModel.Registrations.Clear();
             ClassModel.Registrations = Participants
                                             .DistinctBy(p => p.Id)
-                                            .Select(p => new Registration { User = p, UserId = p.Id, Status = RegistrationStatus.Confirmed })
+                                            .Select(p => new Registration { User = p, UserId = p.Id, Status = RegistrationStatus.Confirmed, RegistrationDate = DateTime.UtcNow })
                                             .ToList();
 
             if (IsEditMode)
             {
-                ClassModel.Date = ClassModel.Date + _time;
                 await classService.UpdateClassAsync(ClassModel, CancellationToken.None);
                 snackbar.Add(res["SuccessClassEdition"], MudBlazor.Severity.Success);
                 await Cancel();
             }
             else
             {
-                ClassModel.Date = ClassModel.Date + _time;
                 await classService.AddNewClassAsync(ClassModel, CancellationToken.None);
                 snackbar.Add(res["SuccessClassAddition"], MudBlazor.Severity.Success);
                 await Cancel();
@@ -222,6 +208,6 @@
 
     private async Task OnTimeChanged(TimeSpan? newTime)
     {
-        _time = newTime;
+        ClassModel.Time = newTime;
     }
 }
