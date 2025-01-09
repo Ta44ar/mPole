@@ -561,4 +561,19 @@
   <data name="ColorLegendOtherClasses" xml:space="preserve">
     <value>other classes</value>
   </data>
+  <data name="TrainingMoveAdded" xml:space="preserve">
+    <value>Successfully added move to training!</value>
+  </data>
+  <data name="TrainingMoveAlreadyIn" xml:space="preserve">
+    <value>This move is already added to training plan</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="SelectedMoves" xml:space="preserve">
+    <value>Selected moves:</value>
+  </data>
+  <data name="ValidationDifficultyLevelRange" xml:space="preserve">
+    <value>Difficulty level range (stars) required</value>
+  </data>
 </root>

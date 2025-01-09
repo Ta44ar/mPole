@@ -1,4 +1,5 @@
 ﻿@inject ITrainingService trainingService
+@inject IImageService imageService
 @inject IStringLocalizer<SharedResource> res
 @inject ISnackbar snackbar
 @inject IDialogService dialogService
@@ -42,6 +43,30 @@
             </MudGrid>
         </MudItem>
         <MudItem xs="12">
+            <MudButton Variant="Variant.Filled" OnClick="OpenAddMovesDialog">@res["MoveAdd"]</MudButton>
+        </MudItem>
+        @if (moveImages.Any())
+        {
+            <MudItem xs="12">
+                <MudPaper Class="pa-4 mt-4">
+                    <MudText Class="mt-4" Typo="Typo.body1">@res["SelectedMoves"]</MudText>
+                    <MudGrid>
+                        @foreach (var image in moveImages)
+                        {
+                            <MudItem xs="1">
+                                <MudCard>
+                                    <MudCardMedia Height="100" Image="@image.GetBase64ImageData(imageService)" />
+                                    <MudCardContent Class="align-items-center d-flex" Style="min-height:72px;">
+                                        <MudText Typo="Typo.body2">@image.Name</MudText>
+                                    </MudCardContent>
+                                </MudCard>
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </MudPaper>
+            </MudItem>
+        }
+        <MudItem xs="12">
             <MudGrid>
                 <MudItem xs="10">
                 </MudItem>
@@ -61,12 +86,19 @@
     [Parameter]
     public bool isEditMode { get; set; }
 
-    protected override void OnInitialized()
+    public ICollection<Image> moveImages { get; set; } = new List<Image>();
+
+    protected override async Task OnInitializedAsync()
     {
         if (!isEditMode && training != null)
         {
             training.Type = nameof(TrainingType.PoleDance);
             training.ImageUrl = GetDefaultImageUrl(training.Type);
+        }
+
+        if (isEditMode && training != null)
+        {
+            moveImages = await trainingService.GetMoveImagesByTrainingIdAsync(training.Id);
         }
     }
 
@@ -111,4 +143,22 @@
     }
 
     private void Cancel() => nav.NavigateTo("/instructor/training-plans");
+
+    private void OpenAddMovesDialog()
+    {
+        var parameters = new DialogParameters
+            {
+                ["Training"] = training,
+                ["MovesImages"] = moveImages,
+                ["TrainingChanged"] = EventCallback.Factory.Create<Training>(this, OnTrainingChanged)
+            };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        dialogService.Show<AddTrainingMovesDialog>(res["MoveAdd"], parameters, options);
+    }
+
+    private async Task OnTrainingChanged(Training updatedTraining)
+    {
+        training = updatedTraining;
+        StateHasChanged();
+    }
 }

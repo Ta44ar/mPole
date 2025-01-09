@@ -5,15 +5,49 @@
 @inject IDialogService DialogService
 @inject IRegistrationService registrationService
 
-<EditForm Model="ClassModel" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="ClassModel" OnValidSubmit="HandleValidSubmit" onkeypress="return event.keyCode!=13">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <MudGrid>
-        <MudItem xs="7">
-            <MudAutocomplete T="ApplicationUser" @bind-Value="selectedTrainer" Label="@res["Trainer"]"
+        <MudItem xs="12">
+            <MudAutocomplete T="ApplicationUser" @bind-Value="selectedTrainer" Label="@res["Trainer"]" KeyUpPreventDefault="true"
             SearchFunc="SearchTrainers" Clearable="true" ToStringFunc="@(user => user?.FirstName + " " + user?.LastName)" />
         </MudItem>
-        <MudItem xs="5">
+        <MudItem xs="12">
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudDatePicker @bind-Date="ClassModel.Date"
+                    Label="@res["Date"]"
+                    Required="true"
+                    IsDateDisabledFunc="@((DateTime dt) => dt < DateTime.Today)"
+                    PickerVariant="PickerVariant.Dialog" />
+                </MudItem>
+                <MudItem xs="6">
+                    <DateTimePicker Time="ClassModel.Time" TimeChanged="OnTimeChanged" />
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+        <MudItem xs="12">
+            <MudTextField @bind-Value="ClassModel.Duration" Label="@res["DurationInHours"]" />
+        </MudItem>
+        <MudItem xs="12">
+            <MudTextField @bind-Value="ClassModel.Location" Label="@res["Location"]" />
+        </MudItem>
+        <MudItem xs="12">
+            <MudGrid>
+                <MudItem xs="9">
+                    <MudAutocomplete T="ApplicationUser" @bind-Value="selectedParticipant" Label="@res["Participants"]" KeyUpPreventDefault="true"
+                    SearchFunc="SearchParticipants" Clearable="true" ToStringFunc="@(user => user?.FirstName + " " + user?.LastName)" />
+                </MudItem>
+                <MudItem xs="3" Class="d-flex justify-space-between">
+                    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" OnClick="AddParticipant" Color="Color.Primary">
+                        @res["AddParticipant"]
+                    </MudIconButton>
+                    <MudButton Disabled="@(!Participants.Any())" OnClick="ShowParticipants" Color="Color.Primary" Variant="Variant.Filled">@res["Registered"] (@Participants.Count)</MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+        <MudItem xs="12">
             <MudGrid>
                 <MudItem xs="6">
                     <MudText>
@@ -33,40 +67,6 @@
                             <MudSwitch @bind-Value="ClassModel.IsRegistrationOpen" Color="Color.Secondary" />
                         </MudTooltip>
                     }
-                </MudItem>
-            </MudGrid>
-        </MudItem>
-        <MudItem xs="12">
-            <MudGrid>
-                <MudItem xs="6">
-                    <MudDatePicker @bind-Date="ClassModel.Date"
-                    Label="@res["Date"]"
-                    Required="true"
-                    IsDateDisabledFunc="@((DateTime dt) => dt < DateTime.Today)"
-                    PickerVariant="PickerVariant.Dialog" />
-                </MudItem>
-                <MudItem xs="6">
-                    <DateTimePicker Time="ClassModel.Time" TimeChanged="OnTimeChanged" />
-                </MudItem>
-            </MudGrid>
-        </MudItem>
-        <MudItem xs="12">
-            <MudGrid>
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="ClassModel.Duration" Label="@res["DurationInHours"]" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="ClassModel.Location" Label="@res["Location"]" />
-                </MudItem>
-            </MudGrid>
-        </MudItem>
-        <MudItem xs="12">
-            <MudGrid>
-                <MudItem xs="12">
-                    <MudAutocomplete T="ApplicationUser" @bind-Value="selectedParticipant" Label="@res["Participants"]"
-                    SearchFunc="SearchParticipants" Clearable="true" ToStringFunc="@(user => user?.FirstName + " " + user?.LastName)" />
-                    <MudButton OnClick="AddParticipant" Color="Color.Primary" Variant="Variant.Filled">@res["AddParticipant"]</MudButton>
-                    <MudButton Disabled="@(!Participants.Any())" OnClick="ShowParticipants" Color="Color.Primary" Variant="Variant.Filled">@res["Registered"] (@Participants.Count)</MudButton>
                 </MudItem>
             </MudGrid>
         </MudItem>
@@ -132,7 +132,12 @@
     }
 
     private async Task<IEnumerable<ApplicationUser>> SearchParticipants(string searchText, CancellationToken cancellationToken)
-    {
+    {   
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            return allUsers;
+        }
+        
         return await userService.SearchParticipantsAsync(searchText, cancellationToken);
     }
 
@@ -161,7 +166,7 @@
             { "OnRemoveParticipant", EventCallback.Factory.Create<ApplicationUser>(this, RemoveParticipant) }
         };
 
-        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
         DialogService.Show<ParticipantsDialog>(res["RegisteredParticipants"], parameters, options);
     }
 

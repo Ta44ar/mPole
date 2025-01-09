@@ -9,6 +9,7 @@ namespace mPole.Service
     public class TrainingService : ITrainingService
     {
         private readonly ITrainingRepository _trainingRepository;
+        private readonly IImageService _imageService;
 
         public TrainingService(ITrainingRepository trainingRepository)
         {
@@ -40,6 +41,13 @@ namespace mPole.Service
         public async Task DeleteTrainingAsync(int trainingId, CancellationToken cancellationToken)
         {
             await _trainingRepository.DeleteAsync(trainingId, cancellationToken);
+        }
+
+        public async Task<ICollection<Image>> GetMoveImagesByTrainingIdAsync(int trainingId)
+        {
+            var images = await _trainingRepository.GetMoveImagesByTrainingIdAsync(trainingId);
+
+            return images;
         }
     }
 }

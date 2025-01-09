@@ -22,7 +22,7 @@ else
                     <MudGrid>
                         <MudItem xs="12">
                             <MudText Typo="Typo.h5" Style="margin-bottom: 20px;">@res["AttendantClasses"]</MudText>
-                            <MudTable Items="@userClasses" Hover="true" SortLabel="Sort By" Height="200px">
+                            <MudTable Items="@userClasses" Hover="true" SortLabel="Sort By" Style="min-height: 200px;">
                                 <HeaderContent>
                                     <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Training.Name)">@res["Name"]</MudTableSortLabel></MudTh>
                                     <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Date ?? DateTime.MinValue)">@res["Date"]</MudTableSortLabel></MudTh>
@@ -58,7 +58,7 @@ else
                         {
                             <MudItem xs="12">
                                 <MudText Typo="Typo.h5" Style="margin-bottom: 20px;">@res["InstructorClasses"]</MudText>
-                                <MudTable Items="@instructorClasses" Hover="true" SortLabel="Sort By" Height="200px">
+                                <MudTable Items="@instructorClasses" Hover="true" SortLabel="Sort By" Style="min-height: 200px;">
                                     <HeaderContent>
                                         <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Training.Name)">@res["Name"]</MudTableSortLabel></MudTh>
                                         <MudTh><MudTableSortLabel SortBy="new Func<Class, object>(x => x.Date ?? DateTime.MinValue)">@res["Date"]</MudTableSortLabel></MudTh>
@@ -97,9 +97,6 @@ else
                             </MudItem>
                         }
                     </MudGrid>
-                </MudItem>
-                <MudItem xs="4">
-                    <MudCardMedia Height="600" Image="/images/classesPictureBlack.png"></MudCardMedia>
                 </MudItem>
             </MudGrid>
         </Authorized>

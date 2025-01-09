@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Forms;
 using mPole.Data.Models;
+using mPole.Data.Repositories;
 using mPole.Interface.Repositories;
 using mPole.Interface.Services;
 
@@ -8,9 +9,11 @@ namespace mPole.Service
     public class ImageService : IImageService
     {
         private readonly IList<string> allowedFormats = new List<string> { "image/jpeg", "image/png", "image/gif" };
+        private readonly IImageRepository _imageRepository;
 
-        public ImageService()
+        public ImageService(IImageRepository imageRepository)
         {
+            _imageRepository = imageRepository;
         }
 
         public string ConvertToBase64FromByte(byte[] imageData)
@@ -68,7 +71,7 @@ namespace mPole.Service
                     byte[] fileData;
 
                     using (var memoryStream = new MemoryStream())
-                    using (var fileStream = file.OpenReadStream(maxAllowedSize: 4L * 1024 * 1024)) // 4MB limit
+                    using (var fileStream = file.OpenReadStream(maxAllowedSize: 8L * 1024 * 1024)) // 4MB limit
                     {
                         await fileStream.CopyToAsync(memoryStream);
                         fileData = memoryStream.ToArray();
@@ -91,6 +94,11 @@ namespace mPole.Service
             }
 
             return uploadedImages;
+        }
+
+        public async Task<Image?> GetFirstMoveImageByIdAsync(int moveId)
+        {
+            return await _imageRepository.GetImageByMoveIdAsync(moveId);
         }
     }
 }

@@ -65,18 +65,13 @@ public class UserService : IUserService
             var participants = await userManager.GetUsersInRoleAsync("User");
 
             if (participants == null)
-                return new List<ApplicationUser>();
-
-            try
             {
-                return participants.Where(p => p.UserName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                return new List<ApplicationUser>();
+            }
+
+            return participants.Where(p => p.UserName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
                                                 p.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
                                                 p.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase));
-            }
-            catch
-            {
-                return new List<ApplicationUser>();
-            }
         }
     }
 

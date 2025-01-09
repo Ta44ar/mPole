@@ -8,5 +8,6 @@ namespace mPole.Interface.Services
         string ConvertToBase64FromByte(byte[] imageData);
         Task<IList<string>> ConvertToBase64FromBrowserFiles(IList<IBrowserFile> files);
         Task<IList<Image>> UploadImagesAsync(IList<IBrowserFile> files, Move move);
+        Task<Image?> GetFirstMoveImageByIdAsync(int moveId);
     }
 }
