@@ -576,4 +576,43 @@
   <data name="ValidationDifficultyLevelRange" xml:space="preserve">
     <value>Difficulty level range (stars) required</value>
   </data>
+  <data name="SearchMoves" xml:space="preserve">
+    <value>Search for move</value>
+  </data>
+  <data name="ClassName" xml:space="preserve">
+    <value>Class name</value>
+  </data>
+  <data name="ParticipantsList" xml:space="preserve">
+    <value>Participants list</value>
+  </data>
+  <data name="ParticipantsListEmpty" xml:space="preserve">
+    <value>Participants list is empty</value>
+  </data>
+  <data name="OperationWrong" xml:space="preserve">
+    <value>Operation wrong</value>
+  </data>
+  <data name="ValidationTimeRequired" xml:space="preserve">
+    <value>Time field required</value>
+  </data>
+  <data name="ValidationNameRequired" xml:space="preserve">
+    <value>Name field required</value>
+  </data>
+  <data name="Question1" xml:space="preserve">
+    <value>Q1: Why can't I view activities on the calendar?</value>
+  </data>
+  <data name="Answer1" xml:space="preserve">
+    <value>- The activities tab is only available to registered users. Log in or create an account to gain access!</value>
+  </data>
+  <data name="Question2" xml:space="preserve">
+    <value>Q2: Why can't I sign up for classes?</value>
+  </data>
+  <data name="Answer2" xml:space="preserve">
+    <value>- If you are logged in, two reasons are possible. First, not every class is an open class. Some are dedicated to specific groups. Second, the limit of participants may have been reached.</value>
+  </data>
+  <data name="Question3" xml:space="preserve">
+    <value>Q3: Are there fees for the classes? If so, how is payment made?</value>
+  </data>
+  <data name="Answer3" xml:space="preserve">
+    <value>- Yes, classes are paid. At the moment, participation in classes is paid directly at the studio (card, cash). In the future, a payment module will be implemented on the studio's website.</value>
+  </data>
 </root>

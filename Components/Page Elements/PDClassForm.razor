@@ -10,8 +10,15 @@
     <ValidationSummary />
     <MudGrid>
         <MudItem xs="12">
-            <MudAutocomplete T="ApplicationUser" @bind-Value="selectedTrainer" Label="@res["Trainer"]" KeyUpPreventDefault="true"
-            SearchFunc="SearchTrainers" Clearable="true" ToStringFunc="@(user => user?.FirstName + " " + user?.LastName)" />
+            <MudGrid>
+                <MudItem xs="7">
+                    <MudTextField @bind-Value="ClassModel.Name" Label="@res["ClassName"]" Required="true" />
+                </MudItem>
+                <MudItem xs="5">
+                    <MudAutocomplete T="ApplicationUser" @bind-Value="selectedTrainer" Label="@res["Trainer"]" KeyUpPreventDefault="true"
+                    SearchFunc="SearchTrainers" Clearable="true" ToStringFunc="@(user => user?.FirstName + " " + user?.LastName)" />
+                </MudItem>
+            </MudGrid>
         </MudItem>
         <MudItem xs="12">
             <MudGrid>
@@ -35,48 +42,52 @@
         </MudItem>
         <MudItem xs="12">
             <MudGrid>
-                <MudItem xs="9">
+                <MudItem xs="10">
                     <MudAutocomplete T="ApplicationUser" @bind-Value="selectedParticipant" Label="@res["Participants"]" KeyUpPreventDefault="true"
                     SearchFunc="SearchParticipants" Clearable="true" ToStringFunc="@(user => user?.FirstName + " " + user?.LastName)" />
                 </MudItem>
-                <MudItem xs="3" Class="d-flex justify-space-between">
-                    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" OnClick="AddParticipant" Color="Color.Primary">
-                        @res["AddParticipant"]
-                    </MudIconButton>
-                    <MudButton Disabled="@(!Participants.Any())" OnClick="ShowParticipants" Color="Color.Primary" Variant="Variant.Filled">@res["Registered"] (@Participants.Count)</MudButton>
+                <MudItem xs="2" Class="d-flex justify-space-between">
+                    <MudToolBar Class="d-flex justify-left">
+                        <MudTooltip Text="@res["Add"]">
+                            <MudIconButton Icon="@Icons.Material.Filled.AddCircle" OnClick="AddParticipant" Color="Color.Primary" />
+                        </MudTooltip>
+                        <MudTooltip Text="@ParticipantsListTooltip">
+                            <MudIconButton Icon="@Icons.Material.Filled.People" OnClick="ShowParticipants"/>
+                        </MudTooltip>
+                    </MudToolBar>
                 </MudItem>
             </MudGrid>
         </MudItem>
         <MudItem xs="12">
             <MudGrid>
-                <MudItem xs="6">
-                    <MudText>
-                        @res["IsRegistrationOpen"]
-                    </MudText>
+                <MudItem xs="8">
+                    <MudGrid>
+                        <MudItem xs="4" Style="align-self: center;">
+                            <MudText>
+                                @res["IsRegistrationOpen"]
+                            </MudText>
+                        </MudItem>
+                        <MudItem xs="8" Style="align-self: center;">
+                            @if (ClassModel.IsRegistrationOpen)
+                            {
+                                <MudTooltip Text="@res["RegistrationOpen"]">
+                                    <MudSwitch @bind-Value="ClassModel.IsRegistrationOpen" Color="Color.Primary" />
+                                </MudTooltip>
+                            }
+                            else
+                            {
+                                <MudTooltip Text="@res["RegistrationClosed"]">
+                                    <MudSwitch @bind-Value="ClassModel.IsRegistrationOpen" Color="Color.Secondary" />
+                                </MudTooltip>
+                            }
+                        </MudItem>
+                    </MudGrid>
                 </MudItem>
-                <MudItem xs="6">
-                    @if (ClassModel.IsRegistrationOpen)
-                    {
-                        <MudTooltip Text="@res["RegistrationOpen"]">
-                            <MudSwitch @bind-Value="ClassModel.IsRegistrationOpen" Color="Color.Primary" />
-                        </MudTooltip>
-                    }
-                    else
-                    {
-                        <MudTooltip Text="@res["RegistrationClosed"]">
-                            <MudSwitch @bind-Value="ClassModel.IsRegistrationOpen" Color="Color.Secondary" />
-                        </MudTooltip>
-                    }
-                </MudItem>
-            </MudGrid>
-        </MudItem>
-        <MudItem xs="12">
-            <MudGrid>
-                <MudItem xs="9">
-                </MudItem>
-                <MudItem xs="3">
-                    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">@res["Save"]</MudButton>
-                    <MudButton Color="Color.Secondary" OnClick="Cancel" Variant="Variant.Filled">@res["Cancel"]</MudButton>
+                <MudItem xs="4">
+                    <MudToolBar Class="justify-end">
+                        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">@res["Save"]</MudButton>
+                        <MudButton Style="margin-left: 10px;" Color="Color.Secondary" OnClick="Cancel" Variant="Variant.Filled">@res["Cancel"]</MudButton>
+                    </MudToolBar>
                 </MudItem>
             </MudGrid>
         </MudItem>
@@ -112,6 +123,8 @@
             {
                 selectedTrainer = User;
             }
+
+            ClassModel.Name = ClassModel.Training.Name;
         }
         else
         {
@@ -132,12 +145,12 @@
     }
 
     private async Task<IEnumerable<ApplicationUser>> SearchParticipants(string searchText, CancellationToken cancellationToken)
-    {   
+    {
         if (string.IsNullOrWhiteSpace(searchText))
         {
             return allUsers;
         }
-        
+
         return await userService.SearchParticipantsAsync(searchText, cancellationToken);
     }
 
@@ -146,6 +159,10 @@
         if (selectedParticipant != null && !Participants.Any(p => p.Id == selectedParticipant.Id))
         {
             Participants.Add(selectedParticipant);
+        }
+        else if (selectedParticipant is null)
+        {
+            snackbar.Add(res["OperationWrong"], Severity.Warning);
         }
         else
         {
@@ -160,10 +177,17 @@
 
     private void ShowParticipants()
     {
+        if (!Participants.Any())
+        {
+            snackbar.Add(res["ParticipantsListEmpty"], MudBlazor.Severity.Info);
+            return;
+        }
+
         var parameters = new DialogParameters
         {
             { "Participants", Participants },
-            { "OnRemoveParticipant", EventCallback.Factory.Create<ApplicationUser>(this, RemoveParticipant) }
+            { "OnRemoveParticipant", EventCallback.Factory.Create<ApplicationUser>(this, RemoveParticipant) },
+            { "IsReadOnly", false }
         };
 
         var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
@@ -215,4 +239,6 @@
     {
         ClassModel.Time = newTime;
     }
+
+    private string ParticipantsListTooltip => $"{res["ParticipantsList"]} ({Participants.Count})";
 }

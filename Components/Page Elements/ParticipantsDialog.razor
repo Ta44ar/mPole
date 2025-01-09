@@ -3,7 +3,7 @@
 
 <MudDialog>
     <DialogContent>
-        <MudPaper Outlined="true" Elevation="0"> 
+        <MudPaper Outlined="true" Elevation="0">
             <MudList T="ApplicationUser">
                 @foreach (var participant in Participants)
                 {
@@ -20,14 +20,17 @@
                                 }
                             </MudAvatar>
                         </AvatarContent>
-                        <ChildContent >
+                        <ChildContent>
                             <MudGrid Justify="Justify.SpaceBetween" Class="align-items-center">
                                 <MudItem Class="d-flex align-center">
                                     <MudText Typo="Typo.body1">@participant.FirstName @participant.LastName</MudText>
                                 </MudItem>
-                                <MudItem>
-                                    <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="@(() => RemoveParticipant(participant))" />
-                                </MudItem>
+                                @if (!IsReadOnly)
+                                {
+                                    <MudItem>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="@(() => RemoveParticipant(participant))" />
+                                    </MudItem>
+                                }
                             </MudGrid>
                         </ChildContent>
                     </MudListItem>
@@ -36,7 +39,7 @@
         </MudPaper>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="CloseDialog" Color="Color.Primary">@res["Close"]</MudButton>
+        <MudButton OnClick="CloseDialog" Variant="Variant.Filled" Color="Color.Primary">@res["Close"]</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -50,9 +53,20 @@
     [Parameter]
     public EventCallback<ApplicationUser> OnRemoveParticipant { get; set; }
 
+    [Parameter]
+    public bool IsReadOnly { get; set; }
+
+    protected override void OnInitialized()
+    {
+        OnRemoveParticipant = EventCallback.Factory.Create<ApplicationUser>(this, _ => Task.CompletedTask);
+    }
+
     private void RemoveParticipant(ApplicationUser participant)
     {
-        OnRemoveParticipant.InvokeAsync(participant);
+        if (OnRemoveParticipant.HasDelegate)
+        {
+            OnRemoveParticipant.InvokeAsync(participant);
+        }
     }
 
     private void CloseDialog()

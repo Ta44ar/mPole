@@ -27,5 +27,8 @@ public class PDClassValidator : AbstractValidator<Class>
 
         RuleFor(c => c.Location)
             .NotEmpty().WithMessage(_res["ValidationLocationRequired"]);
+
+        RuleFor(c => c.Name)
+            .NotEmpty().WithMessage(_res["ValidationNameRequired"]);
     }
 }

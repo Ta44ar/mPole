@@ -33,12 +33,11 @@ else
         </MudItem>
         <MudItem xs="12" sm="8">
             <MudCard>
-                <MudCardContent>
+                <MudCardContent id="move_description">
                     <MudGrid>
                         <MudItem xs="12" sm="8">
-                            <MudText Typo="Typo.h4">@move?.Name</MudText>
+                            <MudText id="move_name" Typo="Typo.h4">@move?.Name</MudText>
                             <MudText Typo="Typo.body1">@res["DifficultyLevel"]: @move?.DifficultyLevel</MudText>
-
                         </MudItem>
                         <MudItem xs="12" sm="4" Class="d-flex justify-end">
                             @if (isAdmin)

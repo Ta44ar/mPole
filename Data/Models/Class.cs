@@ -6,6 +6,7 @@ namespace mPole.Data.Models
     {
         [Key]
         public int Id { get; set; }
+        public string Name { get; set; }
         public TimeSpan Duration { get; set; }
         public DateTime? Date { get; set; }
         public TimeSpan? Time { get; set; }

@@ -10,12 +10,12 @@
         <MudPaper Elevation="4" Class="pa-4">
             <MudGrid>
                 <MudItem xs="12" sm="6">
-                    <MudText Typo="Typo.h4" Color="Color.Primary">@Class.Training.Name</MudText>
+                    <MudText Typo="Typo.h4" Color="Color.Primary">@Class.Name</MudText>
                     <MudText Typo="Typo.subtitle1" Color="Color.Secondary">@Class.DateTime?.ToString("dd-MM-yyyy HH:mm")</MudText>
                 </MudItem>
                 <MudItem xs="12" sm="6" Class="text-right d-flex justify-end">
                     <MudAvatar Size="Size.Large">
-                        <MudImage Src="@Class.Training.ImageUrl"/>             
+                        <MudImage Src="@Class.Training.ImageUrl" />
                     </MudAvatar>
                 </MudItem>
             </MudGrid>
@@ -28,16 +28,19 @@
         </MudPaper>
     </DialogContent>
     <DialogActions>
-        @if (UserRegisteredAlready)
+        @if (Class.IsRegistrationOpen)
         {
-            <MudButton OnClick="ResignFromClass" Variant="Variant.Filled">@res["ClassResign"]</MudButton>
-        }
-        else
-        {
-            <MudButton OnClick="SignInForClass" Variant="Variant.Filled">@res["ClassSignIn"]</MudButton>
+            @if (UserRegisteredAlready)
+            {
+                <MudButton OnClick="ResignFromClass" Variant="Variant.Filled">@res["ClassResign"]</MudButton>
+            }
+            else
+            {
+                <MudButton OnClick="SignInForClass" Variant="Variant.Filled">@res["ClassSignIn"]</MudButton>
+            }
         }
 
-        @if (IsInstructor)
+        @if (IsAdmin || (IsInstructor && Class.TrainerId == MainLayout.userId))
         {
             <MudButton OnClick="DeleteClass" Variant="Variant.Filled">@res["Delete"]</MudButton>
             <MudButton OnClick="EditClass" Color="Color.Secondary" Variant="Variant.Filled">@res["ClassEdition"]</MudButton>
@@ -63,6 +66,7 @@
     public EventCallback OnClassDeleted { get; set; }
 
     private bool IsInstructor { get; set; } = false;
+    private bool IsAdmin => MainLayout?.isAdmin ?? false;
     private bool UserRegisteredAlready = false;
 
     private ICollection<ApplicationUser> participants = new List<ApplicationUser>();

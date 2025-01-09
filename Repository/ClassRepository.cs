@@ -60,6 +60,10 @@ namespace mPole.Repository
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 await _registrationRepository.RemoveOldClassRegistrationsAsync(poleDanceClass.Id);
+
+                context.Entry(poleDanceClass.Trainer).State = EntityState.Unchanged;
+                context.Entry(poleDanceClass.Training).State = EntityState.Unchanged;
+
                 context.Classes.Update(poleDanceClass);
                 await context.SaveChangesAsync(cancellationToken);
             }
