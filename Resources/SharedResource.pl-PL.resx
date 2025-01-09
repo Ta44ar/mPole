@@ -615,4 +615,13 @@
   <data name="Answer3" xml:space="preserve">
     <value>- Tak, zajęcia są płatne. W tej chwili udział w zajęciach opłacany jest bezpośrednio w studio (karta, gotówka). W przyszłości wdrożony zostanie moduł płatności na stronie internetowej studia.</value>
   </data>
+  <data name="ParticipantSelect" xml:space="preserve">
+    <value>Wybierz uczestnika</value>
+  </data>
+  <data name="ParticipantsLimit" xml:space="preserve">
+    <value>Miejsca (max)</value>
+  </data>
+  <data name="ParticipantsLimitReached" xml:space="preserve">
+    <value>Limit miejsc wyczerpany!</value>
+  </data>
 </root>

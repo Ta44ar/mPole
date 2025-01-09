@@ -11,6 +11,7 @@ namespace mPole.Data.Models
         public DateTime? Date { get; set; }
         public TimeSpan? Time { get; set; }
         public string Location { get; set; } = string.Empty;
+        public int MaxParticipantsCount { get; set; }
         public int TrainingId { get; set; }
         public virtual Training Training { get; set; } = new();
         public string TrainerId { get; set; } = string.Empty;
@@ -28,6 +29,11 @@ namespace mPole.Data.Models
                 }
                 return null;
             }
+        }
+
+        public Class()
+        {
+            MaxParticipantsCount = 10;
         }
     }
 }

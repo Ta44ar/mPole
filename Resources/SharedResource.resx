@@ -615,4 +615,13 @@
   <data name="Answer3" xml:space="preserve">
     <value>- Yes, classes are paid. At the moment, participation in classes is paid directly at the studio (card, cash). In the future, a payment module will be implemented on the studio's website.</value>
   </data>
+  <data name="ParticipantSelect" xml:space="preserve">
+    <value>Select participant</value>
+  </data>
+  <data name="ParticipantsLimit" xml:space="preserve">
+    <value>Places (max)</value>
+  </data>
+  <data name="ParticipantsLimitReached" xml:space="preserve">
+    <value>Members limit reached!</value>
+  </data>
 </root>
