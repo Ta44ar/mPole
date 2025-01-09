@@ -72,16 +72,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-//builder.Services.AddHttpClient("mPoleClient", client =>
-//{
-//    var baseAddress = builder.Configuration["AppSettings:BaseAddress"];
-//    if (string.IsNullOrEmpty(baseAddress))
-//    {
-//        throw new Exception("BaseAddress is not configured.");
-//    }
-//    client.BaseAddress = new Uri(baseAddress);
-//});
-
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -93,6 +83,9 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "");
 builder.Services.AddMudServices();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddScoped<EmailRequest>();
 
 var locale = new LocalizationHelper(builder.Configuration);
 var app = builder.Build();

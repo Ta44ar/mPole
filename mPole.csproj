@@ -10,7 +10,9 @@
 	<ItemGroup>
 		<PackageReference Include="Extensions.MudBlazor.StaticInput" Version="2.1.5" />
 		<PackageReference Include="FluentValidation" Version="11.11.0" />
+		<PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
 		<PackageReference Include="Heron.MudCalendar" Version="2.0.3" />
+		<PackageReference Include="MailKit" Version="4.9.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />

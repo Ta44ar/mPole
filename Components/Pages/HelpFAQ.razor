@@ -1,6 +1,8 @@
 ﻿@page "/help"
 
 @inject NavigationManager Navigation
+@inject IEmailService EmailService
+@inject EmailRequest emailRequest
 
 <PageTitle>@Res["HelpFAQ"]</PageTitle>
 
@@ -31,7 +33,7 @@
             <MudTextField @bind-Value="questionModel.Question" Label="@Res["Question"]" Lines="5" Required="true" />
             <MudToolBar Class="d-flex justify-end">
                 <MudButton OnClick="SubmitQuestion" Variant="Variant.Filled" Color="Color.Primary" Class="mt-2">@Res["Send"]</MudButton>
-            </MudToolBar>        
+            </MudToolBar>
         </EditForm>
     </MudPaper>
 </MudContainer>
@@ -64,14 +66,24 @@
             return;
         }
 
-        // temporary solution !!! 
-        else
-        {
-            Snackbar.Add(Res["SuccessEmailSend"], MudBlazor.Severity.Success);
-            questionModel = new QuestionModel();
-        }
-        
+        await SendEmailAsync();
+        questionModel = new QuestionModel();
+
         // Handle the question submission logic here TO DO
         await Task.CompletedTask;
+    }
+
+    private async Task SendEmailAsync()
+    {
+        try
+        {
+            //await EmailService.SendPlainTextEmailAsync(Res["EmailNewQuestion"], questionModel.Question);
+            await EmailService.SendTemplatedEmailAsync(Res["EmailNewQuestion"], questionModel.Question, MainLayout.userName);
+            Snackbar.Add(Res["SuccessEmailSend"], MudBlazor.Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{Res["ErrorDuringEmailSend"]}: {ex.Message}", MudBlazor.Severity.Error);
+        }
     }
 }
