@@ -9,8 +9,8 @@
 
 <AuthorizeView>
     <Authorized>
-        <CalendarLegend/>
         <Calendar Events="_events" OnDateRangeChanged="OnDateRangeChangedAsync" OnItemClicked="OnItemClickedAsync" />
+        <CalendarLegend />
     </Authorized>
     <NotAuthorized>
         <PleaseLogInView ReturnUrl="@nav.Uri" />

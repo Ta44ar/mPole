@@ -110,5 +110,34 @@ namespace mPole.Data.Repositories
                 return training;
             }
         }
+
+        public async Task<ICollection<Image>> GetMoveImagesByTrainingIdAsync(int trainingId)
+        {
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                var moves = await context.Trainings
+                    .Where(t => t.Id == trainingId)
+                    .SelectMany(t => t.Moves)
+                    .ToListAsync();
+
+                var images = new List<Image>();
+
+                foreach (var move in moves)
+                {
+                    var image = await context.Images
+                        .Where(i => i.MoveId == move.Id)
+                        .FirstOrDefaultAsync();
+
+                    if (image != null)
+                    {
+                        images.Add(image);
+                    }
+                }
+
+                return images;
+            }
+        }
     }
 }

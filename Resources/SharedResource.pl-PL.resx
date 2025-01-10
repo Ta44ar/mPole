@@ -561,4 +561,19 @@
   <data name="ColorLegendOtherClasses" xml:space="preserve">
     <value>inne zajęcia</value>
   </data>
+  <data name="TrainingMoveAdded" xml:space="preserve">
+    <value>Pomyślnie dodano figurę do planu treningowego!</value>
+  </data>
+  <data name="TrainingMoveAlreadyIn" xml:space="preserve">
+    <value>Figura jest już dodana do planu treningowego</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>Obraz</value>
+  </data>
+  <data name="SelectedMoves" xml:space="preserve">
+    <value>Wybrane figury:</value>
+  </data>
+  <data name="ValidationDifficultyLevelRange" xml:space="preserve">
+    <value>Poziom trudności (gwiazdki) wymagany</value>
+  </data>
 </root>

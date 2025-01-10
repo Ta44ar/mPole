@@ -1,24 +1,22 @@
 ﻿@page "/help"
 
 @inject NavigationManager Navigation
-@inject IStringLocalizer<SharedResource> res
-@inject ISnackbar snackbar
 
-<PageTitle>@res["HelpFAQ"]</PageTitle>
+<PageTitle>@Res["HelpFAQ"]</PageTitle>
 
-<MudText Typo="Typo.h4" Class="d-flex justify-center mb-4">@res["HelpFAQ"]</MudText>
+<MudText Typo="Typo.h4" Class="d-flex justify-center mb-4">@Res["HelpFAQ"]</MudText>
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="mb-6">
     <MudPaper Class="pa-4">
         <MudExpansionPanels>
-            <MudExpansionPanel Text="@res["Question1"]">
-                <MudText Typo="Typo.body1">@res["Answer1"]</MudText>
+            <MudExpansionPanel Text="@Res["Question1"]">
+                <MudText Typo="Typo.body1">@Res["Answer1"]</MudText>
             </MudExpansionPanel>
-            <MudExpansionPanel Text="@res["Question2"]">
-                <MudText Typo="Typo.body1">@res["Answer2"]</MudText>
+            <MudExpansionPanel Text="@Res["Question2"]">
+                <MudText Typo="Typo.body1">@Res["Answer2"]</MudText>
             </MudExpansionPanel>
-            <MudExpansionPanel Text="@res["Question3"]">
-                <MudText Typo="Typo.body1">@res["Answer3"]</MudText>
+            <MudExpansionPanel Text="@Res["Question3"]">
+                <MudText Typo="Typo.body1">@Res["Answer3"]</MudText>
             </MudExpansionPanel>
         </MudExpansionPanels>
     </MudPaper>
@@ -26,25 +24,31 @@
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
     <MudPaper Class="pa-4">
-        <h2>@res["HaveAQuestion"]</h2>
+        <h2>@Res["HaveAQuestion"]</h2>
         <EditForm Model="questionModel" OnValidSubmit="SubmitQuestion">
             <DataAnnotationsValidator />
-            <MudTextField @bind-Value="questionModel.Email" Label="@res["Email"]" Required="true" />
-            <MudTextField @bind-Value="questionModel.Question" Label="@res["Question"]" Lines="5" Required="true" />
+            <MudTextField @bind-Value="questionModel.Email" Label="@Res["Email"]" Required="true" />
+            <MudTextField @bind-Value="questionModel.Question" Label="@Res["Question"]" Lines="5" Required="true" />
             <MudToolBar Class="d-flex justify-end">
-                <MudButton OnClick="SubmitQuestion" Variant="Variant.Filled" Color="Color.Primary" Class="mt-2">@res["Send"]</MudButton>
+                <MudButton OnClick="SubmitQuestion" Variant="Variant.Filled" Color="Color.Primary" Class="mt-2">@Res["Send"]</MudButton>
             </MudToolBar>        
         </EditForm>
     </MudPaper>
 </MudContainer>
 
 @code {
-    private QuestionModel questionModel = new();
-    private QuestionValidator? questionValidator;
+    public QuestionModel questionModel = new();
+    public QuestionValidator? questionValidator;
 
-    private async Task SubmitQuestion()
+    [Inject]
+    public IStringLocalizer<SharedResource> Res { get; set; }
+
+    [Inject]
+    public ISnackbar Snackbar { get; set; }
+
+    public async Task SubmitQuestion()
     {
-        if (!await CustomValidators.ValidateAndShowErrors(new QuestionValidator(res), questionModel, snackbar))
+        if (!await CustomValidators.ValidateAndShowErrors(new QuestionValidator(Res), questionModel, Snackbar))
         {
             return;
         }
@@ -52,7 +56,7 @@
         // temporary solution !!! 
         else
         {
-            snackbar.Add(res["SuccessEmailSend"], MudBlazor.Severity.Success);
+            Snackbar.Add(Res["SuccessEmailSend"], MudBlazor.Severity.Success);
             questionModel = new QuestionModel();
         }
         

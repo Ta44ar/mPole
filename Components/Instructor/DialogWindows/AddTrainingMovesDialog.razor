@@ -1,0 +1,99 @@
+﻿@inject IMoveService moveService
+@inject IStringLocalizer<SharedResource> res
+@inject ISnackbar snackbar
+@inject IImageService imageService
+
+<MudDialog>
+    <DialogContent>
+        <MudPaper Class="pa-4">
+            <MudTextField @bind-Value="searchText" Placeholder="@res["SearchMoves"]" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="SearchMoves" />
+            <MudTable Items="filteredMoves" Hover="true" Bordered="true" Striped="true" Loading="isLoading">
+                <HeaderContent>
+                    <MudTh>@res["Image"]</MudTh>
+                    <MudTh>@res["Name"]</MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="@res["Image"]">
+                        <MudCardMedia Height="50" Style="width: 50px;" Image="@context.ImageUrl" />
+                    </MudTd>
+                    <MudTd DataLabel="@res["Name"]">@context.Name</MudTd>
+                    <MudTd>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => AddMoveToTraining(@context))">
+                            @res["Add"]
+                        </MudButton>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudPaper>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close" Color="Color.Primary" Variant="Variant.Filled">@res["Close"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public Training Training { get; set; } = default!;
+
+    [Parameter]
+    public ICollection<Image> MovesImages { get; set; } = new List<Image>();
+
+    [Parameter]
+    public EventCallback<Training> TrainingChanged { get; set; }
+
+    private string searchText = string.Empty;
+    private List<MoveCardDto> moves = new();
+    private List<MoveCardDto> filteredMoves = new();
+    private bool isLoading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        moves = await moveService.GetMovesAsync();
+        filteredMoves = moves;
+        isLoading = false;
+    }
+
+    private void SearchMoves()
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            filteredMoves = moves;
+        }
+        else
+        {
+            filteredMoves = moves.Where(m => m.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+    }
+
+    private async void AddMoveToTraining(MoveCardDto move)
+    {
+        isLoading = true;
+
+        if (Training.Moves == null)
+        {
+            Training.Moves = new List<Move>();
+        }
+
+        if (!Training.Moves.Any(m => m.Id == move.Id))
+        {
+            var moveToAdd = await moveService.GetMoveAsync(move.Id);
+            MovesImages.Add(await imageService.GetFirstMoveImageByIdAsync(move.Id));
+            Training.Moves.Add(moveToAdd);
+            snackbar.Add(res["TrainingMoveAdded"], MudBlazor.Severity.Success);
+            await TrainingChanged.InvokeAsync(Training);
+        }
+        else
+        {
+            snackbar.Add(res["TrainingMoveAlreadyIn"], MudBlazor.Severity.Warning);
+        }
+
+        isLoading = false;
+    }
+
+    private void Close() => MudDialog.Close();
+}

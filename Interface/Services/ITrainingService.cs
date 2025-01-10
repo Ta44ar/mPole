@@ -11,5 +11,6 @@ namespace mPole.Interface.Services
         Task<Training> GetTrainingAsync(int trainingId);
         Task UpdateTrainingAsync(Training training, CancellationToken cancellationToken);
         Task DeleteTrainingAsync(int trainingId, CancellationToken cancellationToken);
+        Task<ICollection<Image>> GetMoveImagesByTrainingIdAsync(int trainingId);
     }
 }

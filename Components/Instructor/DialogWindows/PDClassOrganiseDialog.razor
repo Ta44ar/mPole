@@ -3,11 +3,11 @@
 
 <MudDialog>
     <DialogContent>
-        <MudPaper Elevation="4" Class="pa-4">
+        <MudPaper Class="pa-4" Outlined="true">
             <MudGrid>
                 <MudItem xs="12">
                     <MudText Typo="Typo.h4" Color="Color.Primary">@Training.Name</MudText>
-                    <MudText Typo="Typo.subtitle1" Color="Color.Secondary">@Training.Description</MudText>
+                    <MudText Typo="Typo.subtitle1">@Training.Description</MudText>
                 </MudItem>
                 <MudItem xs="12">
                     <PDClassForm ClassModel="ClassModel" User="User" OnCancel="Cancel" IsEditMode="isEditMode" Participants="Participants" />

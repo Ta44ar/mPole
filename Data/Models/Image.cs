@@ -12,6 +12,7 @@ namespace mPole.Data.Models
         public int MoveId { get; set; }
         public virtual Move? Move { get; set; }
 
+
         public string GetBase64ImageData(IImageService imageService)
         {
             return imageService.ConvertToBase64FromByte(ImageData ?? Array.Empty<byte>());
