@@ -10,25 +10,35 @@ namespace mPole.Data.DbContext.EntityTypeConfiguration
         {
             builder.HasKey(c => c.Id);
 
-            builder.Property(c => c.Duration)
+            builder.Property(c => c.Name)
                 .IsRequired()
-                .HasColumnType("nvarchar(50)");
-
-            builder.Property(c => c.Date)
-                .IsRequired();
+                .HasMaxLength(100)
+                .HasColumnType("nvarchar(100)");
 
             builder.Property(c => c.Location)
                 .IsRequired()
+                .HasMaxLength(100)
                 .HasColumnType("nvarchar(50)");
 
-            builder.Property(c => c.TrainerId)
-                .IsRequired()
-                .HasColumnType("nvarchar(450)");
+            builder.Property(c => c.Duration)
+                .IsRequired();
+
+            builder.Property(c => c.Date)
+                .IsRequired(false);
+
+            builder.Property(c => c.Time)
+                .IsRequired(false);
+
+            builder.Property(c => c.IsRegistrationOpen)
+                .IsRequired();
 
             builder.HasOne(c => c.Training)
                 .WithMany(t => t.Classes)
-                .HasForeignKey(c => c.TrainingId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(c => c.TrainingId);
+
+            builder.HasOne(c => c.Trainer)
+                .WithMany(u => u.InstructedClasses)
+                .HasForeignKey(c => c.TrainerId);
 
             builder.HasMany(c => c.Registrations)
                 .WithOne(r => r.Class)

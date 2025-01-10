@@ -576,4 +576,52 @@
   <data name="ValidationDifficultyLevelRange" xml:space="preserve">
     <value>Poziom trudności (gwiazdki) wymagany</value>
   </data>
+  <data name="SearchMoves" xml:space="preserve">
+    <value>Szukaj figury</value>
+  </data>
+  <data name="ClassName" xml:space="preserve">
+    <value>Nazwa zajęć</value>
+  </data>
+  <data name="ParticipantsList" xml:space="preserve">
+    <value>Lista uczestników</value>
+  </data>
+  <data name="ParticipantsListEmpty" xml:space="preserve">
+    <value>Lista uczestników jest pusta</value>
+  </data>
+  <data name="OperationWrong" xml:space="preserve">
+    <value>Błąd operacji</value>
+  </data>
+  <data name="ValidationTimeRequired" xml:space="preserve">
+    <value>Pole czasu nie może być puste</value>
+  </data>
+  <data name="ValidationNameRequired" xml:space="preserve">
+    <value>Pole nazwy nie może być puste</value>
+  </data>
+  <data name="Question1" xml:space="preserve">
+    <value>Q1: Dlaczego nie mogę przeglądać zajęć w kalendarzu?</value>
+  </data>
+  <data name="Answer1" xml:space="preserve">
+    <value>- Zakładka z zajęciami jest dostępna jedynie dla zarejestrowanych użytkowników. Zaloguj się lub stwórz konto aby zyskać dostęp!</value>
+  </data>
+  <data name="Question2" xml:space="preserve">
+    <value>Q2: Dlaczego nie mogę zapisać się na zajęcia?</value>
+  </data>
+  <data name="Answer2" xml:space="preserve">
+    <value>- Jeżeli jesteś zalogowany, możliwe są dwie przyczyny. Po pierwsze, nie każde zajęcia są zajęciami otwartymi. Niektóre z nich są dedykowane do konkretnych grup. Po drugie, limit uczestników mógł zostać osiągnięty.</value>
+  </data>
+  <data name="Question3" xml:space="preserve">
+    <value>Q3: Czy zajęcia są płatne? Jeśli tak, jak odbywa się płatność?</value>
+  </data>
+  <data name="Answer3" xml:space="preserve">
+    <value>- Tak, zajęcia są płatne. W tej chwili udział w zajęciach opłacany jest bezpośrednio w studio (karta, gotówka). W przyszłości wdrożony zostanie moduł płatności na stronie internetowej studia.</value>
+  </data>
+  <data name="ParticipantSelect" xml:space="preserve">
+    <value>Wybierz uczestnika</value>
+  </data>
+  <data name="ParticipantsLimit" xml:space="preserve">
+    <value>Miejsca (max)</value>
+  </data>
+  <data name="ParticipantsLimitReached" xml:space="preserve">
+    <value>Limit miejsc wyczerpany!</value>
+  </data>
 </root>

@@ -10,12 +10,12 @@
         <MudPaper Elevation="4" Class="pa-4">
             <MudGrid>
                 <MudItem xs="12" sm="6">
-                    <MudText Typo="Typo.h4" Color="Color.Primary">@Class.Training.Name</MudText>
+                    <MudText Typo="Typo.h4" Color="Color.Primary">@Class.Name</MudText>
                     <MudText Typo="Typo.subtitle1" Color="Color.Secondary">@Class.DateTime?.ToString("dd-MM-yyyy HH:mm")</MudText>
                 </MudItem>
                 <MudItem xs="12" sm="6" Class="text-right d-flex justify-end">
                     <MudAvatar Size="Size.Large">
-                        <MudImage Src="@Class.Training.ImageUrl"/>             
+                        <MudImage Src="@Class.Training.ImageUrl" />
                     </MudAvatar>
                 </MudItem>
             </MudGrid>
@@ -23,21 +23,26 @@
             <MudText Class="d-flex gap-2 align-items-center" Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.Place" /> @res["Location"]: <b>@Class.Location</b></MudText>
             <MudText Class="d-flex gap-2 align-items-center" Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.Person" /> @res["Trainer"]: <b>@Class.Trainer.FirstName @Class.Trainer.LastName</b></MudText>
             <MudText Class="d-flex gap-2 align-items-center" Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.Schedule" /> @res["Duration"]: <b>@($"{Class.Duration.Hours}h {Class.Duration.Minutes}m")</b></MudText>
-            <MudText Class="d-flex gap-2 align-items-center" Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.Group" /> @res["UsersRegistered"]: <b>@Class.Registrations.Count</b></MudText>
+            <MudText Class="d-flex gap-2 align-items-center" Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.Group" /> @res["UsersRegistered"]: <b>@Class.Registrations.Count/@Class.MaxParticipantsCount</b></MudText>
             <MudText Class="d-flex gap-2 align-items-center" Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.EventAvailable" /> @res["IsRegistrationOpen"] <b>@(Class.IsRegistrationOpen ? res["Yes"] : res["No"])</b></MudText>
         </MudPaper>
     </DialogContent>
     <DialogActions>
-        @if (UserRegisteredAlready)
+        @if (Class.IsRegistrationOpen && Class.TrainerId != MainLayout.userId)
         {
-            <MudButton OnClick="ResignFromClass" Variant="Variant.Filled">@res["ClassResign"]</MudButton>
-        }
-        else
-        {
-            <MudButton OnClick="SignInForClass" Variant="Variant.Filled">@res["ClassSignIn"]</MudButton>
+            @if (UserRegisteredAlready)
+            {
+                <MudButton OnClick="ResignFromClass" Variant="Variant.Filled">@res["ClassResign"]</MudButton>
+            }
+            else
+            {
+                <MudTooltip Text="@res["ParticipantsLimitReached"]" Disabled="@limitNotReached">
+                    <MudButton Disabled="@isLimitReached" OnClick="SignInForClass" Variant="Variant.Filled">@res["ClassSignIn"]</MudButton>
+                </MudTooltip>
+            }
         }
 
-        @if (IsInstructor)
+        @if (IsAdmin || (IsInstructor && Class.TrainerId == MainLayout.userId))
         {
             <MudButton OnClick="DeleteClass" Variant="Variant.Filled">@res["Delete"]</MudButton>
             <MudButton OnClick="EditClass" Color="Color.Secondary" Variant="Variant.Filled">@res["ClassEdition"]</MudButton>
@@ -63,13 +68,26 @@
     public EventCallback OnClassDeleted { get; set; }
 
     private bool IsInstructor { get; set; } = false;
+    private bool IsAdmin => MainLayout?.isAdmin ?? false;
     private bool UserRegisteredAlready = false;
+    private bool isLimitReached = false;
+    private bool limitNotReached = false;
 
     private ICollection<ApplicationUser> participants = new List<ApplicationUser>();
 
     protected override async Task OnInitializedAsync()
     {
         IsInstructor = MainLayout.isInstructor;
+
+        if (Class.Registrations.Count == Class.MaxParticipantsCount)
+        {
+            isLimitReached = true;
+        }
+        else 
+        {
+            limitNotReached = true;
+        }
+
         await LoadClassData();
     }
 

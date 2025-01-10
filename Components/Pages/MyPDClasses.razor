@@ -121,6 +121,7 @@ else
     private bool isInstructor = false;
     private ICollection<Class> userClasses = new List<Class>();
     private ICollection<Class> instructorClasses = new List<Class>();
+    private ICollection<ApplicationUser> Participants = new List<ApplicationUser>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -143,9 +144,18 @@ else
         isLoading = false;
     }
 
-    private void ViewAttendants(Class classModel)
+    private async void ViewAttendants(Class classModel)
     {
+        Participants = await registrationService.GetRegisteredUsersByClassIdAsync(classModel.Id);
 
+        var parameters = new DialogParameters
+        {
+            { "Participants", Participants },
+            { "IsReadOnly", true }
+        };
+
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        DialogService.Show<ParticipantsDialog>(res["RegisteredParticipants"], parameters, options);
     }
 
     private void EditClass(Class classModel)

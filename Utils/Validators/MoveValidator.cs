@@ -14,7 +14,7 @@ public class MoveValidator : AbstractValidator<Move>
         RuleFor(move => move.Name)
             .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage(_res["ValidationNameRequired"])
-            .MaximumLength(20).When(move => !string.IsNullOrEmpty(move.Name)).WithMessage(_res["ValidationNameTooLong"]);
+            .MaximumLength(50).When(move => !string.IsNullOrEmpty(move.Name)).WithMessage(_res["ValidationNameTooLong"]);
 
         RuleFor(move => move.DifficultyLevel)
             .InclusiveBetween(1, 5).WithMessage(_res["ValidationDifficultyLevelRange"]);

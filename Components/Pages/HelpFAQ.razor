@@ -9,13 +9,13 @@
 <MudContainer MaxWidth="MaxWidth.Large" Class="mb-6">
     <MudPaper Class="pa-4">
         <MudExpansionPanels>
-            <MudExpansionPanel Text="@Res["Question1"]">
+            <MudExpansionPanel Text="@Res["Question1"]" Style="font-weight: bold;">
                 <MudText Typo="Typo.body1">@Res["Answer1"]</MudText>
             </MudExpansionPanel>
-            <MudExpansionPanel Text="@Res["Question2"]">
+            <MudExpansionPanel Text="@Res["Question2"]" Style="font-weight: bold;">
                 <MudText Typo="Typo.body1">@Res["Answer2"]</MudText>
             </MudExpansionPanel>
-            <MudExpansionPanel Text="@Res["Question3"]">
+            <MudExpansionPanel Text="@Res["Question3"]" Style="font-weight: bold;">
                 <MudText Typo="Typo.body1">@Res["Answer3"]</MudText>
             </MudExpansionPanel>
         </MudExpansionPanels>
@@ -27,7 +27,7 @@
         <h2>@Res["HaveAQuestion"]</h2>
         <EditForm Model="questionModel" OnValidSubmit="SubmitQuestion">
             <DataAnnotationsValidator />
-            <MudTextField @bind-Value="questionModel.Email" Label="@Res["Email"]" Required="true" />
+            <MudTextField Disabled="@MainLayout.isAuthenticated" @bind-Value="questionModel.Email" Label="@Res["Email"]" Required="true" />
             <MudTextField @bind-Value="questionModel.Question" Label="@Res["Question"]" Lines="5" Required="true" />
             <MudToolBar Class="d-flex justify-end">
                 <MudButton OnClick="SubmitQuestion" Variant="Variant.Filled" Color="Color.Primary" Class="mt-2">@Res["Send"]</MudButton>
@@ -37,6 +37,9 @@
 </MudContainer>
 
 @code {
+    [CascadingParameter]
+    public MainLayout MainLayout { get; set; }
+
     public QuestionModel questionModel = new();
     public QuestionValidator? questionValidator;
 
@@ -45,6 +48,14 @@
 
     [Inject]
     public ISnackbar Snackbar { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (MainLayout.isAuthenticated)
+        {
+            questionModel.Email = MainLayout.userName;
+        }
+    }
 
     public async Task SubmitQuestion()
     {

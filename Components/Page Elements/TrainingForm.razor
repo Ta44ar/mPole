@@ -8,75 +8,75 @@
 <EditForm Model="training" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <MudGrid>
-        <MudItem xs="12">
-            <MudGrid>
-                <MudItem xs="10">
-                    <MudTextField @bind-Value="training.Name" Label="@res["Name"]" Required="true" />
-                </MudItem>
-                <MudItem xs="2">
-                    <MudCardMedia Height="150" Image="@training.ImageUrl" Style="width: 150px;" />
-                </MudItem>
-            </MudGrid>
-        </MudItem>
-        <MudItem xs="12">
-            <MudTextField @bind-Value="training.Description" Label="@res["Description"]" Lines="5" Variant="Variant.Outlined" Required="true" />
-        </MudItem>
-        <MudItem xs="12">
-            <MudGrid>
-                <MudItem xs="6">
-                    <MudSelect T="string" ValueChanged="OnTrainingTypeChanged" Label="@res["Type"]" Required="true">
-                        @foreach (var type in Enum.GetValues(typeof(TrainingType)))
-                        {
-                            <MudSelectItem Value="@(type.ToString())">@res[$"TrainingType_{type}"]</MudSelectItem>
-                        }
-                    </MudSelect>
-                </MudItem>
-                <MudItem xs="6">
-                    <MudSelect @bind-Value="training.Level" Label="@res["Level"]" Required="true">
-                        @foreach (var level in Enum.GetValues(typeof(Level)))
-                        {
-                            <MudSelectItem Value="@(level.ToString())">@res[$"Level_{level}"]</MudSelectItem>
-                        }
-                    </MudSelect>
-                </MudItem>
-            </MudGrid>
-        </MudItem>
-        <MudItem xs="12">
-            <MudButton Variant="Variant.Filled" OnClick="OpenAddMovesDialog">@res["MoveAdd"]</MudButton>
-        </MudItem>
-        @if (moveImages.Any())
-        {
+    <MudPaper style="padding: 16px;">
+        <MudGrid>
             <MudItem xs="12">
-                <MudPaper Class="pa-4 mt-4">
-                    <MudText Class="mt-4" Typo="Typo.body1">@res["SelectedMoves"]</MudText>
+                <MudGrid>
+                    <MudItem xs="10">
+                        <MudTextField @bind-Value="training.Name" Label="@res["Name"]" Required="true" />
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudCardMedia Height="150" Image="@training.ImageUrl" Style="width: 150px;" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="training.Description" Label="@res["Description"]" Lines="5" Variant="Variant.Outlined" Required="true" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSelect T="string" ValueChanged="OnTrainingTypeChanged" Label="@res["Type"]" Required="true">
+                            @foreach (var type in Enum.GetValues(typeof(TrainingType)))
+                            {
+                                <MudSelectItem Value="@(type.ToString())">@res[$"TrainingType_{type}"]</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="6">
+                        <MudSelect @bind-Value="training.Level" Label="@res["Level"]" Required="true">
+                            @foreach (var level in Enum.GetValues(typeof(Level)))
+                            {
+                                <MudSelectItem Value="@(level.ToString())">@res[$"Level_{level}"]</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled" OnClick="OpenAddMovesDialog">@res["MoveAdd"]</MudButton>
+            </MudItem>
+            @if (moveImages.Any())
+            {
+                <MudItem xs="12">
+                    <MudText Class="mt-4 mb-4" Typo="Typo.body1">@res["SelectedMoves"]</MudText>
                     <MudGrid>
                         @foreach (var image in moveImages)
                         {
-                            <MudItem xs="1">
+                            <MudItem xs="2">
                                 <MudCard>
                                     <MudCardMedia Height="100" Image="@image.GetBase64ImageData(imageService)" />
                                     <MudCardContent Class="align-items-center d-flex" Style="min-height:72px;">
-                                        <MudText Typo="Typo.body2">@image.Name</MudText>
+                                        <MudText class="justify-center" Typo="Typo.body2">@image.Name</MudText>
                                     </MudCardContent>
                                 </MudCard>
                             </MudItem>
                         }
                     </MudGrid>
-                </MudPaper>
+                </MudItem>
+            }
+            <MudItem xs="12">
+                <MudGrid>
+                    <MudItem xs="10">
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">@res["Save"]</MudButton>
+                        <MudButton Color="Color.Secondary" OnClick="Cancel" Variant="Variant.Filled">@res["Cancel"]</MudButton>
+                    </MudItem>
+                </MudGrid>
             </MudItem>
-        }
-        <MudItem xs="12">
-            <MudGrid>
-                <MudItem xs="10">
-                </MudItem>
-                <MudItem xs="2">
-                    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">@res["Save"]</MudButton>
-                    <MudButton Color="Color.Secondary" OnClick="Cancel" Variant="Variant.Filled">@res["Cancel"]</MudButton>
-                </MudItem>
-            </MudGrid>
-        </MudItem>
-    </MudGrid>
+        </MudGrid>
+    </MudPaper>
 </EditForm>
 
 @code {

@@ -59,7 +59,7 @@
     {
         var poleDanceClass = await classService.GetClassByIdAsync(item.EventId, CancellationToken.None);
         var parameters = new DialogParameters { ["Class"] = poleDanceClass, ["MainLayout"] = mainLayout, ["OnClassEdited"] = EventCallback.Factory.Create(this, OnClassEdited) };
-        var options = new DialogOptions { MaxWidth = MaxWidth.Large, FullWidth = true };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
         dialogService.Show<PDClassViewDialog>(res["ClassDetails"], parameters, options);
     }
 

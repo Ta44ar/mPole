@@ -42,6 +42,7 @@
             ClassModel = new Class()
                 {
                     Date = DateTime.UtcNow,
+                    Time = DateTime.UtcNow.TimeOfDay,
                     Duration = TimeSpan.FromHours(1),
                     Trainer = User,
                     Registrations = new List<Registration>(),

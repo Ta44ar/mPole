@@ -14,45 +14,49 @@ else
     <EditForm Model="move" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
-        <MudGrid>
-            <MudItem xs="10">
-                <MudTextField @bind-Value="move.Name" Label="@res["Name"]" />
-            </MudItem>
-            <MudItem xs="2" Class="justify-end">
-                <MudText>@res["DifficultyLevel"]</MudText>
-                <MudRating SelectedValue="0" SelectedValueChanged="SetDifficulty" @bind-Value="move.DifficultyLevel" />
-            </MudItem>
-            <MudItem xs="12">
-                <MudTextField @bind-Value="move.Description" Lines="5" Label="@res["Description"]" Variant="Variant.Outlined" />
-            </MudItem>
-            <MudItem xs="12">
-                <MudGrid>
-                    @if (urlImages.Any())
-                    {
-                        <MudItem xs="12">
-                            <MudText>@res["IncludedMedia"]:</MudText>
-                        </MudItem>
-                        @foreach (var imageUrl in urlImages)
+        <MudPaper style="padding: 16px;">
+            <MudGrid>
+                <MudItem xs="10">
+                    <MudTextField @bind-Value="move.Name" Label="@res["Name"]" />
+                </MudItem>
+                <MudItem xs="2" Class="justify-end">
+                    <MudText>@res["DifficultyLevel"]</MudText>
+                    <MudRating SelectedValue="0" SelectedValueChanged="SetDifficulty" @bind-Value="move.DifficultyLevel" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="move.Description" Lines="5" Label="@res["Description"]" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudGrid>
+                        @if (urlImages.Any())
                         {
-                            <MudItem xs=@(urlImages.Count > 3 ? 4 : (urlImages.Count == 2 ? 6 : 12))>
-                                <img class="mini-image" src="@imageUrl" alt="Image" />
+                            <MudItem xs="12">
+                                <MudText>@res["IncludedMedia"]:</MudText>
                             </MudItem>
+                            @foreach (var imageUrl in urlImages)
+                            {
+                                <MudItem xs="2">
+                                    <MudCard>
+                                        <MudCardMedia Height="200" Image="@imageUrl" />
+                                    </MudCard>
+                                </MudItem>
+                            }
                         }
-                    }
-                </MudGrid>
-            </MudItem>
-            <MudItem xs="12">
-                <MudGrid>
-                    <MudItem xs="10">
-                        <MudButton Variant="Variant.Filled" OnClick="OpenUploadModal">@res["ImagesUpload"]</MudButton>
-                    </MudItem>
-                    <MudItem xs="2">
-                        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">@res["Save"]</MudButton>
-                        <MudButton Color="Color.Secondary" OnClick="Cancel" Variant="Variant.Filled">@res["Cancel"]</MudButton>
-                    </MudItem>
-                </MudGrid>
-            </MudItem>
-        </MudGrid>
+                    </MudGrid>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudGrid>
+                        <MudItem xs="10">
+                            <MudButton Variant="Variant.Filled" OnClick="OpenUploadModal">@res["ImagesUpload"]</MudButton>
+                        </MudItem>
+                        <MudItem xs="2">
+                            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">@res["Save"]</MudButton>
+                            <MudButton Color="Color.Secondary" OnClick="Cancel" Variant="Variant.Filled">@res["Cancel"]</MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
     </EditForm>
 }
 
