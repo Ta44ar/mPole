@@ -625,9 +625,36 @@
     <value>Limit miejsc wyczerpany!</value>
   </data>
   <data name="EmailNewQuestion" xml:space="preserve">
-    <value>mPole - Nowe pytanie!</value>
+    <value>mPole - Nowe pytanie od użytkownika!</value>
   </data>
   <data name="ErrorDuringEmailSend" xml:space="preserve">
     <value>Wystąpił błąd podczas wysyłki e-mail</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Witaj na mPole</value>
+  </data>
+  <data name="LatestNews" xml:space="preserve">
+    <value>Co nowego?</value>
+  </data>
+  <data name="WelcomeMessage" xml:space="preserve">
+    <value>Witamy w naszej aplikacji. Zarejestruj się lub zaloguj, aby uzyskać lepszy dostęp do treści pole dance!</value>
+  </data>
+  <data name="WelcomeBackMessage" xml:space="preserve">
+    <value>Cieszymy się, że znów cię widzimy. Czas na dobry trening!</value>
+  </data>
+  <data name="NewsContent1" xml:space="preserve">
+    <value>Nowe zaawansowane tutoriale pole dance już dostępne!</value>
+  </data>
+  <data name="NewsContent2" xml:space="preserve">
+    <value>Dołącz do naszych wirtualnych zajęć pole dance na żywo z najlepszymi instruktorami.</value>
+  </data>
+  <data name="NewsContent3" xml:space="preserve">
+    <value>Sprawdź nasze nowe plany treningowe pole dance, aby zachować formę i elastyczność.</value>
+  </data>
+  <data name="NewsContent4" xml:space="preserve">
+    <value>Weź udział w naszych nadchodzących zawodach pole dance i wygraj ekscytujące nagrody.</value>
+  </data>
+  <data name="NewsContent5" xml:space="preserve">
+    <value>Zapoznaj się z naszym forum społecznościowym, aby nawiązać kontakt z innymi entuzjastami pole dance.</value>
   </data>
 </root>

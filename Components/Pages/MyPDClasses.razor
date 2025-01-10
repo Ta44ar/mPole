@@ -164,7 +164,8 @@ else
         {
             { "Training", classModel.Training },
             { "User", classModel.Trainer },
-            { "classModel", classModel }
+            { "classModel", classModel },
+            { "Participants", new List<ApplicationUser>() }
         };
         var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
         DialogService.Show<PDClassOrganiseDialog>(res["EditClass"], parameters, options);

@@ -4,9 +4,87 @@
 
 <PageTitle>@res["Homepage"]</PageTitle>
 
-<h1>@res["HelloWorld"]</h1>
-
-Welcome to your new app.
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-5 full-height">
+    <MudGrid Class="flex-grow">
+        <MudItem xs="12" md="8">
+            @if (!MainLayout.isAuthenticated)
+            {
+                <MudCard Elevation="6" Class="pa-4" Style="animation: fadeIn 10s">
+                    <MudCardHeader>
+                        <MudText Typo="Typo.h4">@res["Welcome"]!</MudText>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Typo="Typo.body1">@res["WelcomeMessage"]</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudToolBar Class="ml-auto">
+                            <MudButton Class="mr-2" Variant="Variant.Filled" Color="Color.Primary" OnClick="NavigateToRegister">@res["Register"]</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="NavigateToLogin">@res["Login"]</MudButton>
+                        </MudToolBar>
+                    </MudCardActions>
+                </MudCard>
+            }
+            else
+            {
+                <MudCard Elevation="6" Class="pa-4" Style="animation: fadeIn 10s">
+                    <MudCardHeader>
+                        <MudText Typo="Typo.h4">@res["Welcome"], @MainLayout.userName!</MudText>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Typo="Typo.body1">@res["WelcomeBackMessage"]</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudToolBar Class="ml-auto">
+                            <MudButton Class="mr-2" Variant="Variant.Filled" OnClick="NavigateToCalendar">@res["ClassSignIn"]</MudButton>
+                        </MudToolBar>
+                    </MudCardActions>
+                </MudCard>
+            }
+        </MudItem>
+    </MudGrid>
+    <MudGrid Class="mt-4">
+        <MudItem xs="12" md="8">
+            <MudCard Elevation="6" Class="pa-4" Style="animation: fadeIn 10s">
+                <MudCardHeader>
+                    <MudText Typo="Typo.h5">@res["LatestNews"]</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudGrid>
+                        <MudItem xs="12" class="d-flex align-items-center mb-2">
+                            <MudIcon Icon="@Icons.Material.Filled.NewReleases" Color="Color.Primary" Class="mr-2" />
+                            <MudText Typo="Typo.body1">@res["NewsContent1"]</MudText>
+                        </MudItem>
+                        <MudItem xs="12" class="d-flex align-items-center mb-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Event" Color="Color.Secondary" Class="mr-2" />
+                            <MudText Typo="Typo.body1">@res["NewsContent2"]</MudText>
+                        </MudItem>
+                        <MudItem xs="12" class="d-flex align-items-center mb-2">
+                            <MudIcon Icon="@Icons.Material.Filled.FitnessCenter" Color="Color.Tertiary" Class="mr-2" />
+                            <MudText Typo="Typo.body1">@res["NewsContent3"]</MudText>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
 
 @code {
+    [CascadingParameter]
+    public MainLayout MainLayout { get; set; }
+
+    private void NavigateToRegister()
+    {
+        Navigation.NavigateTo("/Account/Register");
+    }
+
+    private void NavigateToLogin()
+    {
+        Navigation.NavigateTo("/Account/Login");
+    }
+
+    private void NavigateToCalendar()
+    {
+        Navigation.NavigateTo("/classes");
+    }
 }

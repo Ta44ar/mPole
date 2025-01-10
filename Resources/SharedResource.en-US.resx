@@ -625,9 +625,36 @@
     <value>Members limit reached!</value>
   </data>
   <data name="EmailNewQuestion" xml:space="preserve">
-    <value>mPole - New question!</value>
+    <value>mPole - New question from user!</value>
   </data>
   <data name="ErrorDuringEmailSend" xml:space="preserve">
     <value>An error ocurred while sending email</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Welcome on mPole</value>
+  </data>
+  <data name="LatestNews" xml:space="preserve">
+    <value>What's new?</value>
+  </data>
+  <data name="WelcomeMessage" xml:space="preserve">
+    <value>Welcome to our application. Please register or log in to gain better access to pole dance content!</value>
+  </data>
+  <data name="WelcomeBackMessage" xml:space="preserve">
+    <value>We're glad to see you again. Ready for some good training?</value>
+  </data>
+  <data name="NewsContent1" xml:space="preserve">
+    <value>New advanced pole dance tutorials available now!</value>
+  </data>
+  <data name="NewsContent2" xml:space="preserve">
+    <value>Join our live virtual pole dance classes with top instructors.</value>
+  </data>
+  <data name="NewsContent3" xml:space="preserve">
+    <value>Check out our new pole dance workout plans to stay fit and flexible.</value>
+  </data>
+  <data name="NewsContent4" xml:space="preserve">
+    <value>Participate in our upcoming pole dance competition and win exciting prizes.</value>
+  </data>
+  <data name="NewsContent5" xml:space="preserve">
+    <value>Explore our community forum to connect with fellow pole dance enthusiasts.</value>
   </data>
 </root>

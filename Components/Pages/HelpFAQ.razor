@@ -68,9 +68,13 @@
         }
 
         await SendEmailAsync();
-        questionModel = new QuestionModel();
 
-        // Handle the question submission logic here TO DO
+        var email = questionModel.Email;
+        questionModel = new QuestionModel
+            {
+                Email = email
+            };
+
         await Task.CompletedTask;
     }
 

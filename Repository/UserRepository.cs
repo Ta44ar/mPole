@@ -99,6 +99,7 @@ public class UserRepository : IUserRepository
             var classes = await context.Classes
                 .Include(c => c.Trainer)
                 .Include(c => c.Training)
+                .Include(c => c.Registrations)
                 .Where(c => c.Trainer.Id == instructorId)
                 .AsNoTracking()
                 .ToListAsync();
