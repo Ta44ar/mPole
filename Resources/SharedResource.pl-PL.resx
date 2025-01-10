@@ -537,4 +537,28 @@
   <data name="ParticipantAlreadyAdded" xml:space="preserve">
     <value>Ten użytkownik został już dodany na listę!</value>
   </data>
+  <data name="ErrorDuringClassSignIn" xml:space="preserve">
+    <value>Nie udało się zapisać na zajęcia</value>
+  </data>
+  <data name="ClassResign" xml:space="preserve">
+    <value>Zrezygnuj</value>
+  </data>
+  <data name="SuccessClassSignIn" xml:space="preserve">
+    <value>Pomyślnie zapisano na zajęcia!</value>
+  </data>
+  <data name="SuccessClassResign" xml:space="preserve">
+    <value>Pomyślnie zrezygnowano z zajęć!</value>
+  </data>
+  <data name="ErrorDuringClassResign" xml:space="preserve">
+    <value>Wystąpił błąd podczas rezygnacji z zajęć</value>
+  </data>
+  <data name="ColorLegendTitle" xml:space="preserve">
+    <value>Znaczenie kolorów wydarzeń:</value>
+  </data>
+  <data name="ColorLegendYourClasses" xml:space="preserve">
+    <value>zajęcia w których uczestniczysz</value>
+  </data>
+  <data name="ColorLegendOtherClasses" xml:space="preserve">
+    <value>inne zajęcia</value>
+  </data>
 </root>

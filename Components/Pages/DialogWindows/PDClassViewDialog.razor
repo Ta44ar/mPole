@@ -14,14 +14,9 @@
                     <MudText Typo="Typo.subtitle1" Color="Color.Secondary">@Class.DateTime?.ToString("dd-MM-yyyy HH:mm")</MudText>
                 </MudItem>
                 <MudItem xs="12" sm="6" Class="text-right d-flex justify-end">
-                    @if (!string.IsNullOrEmpty(Class.Training.ImageUrl))
-                    {
-                        <MudAvatar Size="Size.Large" Image="@Class.Training.ImageUrl" />
-                    }
-                    else
-                    {
-                        <MudAvatar Size="Size.Large" Icon="@Icons.Material.Filled.FitnessCenter" />
-                    }
+                    <MudAvatar Size="Size.Large">
+                        <MudImage Src="@Class.Training.ImageUrl"/>             
+                    </MudAvatar>
                 </MudItem>
             </MudGrid>
             <MudDivider Class="my-2" />
@@ -33,6 +28,15 @@
         </MudPaper>
     </DialogContent>
     <DialogActions>
+        @if (UserRegisteredAlready)
+        {
+            <MudButton OnClick="ResignFromClass" Variant="Variant.Filled">@res["ClassResign"]</MudButton>
+        }
+        else
+        {
+            <MudButton OnClick="SignInForClass" Variant="Variant.Filled">@res["ClassSignIn"]</MudButton>
+        }
+
         @if (IsInstructor)
         {
             <MudButton OnClick="DeleteClass" Variant="Variant.Filled">@res["Delete"]</MudButton>
@@ -59,13 +63,22 @@
     public EventCallback OnClassDeleted { get; set; }
 
     private bool IsInstructor { get; set; } = false;
+    private bool UserRegisteredAlready = false;
 
     private ICollection<ApplicationUser> participants = new List<ApplicationUser>();
 
     protected override async Task OnInitializedAsync()
     {
         IsInstructor = MainLayout.isInstructor;
+        await LoadClassData();
+    }
+
+    private async Task LoadClassData()
+    {
         participants = await registrationService.GetRegisteredUsersByClassIdAsync(Class.Id);
+        Class.Registrations = await registrationService.GetRegistrationsByClassIdAsync(Class.Id);
+        UserRegisteredAlready = await registrationService.IsUserRegisteredAlready(MainLayout.userId, Class.Id);
+        StateHasChanged();
     }
 
     private void Close() => MudDialog.Close();
@@ -87,6 +100,7 @@
         if (!result.Canceled)
         {
             await OnClassEdited.InvokeAsync();
+            await LoadClassData();
         }
     }
 
@@ -107,11 +121,50 @@
                 MudDialog.Close();
 
                 await OnClassEdited.InvokeAsync();
+                await LoadClassData();
             }
             catch (Exception ex)
             {
                 snackbar.Add(res["ErrorDuringClassDeletion"] + $": {ex.Message}", MudBlazor.Severity.Error);
             }
+        }
+    }
+
+    private async Task SignInForClass()
+    {
+        var registration = new RegisterForClassDto
+            {
+                ClassId = Class.Id,
+                UserId = MainLayout.user.Id,
+
+                //FOR NOW - no confirmation required
+                Status = RegistrationStatus.Confirmed
+            };
+        try
+        {
+            await registrationService.RegisterForClassAsync(registration, CancellationToken.None);
+            snackbar.Add(res["SuccessClassSignIn"], MudBlazor.Severity.Success);
+            await OnClassEdited.InvokeAsync();
+            await LoadClassData();
+        }
+        catch (Exception ex)
+        {
+            snackbar.Add(res["ErrorDuringClassSignIn"] + $": {ex.Message}", MudBlazor.Severity.Error);
+        }
+    }
+
+    private async Task ResignFromClass()
+    {
+        try
+        {
+            await registrationService.ResignFromClassAsync(MainLayout.user.Id, Class.Id, CancellationToken.None);
+            snackbar.Add(res["SuccessClassResign"], MudBlazor.Severity.Success);
+            await OnClassEdited.InvokeAsync();
+            await LoadClassData();
+        }
+        catch (Exception ex)
+        {
+            snackbar.Add(res["ErrorDuringClassResign"] + $": {ex.Message}", MudBlazor.Severity.Error);
         }
     }
 }

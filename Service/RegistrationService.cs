@@ -17,7 +17,7 @@ public class RegistrationService : IRegistrationService
         _classService = classService;
     }
 
-    public async Task RegisterForClassAsync(RegisterForClassDto dto)
+    public async Task RegisterForClassAsync(RegisterForClassDto dto, CancellationToken cancellationToken)
     {
         var user = await _userService.GetUserByIdAsync(dto.UserId);
         var classEntity = await _classService.GetClassByIdAsync(dto.ClassId, CancellationToken.None);
@@ -41,5 +41,24 @@ public class RegistrationService : IRegistrationService
     public async Task<ICollection<ApplicationUser>> GetRegisteredUsersByClassIdAsync(int classId)
     {
         return await _registrationRepository.GetRegisteredUsersByClassIdAsync(classId);
+    }
+
+    public async Task<bool> IsUserRegisteredAlready(string userId, int classId)
+    {
+        return await _registrationRepository.IsUserRegisteredForClassAsync(userId, classId);
+    }
+
+    public async Task ResignFromClassAsync(string userId, int classId, CancellationToken cancellationToken)
+    {
+        var registration = await _registrationRepository.GetRegistrationAsync(userId, classId);
+        if (registration != null)
+        {
+            await _registrationRepository.DeleteAsync(registration);
+        }
+    }
+
+    public async Task<ICollection<Registration>> GetRegistrationsByClassIdAsync(int classId)
+    {
+        return await _registrationRepository.GetRegistrationsByClassIdAsync(classId);
     }
 }
