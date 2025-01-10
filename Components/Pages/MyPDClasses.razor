@@ -144,7 +144,7 @@ else
         isLoading = false;
     }
 
-    private async void ViewAttendants(Class classModel)
+    private async Task ViewAttendants(Class classModel)
     {
         Participants = await registrationService.GetRegisteredUsersByClassIdAsync(classModel.Id);
 

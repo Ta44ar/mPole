@@ -25,17 +25,25 @@ namespace mPole_UnitTests_EntitiesConfiguration
 
             var dateProperty = builder.Metadata.FindProperty(nameof(Class.Date));
             Assert.NotNull(dateProperty);
-            Assert.False(dateProperty.IsNullable); // Updated assertion
+            Assert.True(dateProperty.IsNullable);
+
+            var timeProperty = builder.Metadata.FindProperty(nameof(Class.Time));
+            Assert.NotNull(timeProperty);
+            Assert.True(timeProperty.IsNullable);
 
             var locationProperty = builder.Metadata.FindProperty(nameof(Class.Location));
             Assert.NotNull(locationProperty);
             Assert.False(locationProperty.IsNullable);
-            Assert.Equal("nvarchar(50)", locationProperty.GetColumnType());
+            Assert.Equal("nvarchar(100)", locationProperty.GetColumnType());
 
             var trainerIdProperty = builder.Metadata.FindProperty(nameof(Class.TrainerId));
             Assert.NotNull(trainerIdProperty);
             Assert.False(trainerIdProperty.IsNullable);
             Assert.Equal("nvarchar(450)", trainerIdProperty.GetColumnType());
+
+            var isRegistrationOpenProperty = builder.Metadata.FindProperty(nameof(Class.IsRegistrationOpen));
+            Assert.NotNull(isRegistrationOpenProperty);
+            Assert.False(isRegistrationOpenProperty.IsNullable);
         }
     }
 }

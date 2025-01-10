@@ -1,10 +1,10 @@
-using Xunit;
-using Moq;
 using Microsoft.Extensions.Localization;
-using MudBlazor;
-using System.Threading.Tasks;
-using mPole.Resources;
+using Moq;
+using mPole.Components.Layout;
 using mPole.Components.Pages;
+using mPole.Resources;
+using MudBlazor;
+using Xunit;
 
 namespace mPole_UnitTests_BussinessLogic
 {
@@ -12,51 +12,57 @@ namespace mPole_UnitTests_BussinessLogic
     {
         private readonly Mock<IStringLocalizer<SharedResource>> _mockLocalizer;
         private readonly Mock<ISnackbar> _mockSnackbar;
+        private readonly Mock<IEmailService> _mockEmailService;
         private readonly HelpFAQ _component;
 
         public HelpFAQTests()
         {
             _mockLocalizer = new Mock<IStringLocalizer<SharedResource>>();
             _mockSnackbar = new Mock<ISnackbar>();
+            _mockEmailService = new Mock<IEmailService>();
             _component = new HelpFAQ
             {
                 Res = _mockLocalizer.Object,
-                Snackbar = _mockSnackbar.Object
+                Snackbar = _mockSnackbar.Object,
+                EmailService = _mockEmailService.Object,
             };
 
-            // Setup mock localizer to return expected values
-            _mockLocalizer.Setup(x => x["ValidationEmailRequired"]).Returns(new LocalizedString("ValidationEmailRequired", "Email is required"));
-            _mockLocalizer.Setup(x => x["ValidationEmailInvalid"]).Returns(new LocalizedString("ValidationEmailInvalid", "Invalid email address"));
-            _mockLocalizer.Setup(x => x["ValidationQuestionRequired"]).Returns(new LocalizedString("ValidationQuestionRequired", "Question is required"));
+            _mockLocalizer.Setup(x => x["EmailNewQuestion"]).Returns(new LocalizedString("EmailNewQuestion", "New question received"));
+            _mockLocalizer.Setup(x => x["SuccessEmailSend"]).Returns(new LocalizedString("SuccessEmailSend", "Email sent successfully"));
+            _mockLocalizer.Setup(x => x["ErrorDuringEmailSend"]).Returns(new LocalizedString("ErrorDuringEmailSend", "Error during email send"));
         }
 
-
         [Fact]
-        public async Task SubmitQuestion_ShouldShowSuccessMessage_WhenValidationSucceeds()
+        public async Task SendEmailAsync_ShouldShowSuccessMessage_WhenEmailIsSentSuccessfully()
         {
             // Arrange
             var questionModel = new QuestionModel { Email = "test@example.com", Question = "Test question" };
             _component.questionModel = questionModel;
+            _component.MainLayout = new MainLayout { userName = "test@example.com" };
 
             // Act
-            await _component.SubmitQuestion();
+            await _component.SendEmailAsync();
 
             // Assert
-            _mockSnackbar.Verify(s => s.Add(It.IsAny<string>(), It.Is<Severity>(sev => sev == Severity.Success), null, null), Times.Once);
+            _mockSnackbar.Verify(s => s.Add(It.Is<string>(msg => msg == "Email sent successfully"), It.Is<Severity>(sev => sev == Severity.Success), null, null), Times.Once);
         }
 
         [Fact]
-        public async Task SubmitQuestion_ShouldNotShowSuccessMessage_WhenValidationFails()
+        public async Task SendEmailAsync_ShouldShowErrorMessage_WhenEmailSendingFails()
         {
             // Arrange
-            var questionModel = new QuestionModel { Email = "", Question = "" }; // Invalid data
+            var questionModel = new QuestionModel { Email = "test@example.com", Question = "Test question" };
             _component.questionModel = questionModel;
+            _component.MainLayout = new MainLayout { userName = "test@example.com" };
+
+            _mockEmailService.Setup(es => es.SendTemplatedEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ThrowsAsync(new Exception("SMTP error"));
 
             // Act
-            await _component.SubmitQuestion();
+            await _component.SendEmailAsync();
 
             // Assert
-            _mockSnackbar.Verify(s => s.Add(It.IsAny<string>(), It.Is<Severity>(sev => sev == Severity.Success), null, null), Times.Never);
+            _mockSnackbar.Verify(s => s.Add(It.Is<string>(msg => msg.Contains("Error during email send: SMTP error")), It.Is<Severity>(sev => sev == Severity.Error), null, null), Times.Once);
         }
     }
 }

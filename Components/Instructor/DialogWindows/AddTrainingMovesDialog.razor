@@ -8,7 +8,7 @@
         <MudPaper Class="pa-4">
             <MudGrid Justify="Justify.Center" Class="align-items-center" Style="padding: 12px;">
                 <MudItem xs="10">
-                    <MudTextField @bind-Value="searchText" Placeholder="@res["SearchMoves"]" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="SearchMoves"/>
+                    <MudTextField id="search_moves_field" @bind-Value="searchText" Placeholder="@res["SearchMoves"]" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="SearchMoves" />
                 </MudItem>
             </MudGrid>
             <MudTable Items="filteredMoves" Hover="true" Bordered="true" Striped="true" Loading="isLoading" MultiSelection="true" @bind-SelectedItems="selectedMoves">
@@ -30,12 +30,11 @@
     </DialogContent>
     <DialogActions>
         <MudTooltip>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddSelectedMoves">
+            <MudButton id="add_selected_moves_button" Variant="Variant.Filled" Color="Color.Primary" OnClick="AddSelectedMoves">
                 @res["Add"]
             </MudButton>
-            <MudButton OnClick="Close" Color="Color.Secondary" Variant="Variant.Filled">@res["OK"]</MudButton>
+            <MudButton id="close_dialog_button" OnClick="Close" Color="Color.Secondary" Variant="Variant.Filled">@res["OK"]</MudButton>
         </MudTooltip>
-        
     </DialogActions>
 </MudDialog>
 

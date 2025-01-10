@@ -13,7 +13,7 @@
             <MudItem xs="12">
                 <MudGrid>
                     <MudItem xs="10">
-                        <MudTextField @bind-Value="training.Name" Label="@res["Name"]" Required="true" />
+                        <MudTextField id="training_name_field" @bind-Value="training.Name" Label="@res["Name"]" Required="true" />
                     </MudItem>
                     <MudItem xs="2">
                         <MudCardMedia Height="150" Image="@training.ImageUrl" Style="width: 150px;" />
@@ -21,11 +21,11 @@
                 </MudGrid>
             </MudItem>
             <MudItem xs="12">
-                <MudTextField @bind-Value="training.Description" Label="@res["Description"]" Lines="5" Variant="Variant.Outlined" Required="true" />
+                <MudTextField id="training_description_field" @bind-Value="training.Description" Label="@res["Description"]" Lines="5" Variant="Variant.Outlined" Required="true" />
             </MudItem>
             <MudItem xs="12">
                 <MudGrid>
-                    <MudItem xs="6">
+                    <MudItem xs="6" id="training_type_select">
                         <MudSelect T="string" ValueChanged="OnTrainingTypeChanged" Label="@res["Type"]" Required="true">
                             @foreach (var type in Enum.GetValues(typeof(TrainingType)))
                             {
@@ -33,7 +33,7 @@
                             }
                         </MudSelect>
                     </MudItem>
-                    <MudItem xs="6">
+                    <MudItem xs="6" id="training_level_select">
                         <MudSelect @bind-Value="training.Level" Label="@res["Level"]" Required="true">
                             @foreach (var level in Enum.GetValues(typeof(Level)))
                             {
@@ -44,7 +44,7 @@
                 </MudGrid>
             </MudItem>
             <MudItem xs="12">
-                <MudButton Variant="Variant.Filled" OnClick="OpenAddMovesDialog">@res["MoveAdd"]</MudButton>
+                <MudButton id="add_moves_button" Variant="Variant.Filled" OnClick="OpenAddMovesDialog">@res["MoveAdd"]</MudButton>
             </MudItem>
             @if (moveImages.Any())
             {
@@ -70,8 +70,8 @@
                     <MudItem xs="10">
                     </MudItem>
                     <MudItem xs="2">
-                        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">@res["Save"]</MudButton>
-                        <MudButton Color="Color.Secondary" OnClick="Cancel" Variant="Variant.Filled">@res["Cancel"]</MudButton>
+                        <MudButton id="save_training_button" ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">@res["Save"]</MudButton>
+                        <MudButton id="cancel_training_button" Color="Color.Secondary" OnClick="Cancel" Variant="Variant.Filled">@res["Cancel"]</MudButton>
                     </MudItem>
                 </MudGrid>
             </MudItem>

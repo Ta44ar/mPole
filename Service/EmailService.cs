@@ -1,15 +1,7 @@
 using MailKit.Net.Smtp;
 using MailKit.Security;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.AspNetCore.Components.RenderTree;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging.Abstractions;
 using MimeKit;
-using mPole.Components.Templates;
 using mPole.Data.Models;
-using System.IO;
 
 public class EmailService : IEmailService
 {

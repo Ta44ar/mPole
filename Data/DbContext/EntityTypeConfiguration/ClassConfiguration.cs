@@ -18,7 +18,7 @@ namespace mPole.Data.DbContext.EntityTypeConfiguration
             builder.Property(c => c.Location)
                 .IsRequired()
                 .HasMaxLength(100)
-                .HasColumnType("nvarchar(50)");
+                .HasColumnType("nvarchar(100)");
 
             builder.Property(c => c.Duration)
                 .IsRequired();
@@ -32,13 +32,13 @@ namespace mPole.Data.DbContext.EntityTypeConfiguration
             builder.Property(c => c.IsRegistrationOpen)
                 .IsRequired();
 
+            builder.Property(c => c.TrainerId)
+                .IsRequired()
+                .HasColumnType("nvarchar(450)");
+
             builder.HasOne(c => c.Training)
                 .WithMany(t => t.Classes)
                 .HasForeignKey(c => c.TrainingId);
-
-            builder.HasOne(c => c.Trainer)
-                .WithMany(u => u.InstructedClasses)
-                .HasForeignKey(c => c.TrainerId);
 
             builder.HasMany(c => c.Registrations)
                 .WithOne(r => r.Class)

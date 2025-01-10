@@ -20,9 +20,9 @@
                     <MudText Typo="Typo.h5">@res["Login"]</MudText>
             </MudCardHeader>
             <MudCardContent>
-                    <MudStaticTextField Label="@res["EmailAddress"]" @bind-Value="loginDto.Email"
+                    <MudStaticTextField id="email" Label="@res["EmailAddress"]" @bind-Value="loginDto.Email"
                                         For="@(() => loginDto.Email)"/>
-                    <MudStaticTextField Label="@res["Password"]" @bind-Value="loginDto.Password"
+                    <MudStaticTextField id="password" Label="@res["Password"]" @bind-Value="loginDto.Password"
                                         For="@(() => loginDto.Password)" InputType="InputType.Password"/>
                     <MudStaticCheckBox Label="@res["RememberMe"]" @bind-Value="loginDto.RememberMe" />
                 <MudCardActions>

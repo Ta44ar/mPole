@@ -19,6 +19,12 @@ namespace mPole.Data.Repositories
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                foreach (var move in training.Moves)
+                {
+                    context.Entry(move).State = EntityState.Unchanged;
+                }
+
                 await context.AddAsync(training);
                 await context.SaveChangesAsync(cancellationToken);
             }

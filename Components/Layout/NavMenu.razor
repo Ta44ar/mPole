@@ -37,7 +37,7 @@
     </MudGrid>
     <MudDivider />
     <MudNavLink Href="/" Match="NavLinkMatch.All">@res["Homepage"]</MudNavLink>
-    <MudNavLink Href="/moves/gallery" Match="NavLinkMatch.Prefix">@res["MovesGallery"]</MudNavLink>
+    <MudNavLink id="nav_to_gallery" Href="/moves/gallery" Match="NavLinkMatch.Prefix">@res["MovesGallery"]</MudNavLink>
     <MudNavGroup Title="@res["Classes"]">
         <MudNavLink Href="/classes" Match="NavLinkMatch.Prefix">@res["Browse"]</MudNavLink>
         @if (mainLayout.isAuthenticated)
@@ -48,8 +48,8 @@
     
     @if (mainLayout.isInstructor) 
     {
-        <MudNavGroup Title="@res["InstructorPanel"]">
-            <MudNavLink Href="/instructor/training-plans" Match="NavLinkMatch.Prefix">@res["TrainingPlans"]</MudNavLink>
+        <MudNavGroup id="nav_instructor" Title="@res["InstructorPanel"]">
+            <MudNavLink id="nav_to_training_list" Href="/instructor/training-plans" Match="NavLinkMatch.Prefix">@res["TrainingPlans"]</MudNavLink>
         </MudNavGroup>
     }
 
