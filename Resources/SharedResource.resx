@@ -624,4 +624,10 @@
   <data name="ParticipantsLimitReached" xml:space="preserve">
     <value>Members limit reached!</value>
   </data>
+  <data name="EmailNewQuestion" xml:space="preserve">
+    <value>mPole - New question!</value>
+  </data>
+  <data name="ErrorDuringEmailSend" xml:space="preserve">
+    <value>An error ocurred while sending email</value>
+  </data>
 </root>

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mPole", "mPole.csproj", "{B983015B-964C-440D-82F3-F94DB7377273}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mPole UI tests", "..\mPole UI tests\mPole UI tests.csproj", "{C6608409-551F-4E2C-B338-2CC4E8D57011}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B983015B-964C-440D-82F3-F94DB7377273}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B983015B-964C-440D-82F3-F94DB7377273}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B983015B-964C-440D-82F3-F94DB7377273}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6608409-551F-4E2C-B338-2CC4E8D57011}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6608409-551F-4E2C-B338-2CC4E8D57011}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6608409-551F-4E2C-B338-2CC4E8D57011}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6608409-551F-4E2C-B338-2CC4E8D57011}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
